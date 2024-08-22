@@ -1,0 +1,24 @@
+# Netlify configuration file
+
+[build]
+  # Directory to publish
+  publish = "."
+
+# Headers for specific paths
+[[headers]]
+  for = "/media/*"
+  [headers.values]
+    # Disable caching for development
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    # Disable caching for development
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    # Disable caching for development
+    Cache-Control = "no-store"
