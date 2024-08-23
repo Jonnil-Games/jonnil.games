@@ -5,7 +5,7 @@
   publish = "."
 
 [[redirects]]
-  from = "/*"
+  from = "*"
   to = "https://soon.thayn.gay/"
   status = 302
 
