@@ -8,6 +8,7 @@
   from = "*"
   to = "https://soon.thayn.gay/"
   status = 302
+  force = true
 
 # Headers for specific paths
 [[headers]]
