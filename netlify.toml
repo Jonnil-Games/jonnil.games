@@ -4,12 +4,6 @@
   # Directory to publish
   publish = "."
 
-[[redirects]]
-  from = "*"
-  to = "https://thayn.gay/soon.html"
-  status = 302
-  force = true
-
 # Headers for specific paths
 [[headers]]
   for = "/media/*"
