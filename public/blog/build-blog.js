@@ -3,10 +3,10 @@ const path = require('path');
 const fm = require('front-matter');
 const marked = require('marked').marked;
 
-// Absolute paths based on the project root
-const postsDir = path.join(__dirname, 'blog/posts/');
-const outputDir = path.join(__dirname, 'public/blog/');
-const templateDir = path.join(__dirname, 'blog/templates/');
+// Use relative paths based on the current structure
+const postsDir = path.join('public/blog/posts/');
+const outputDir = path.join('public/blog/');
+const templateDir = path.join('public/blog/templates/');
 
 console.log("Starting the blog build process...");
 
