@@ -3,8 +3,14 @@
 [build]
   # Command to build the blog
   command = "npm run build"
-  # Directory to publish (points to where the blog is generated)
-  publish = "blog/public"
+  # Directory to publish the main root site (home, other pages)
+  publish = "public"
+
+# Redirect all requests under /blog to the /public/blog directory
+[[redirects]]
+  from = "/blog/*"
+  to = "/blog/:splat"
+  status = 200
 
 # Headers for specific paths
 [[headers]]
