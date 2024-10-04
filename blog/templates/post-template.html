@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="/blog/styles.css">
+</head>
+<body>
+    <header>
+        <h1>{{ title }}</h1>
+        <p>By {{ author }} on {{ date }}</p>
+        <p>Categories: {{ categories }}</p>
+        <p>Tags: {{ tags }}</p>
+    </header>
+
+    <main>
+        {{ content }}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 My Blog</p>
+    </footer>
+</body>
+</html>
+

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Index</title>
+    <link rel="stylesheet" href="/blog/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Blog Index</h1>
+    </header>
+
+    <main>
+        <section id="search">
+            <h2>Search</h2>
+            <input type="text" id="search-input" placeholder="Search for blog posts..." />
+        </section>
+
+        <section id="filters">
+            <h2>Filter by:</h2>
+
+            <div>
+                <label for="filter-author">Author:</label>
+                <select id="filter-author">
+                    <option value="">All Authors</option>
+                    {{ authorOptions }}
+                </select>
+            </div>
+
+            <div>
+                <label for="filter-category">Category:</label>
+                <select id="filter-category">
+                    <option value="">All Categories</option>
+                    {{ categoryOptions }}
+                </select>
+            </div>
+
+            <div>
+                <label for="filter-tag">Tag:</label>
+                <select id="filter-tag">
+                    <option value="">All Tags</option>
+                    {{ tagOptions }}
+                </select>
+            </div>
+        </section>
+
+        <section id="posts">
+            <ul>
+                {{ postList }}
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 My Blog</p>
+    </footer>
+
+    <script src="/blog/scripts.js"></script>
+</body>
+</html>
+
