@@ -1,12 +1,17 @@
 const fs = require('fs');
 const path = require('path');
-const marked = require('marked').marked;
 const fm = require('front-matter');
+const marked = require('marked').marked;  // Ensure the correct import for marked
 
 // Paths
 const postsDir = './blog/posts/';
 const outputDir = './blog/public/';
 const templateDir = './blog/templates/';
+
+// Ensure the public directory exists
+if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+}
 
 // Templates
 const postTemplate = fs.readFileSync(path.join(templateDir, 'post-template.html'), 'utf8');
