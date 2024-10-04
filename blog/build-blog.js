@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const marked = require('marked');
+const marked = require('marked').marked;
 const fm = require('front-matter');
 
 // Paths
