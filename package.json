@@ -2,7 +2,7 @@
   "name": "dynamic-blog",
   "version": "1.0.0",
   "scripts": {
-    "build": "node build-blog.js"
+    "build": "node ./blog/build-blog.js"
   },
   "dependencies": {
     "front-matter": "^4.0.2",

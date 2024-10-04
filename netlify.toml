@@ -1,8 +1,10 @@
 # Netlify configuration file
 
 [build]
-  # Directory to publish
-  publish = "."
+  # Command to build the blog
+  command = "npm run build"
+  # Directory to publish (points to where the blog is generated)
+  publish = "blog/public"
 
 # Headers for specific paths
 [[headers]]
