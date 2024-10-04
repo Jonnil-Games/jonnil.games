@@ -5,10 +5,10 @@ const marked = require('marked').marked;  // Ensure the correct import for marke
 
 // Paths
 const postsDir = './blog/posts/';
-const outputDir = './blog/public/';
+const outputDir = './public/blog/';  // Updated to move blog under /public/blog/
 const templateDir = './blog/templates/';
 
-// Ensure the public directory exists
+// Ensure the public/blog directory exists
 if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
 }
@@ -42,6 +42,7 @@ fs.readdir(postsDir, (err, files) => {
             content: htmlContent,
         };
 
+        // Fill in the post template with data from the markdown file
         const filledTemplate = postTemplate
             .replace('{{ title }}', data.title)
             .replace('{{ author }}', data.author)
@@ -50,9 +51,11 @@ fs.readdir(postsDir, (err, files) => {
             .replace('{{ tags }}', data.tags.join(', '))
             .replace('{{ content }}', data.content);
 
+        // Output filename for each blog post
         const outputFileName = file.replace('.md', '.html');
         fs.writeFileSync(path.join(outputDir, outputFileName), filledTemplate);
 
+        // Collect metadata for the blog index
         blogIndex.push({
             title: data.title,
             author: data.author,
@@ -62,15 +65,17 @@ fs.readdir(postsDir, (err, files) => {
             tags: data.tags,
         });
 
+        // Add author, categories, and tags for filtering
         authors.add(data.author);
         data.categories.forEach(cat => categories.add(cat));
         data.tags.forEach(tag => tags.add(tag));
     });
 
+    // After processing posts, generate the index page
     generateIndexPage();
 });
 
-// Generate the index page
+// Generate the index page for the blog
 function generateIndexPage() {
     let postListHtml = '';
     blogIndex.forEach(post => {
@@ -86,11 +91,13 @@ function generateIndexPage() {
     const categoryOptions = Array.from(categories).map(cat => `<option value="${cat}">${cat}</option>`).join('');
     const tagOptions = Array.from(tags).map(tag => `<option value="${tag}">${tag}</option>`).join('');
 
+    // Fill in the index template with the post list and filter options
     const filledIndexTemplate = indexTemplate
         .replace('{{ postList }}', postListHtml)
         .replace('{{ authorOptions }}', authorOptions)
         .replace('{{ categoryOptions }}', categoryOptions)
         .replace('{{ tagOptions }}', tagOptions);
 
+    // Write the blog index to /public/blog/index.html
     fs.writeFileSync(path.join(outputDir, 'index.html'), filledIndexTemplate);
 }
