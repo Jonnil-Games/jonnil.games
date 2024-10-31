@@ -26,6 +26,9 @@
         <p>Game development insights and adventures</p>
       </section>
 
+      <div class="divider large-divider"></div>
+      <!-- Thicker, rounded divider -->
+
       <section>
         <h2>Featured Games</h2>
         <div class="game-grid">
@@ -35,11 +38,13 @@
               <h3>Sticky Paws</h3>
               <p>Help Sticky & friends get their stolen cake back!</p>
               <div class="tags">
-                <span class="tag">Platformmer</span>
-                <span class="tag">PC</span>
+                <span class="tag tag-genre">Platformer</span>
+                <span class="tag tag-platform">PC</span>
               </div>
               <div class="game-links">
-                <a href="/games/sticky-paws" class="button">Learn More</a>
+                <a href="/games/sticky-paws" class="button play-now"
+                  >Learn More</a
+                >
               </div>
             </div>
           </div>
@@ -50,15 +55,20 @@
               <h3>Upcoming Game</h3>
               <p>An exciting new project currently in development.</p>
               <div class="tags">
-                <span class="tag">In Development</span>
-                <span class="tag">PC</span>
+                <span class="tag tag-status">In Development</span>
+                <span class="tag tag-platform">PC</span>
               </div>
               <div class="game-links">
-                <a href="/games/upcoming" class="button">View Progress</a>
+                <a href="/games/upcoming" class="button view-devlog"
+                  >View Progress</a
+                >
               </div>
             </div>
           </div>
         </div>
+
+        <div class="divider small-divider"></div>
+        <!-- Narrower divider between sections -->
 
         <h2>Latest Posts</h2>
         <div class="post-grid">
@@ -66,14 +76,18 @@
             <h3>Dev Update: January 2024</h3>
             <time>January 30, 2024</time>
             <p>Latest progress on our upcoming game...</p>
-            <a href="/blog/dev-update-jan-2024">Read More →</a>
+            <a href="/blog/dev-update-jan-2024" class="button read-more"
+              >Read More →</a
+            >
           </article>
 
           <article class="post-card">
             <h3>Game Design Philosophy</h3>
             <time>January 25, 2024</time>
             <p>Thoughts on creating engaging gameplay...</p>
-            <a href="/blog/game-design-philosophy">Read More →</a>
+            <a href="/blog/game-design-philosophy" class="button read-more"
+              >Read More →</a
+            >
           </article>
         </div>
       </section>
@@ -81,7 +95,7 @@
 
     <footer>
       <div>
-        <p>&copy; 2024 jonnil.games. All rights reserved.</p>
+        <p>&copy; 2024 Jonnil Games. All rights reserved.</p>
       </div>
     </footer>
   </body>
