@@ -63,9 +63,9 @@ nav a:hover {
 }
 
 main {
-  max-width: 80rem;
+  max-width: 60rem; /* Reduced width for more side margin on large screens */
   margin: 0 auto;
-  padding: 4rem 1rem;
+  padding: 4rem 2rem; /* Slightly increased horizontal padding */
 }
 
 .hero {
@@ -293,4 +293,36 @@ footer div {
   max-width: 80rem;
   margin: 0 auto;
   padding: 0 1rem;
+}
+
+.principle-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 768px) {
+  .principle-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.principle-card {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.principle-card h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: var(--text-gray-900);
+  margin-bottom: 1rem;
+}
+
+.principle-card p {
+  color: var(--text-gray-600);
 }
