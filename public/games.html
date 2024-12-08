@@ -8,19 +8,74 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <!-- Fixed Navbar -->
     <header>
-      <nav>
-        <a href="/" class="logo">Jonnil Games</a>
-        <ul>
+      <nav class="navbar">
+        <div class="logo">
+          <a href="/">Jonnil Games</a>
+        </div>
+        <!-- Desktop Navigation Links -->
+        <ul class="nav-links">
           <li><a href="/">Home</a></li>
-          <li><a href="/games.html">Games</a></li>
+          <li><a href="/games.html" class="active">Games</a></li>
           <li><a href="/blog/index.html">Blog</a></li>
           <li><a href="/team.html">Team</a></li>
           <li><a href="/about.html">About</a></li>
         </ul>
+        <!-- Hamburger Button for Mobile -->
+        <button
+          class="hamburger"
+          aria-label="Open navigation menu"
+          aria-expanded="false"
+        >
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+        </button>
       </nav>
     </header>
 
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" aria-hidden="true">
+      <ul class="mobile-nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/games.html" class="active">Games</a></li>
+        <li><a href="/blog/index.html">Blog</a></li>
+        <li><a href="/team.html">Team</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+      <div class="mobile-social-links">
+        <a
+          href="https://twitter.com/yourprofile"
+          target="_blank"
+          aria-label="Twitter"
+        >
+          <img src="/path/to/twitter-icon.svg" alt="Twitter" />
+        </a>
+        <a
+          href="https://facebook.com/yourprofile"
+          target="_blank"
+          aria-label="Facebook"
+        >
+          <img src="/path/to/facebook-icon.svg" alt="Facebook" />
+        </a>
+        <a
+          href="https://instagram.com/yourprofile"
+          target="_blank"
+          aria-label="Instagram"
+        >
+          <img src="/path/to/instagram-icon.svg" alt="Instagram" />
+        </a>
+        <!-- Add more social links as needed -->
+      </div>
+      <div class="mobile-footer-info">
+        <p>&copy; 2024 Jonnil Games. All rights reserved.</p>
+        <p>123 Game Street, Suite 100</p>
+        <p>Email: contact@jonni.games</p>
+      </div>
+    </div>
+
+    <!-- Main Content -->
     <main>
       <section class="hero">
         <h1>Our Games</h1>
@@ -29,59 +84,138 @@
 
       <div class="divider large-divider"></div>
 
-      <section>
-        <h2>All Games</h2>
-        <div class="game-grid">
-          <!-- Example game card -->
-          <div class="game-card">
-            <div class="game-image"></div>
-            <div class="game-info">
-              <h3>Game Title</h3>
+      <!-- Timeline Section -->
+      <section class="timeline-section">
+        <div class="timeline">
+          <!-- Timeline Item 1: Newest Game -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <h3>Latest Game Title</h3>
+              <span class="timeline-date">2024</span>
               <p>
-                A detailed description of the game, its genre, and key features
-                that make it unique and exciting to play.
+                A brief description of the latest game, highlighting its
+                features, genre, and what makes it unique.
               </p>
               <div class="tags">
-                <span class="tag tag-genre">Genre</span>
-                <span class="tag tag-platform">Platform</span>
-                <span class="tag tag-status">Status</span>
+                <span class="tag tag-genre">Action</span>
+                <span class="tag tag-platform">PC, Console</span>
+                <span class="tag tag-status">Released</span>
               </div>
               <div class="game-links">
-                <a href="/games/game-title" class="button">Learn More →</a>
-                <a href="#" class="button play-now">Play Now</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Another example game card -->
-          <div class="game-card">
-            <div class="game-image"></div>
-            <div class="game-info">
-              <h3>Upcoming Game</h3>
-              <p>
-                An exciting new project currently in development. Follow the
-                devlog to stay updated on its progress.
-              </p>
-              <div class="tags">
-                <span class="tag tag-status">In Development</span>
-                <span class="tag tag-platform">PC</span>
-              </div>
-              <div class="game-links">
-                <a href="/games/upcoming-game" class="button">Learn More →</a>
-                <a href="/blog/devlog" class="button view-devlog"
-                  >View Devlog →</a
+                <a href="/games/latest-game" class="button">Learn More →</a>
+                <a href="/games/latest-game/play" class="button play-now"
+                  >Play Now</a
                 >
               </div>
             </div>
           </div>
+
+          <!-- Timeline Item 2 -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <h3>Previous Game Title</h3>
+              <span class="timeline-date">2023</span>
+              <p>
+                A brief description of a previous game, outlining its success,
+                reception, and key features.
+              </p>
+              <div class="tags">
+                <span class="tag tag-genre">Platformer</span>
+                <span class="tag tag-platform">PC</span>
+                <span class="tag tag-status">Released</span>
+              </div>
+              <div class="game-links">
+                <a href="/games/previous-game" class="button">Learn More →</a>
+                <a href="/games/previous-game/play" class="button play-now"
+                  >Play Now</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline Item 3: Oldest Game -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <h3>First Game Title</h3>
+              <span class="timeline-date">2022</span>
+              <p>
+                A brief description of the first game developed by Jonnil Games,
+                its inception, and initial reception.
+              </p>
+              <div class="tags">
+                <span class="tag tag-genre">Puzzle</span>
+                <span class="tag tag-platform">Mobile</span>
+                <span class="tag tag-status">Released</span>
+              </div>
+              <div class="game-links">
+                <a href="/games/first-game" class="button">Learn More →</a>
+                <a href="/games/first-game/play" class="button play-now"
+                  >Play Now</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Add more timeline items as needed -->
         </div>
       </section>
     </main>
 
+    <!-- Footer -->
     <footer>
       <div>
         <p>&copy; 2024 Jonnil Games. All rights reserved.</p>
       </div>
     </footer>
+
+    <!-- JavaScript -->
+    <script>
+      const hamburger = document.querySelector(".hamburger");
+      const mobileMenu = document.querySelector(".mobile-menu");
+      const body = document.body;
+
+      hamburger.addEventListener("click", () => {
+        const isOpen = mobileMenu.classList.toggle("open");
+        hamburger.classList.toggle("active");
+        body.classList.toggle("no-scroll", isOpen);
+        hamburger.setAttribute("aria-expanded", isOpen);
+        mobileMenu.setAttribute("aria-hidden", !isOpen);
+      });
+
+      // Close menu when clicking outside
+      document.addEventListener("click", (e) => {
+        if (
+          !mobileMenu.contains(e.target) &&
+          !hamburger.contains(e.target) &&
+          mobileMenu.classList.contains("open")
+        ) {
+          mobileMenu.classList.remove("open");
+          hamburger.classList.remove("active");
+          body.classList.remove("no-scroll");
+          hamburger.setAttribute("aria-expanded", "false");
+          mobileMenu.setAttribute("aria-hidden", "true");
+        }
+      });
+
+      /* Timeline Fade-Up Animation */
+      const timelineItems = document.querySelectorAll(".timeline-item");
+
+      const observerOptions = {
+        threshold: 0.1,
+      };
+
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("fade-up");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      timelineItems.forEach((item) => {
+        observer.observe(item);
+      });
+    </script>
   </body>
 </html>

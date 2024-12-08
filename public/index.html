@@ -2,24 +2,79 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Jonnil Games</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <!-- Fixed Navbar -->
     <header>
-      <nav>
-        <a href="/" class="logo">Jonnil Games</a>
-        <ul>
+      <nav class="navbar">
+        <div class="logo">
+          <a href="/">Jonnil Games</a>
+        </div>
+        <!-- Desktop Navigation Links -->
+        <ul class="nav-links">
           <li><a href="/">Home</a></li>
           <li><a href="/games.html">Games</a></li>
           <li><a href="/blog/index.html">Blog</a></li>
           <li><a href="/team.html">Team</a></li>
           <li><a href="/about.html">About</a></li>
         </ul>
+        <!-- Hamburger Button for Mobile -->
+        <button
+          class="hamburger"
+          aria-label="Open navigation menu"
+          aria-expanded="false"
+        >
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+        </button>
       </nav>
     </header>
 
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" aria-hidden="true">
+      <ul class="mobile-nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/games.html">Games</a></li>
+        <li><a href="/blog/index.html">Blog</a></li>
+        <li><a href="/team.html">Team</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+      <div class="mobile-social-links">
+        <a
+          href="https://twitter.com/yourprofile"
+          target="_blank"
+          aria-label="Twitter"
+        >
+          <img src="/path/to/twitter-icon.svg" alt="Twitter" />
+        </a>
+        <a
+          href="https://facebook.com/yourprofile"
+          target="_blank"
+          aria-label="Facebook"
+        >
+          <img src="/path/to/facebook-icon.svg" alt="Facebook" />
+        </a>
+        <a
+          href="https://instagram.com/yourprofile"
+          target="_blank"
+          aria-label="Instagram"
+        >
+          <img src="/path/to/instagram-icon.svg" alt="Instagram" />
+        </a>
+        <!-- Add more social links as needed -->
+      </div>
+      <div class="mobile-footer-info">
+        <p>&copy; 2024 Jonnil Games. All rights reserved.</p>
+        <p>123 Game Street, Suite 100</p>
+        <p>Email: contact@jonni.games</p>
+      </div>
+    </div>
+
+    <!-- Main Content -->
     <main>
       <section class="hero">
         <h1>Welcome to Jonnil Games</h1>
@@ -27,13 +82,15 @@
       </section>
 
       <div class="divider large-divider"></div>
-      <!-- Thicker, rounded divider -->
 
       <section>
         <h2>Featured Games</h2>
         <div class="game-grid">
           <div class="game-card">
-            <div class="game-image"></div>
+            <div
+              class="game-image"
+              style="background-image: url('/path/to/sticky-paws-image.jpg')"
+            ></div>
             <div class="game-info">
               <h3>Sticky Paws</h3>
               <p>Help Sticky & friends get their stolen cake back!</p>
@@ -42,15 +99,16 @@
                 <span class="tag tag-platform">PC</span>
               </div>
               <div class="game-links">
-                <a href="/games/sticky-paws" class="button play-now"
-                  >Learn More</a
-                >
+                <a href="/games/sticky-paws" class="button">Learn More</a>
               </div>
             </div>
           </div>
 
           <div class="game-card">
-            <div class="game-image"></div>
+            <div
+              class="game-image"
+              style="background-image: url('/path/to/upcoming-game-image.jpg')"
+            ></div>
             <div class="game-info">
               <h3>Upcoming Game</h3>
               <p>An exciting new project currently in development.</p>
@@ -59,33 +117,28 @@
                 <span class="tag tag-platform">PC</span>
               </div>
               <div class="game-links">
-                <a href="/games/upcoming" class="button view-devlog"
-                  >View Progress</a
-                >
+                <a href="/games/upcoming" class="button">View Progress</a>
               </div>
             </div>
           </div>
         </div>
 
         <div class="divider small-divider"></div>
-        <!-- Narrower divider between sections -->
 
         <h2>Latest Posts</h2>
         <div class="post-grid">
           <article class="post-card">
             <h3>Dev Update: January 2024</h3>
-            <time>January 30, 2024</time>
+            <time datetime="2024-01-30">January 30, 2024</time>
             <p>Latest progress on our upcoming game...</p>
-            <a href="/blog/dev-update-jan-2024" class="button read-more"
-              >Read More →</a
-            >
+            <a href="/blog/dev-update-jan-2024" class="button">Read More →</a>
           </article>
 
           <article class="post-card">
             <h3>Game Design Philosophy</h3>
-            <time>January 25, 2024</time>
+            <time datetime="2024-01-25">January 25, 2024</time>
             <p>Thoughts on creating engaging gameplay...</p>
-            <a href="/blog/game-design-philosophy" class="button read-more"
+            <a href="/blog/game-design-philosophy" class="button"
               >Read More →</a
             >
           </article>
@@ -93,10 +146,41 @@
       </section>
     </main>
 
+    <!-- Footer -->
     <footer>
       <div>
         <p>&copy; 2024 Jonnil Games. All rights reserved.</p>
       </div>
     </footer>
+
+    <!-- JavaScript -->
+    <script>
+      const hamburger = document.querySelector(".hamburger");
+      const mobileMenu = document.querySelector(".mobile-menu");
+      const body = document.body;
+
+      hamburger.addEventListener("click", () => {
+        const isOpen = mobileMenu.classList.toggle("open");
+        hamburger.classList.toggle("active");
+        body.classList.toggle("no-scroll", isOpen);
+        hamburger.setAttribute("aria-expanded", isOpen);
+        mobileMenu.setAttribute("aria-hidden", !isOpen);
+      });
+
+      // Close menu when clicking outside
+      document.addEventListener("click", (e) => {
+        if (
+          !mobileMenu.contains(e.target) &&
+          !hamburger.contains(e.target) &&
+          mobileMenu.classList.contains("open")
+        ) {
+          mobileMenu.classList.remove("open");
+          hamburger.classList.remove("active");
+          body.classList.remove("no-scroll");
+          hamburger.setAttribute("aria-expanded", "false");
+          mobileMenu.setAttribute("aria-hidden", "true");
+        }
+      });
+    </script>
   </body>
 </html>
