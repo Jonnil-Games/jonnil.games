@@ -5,12 +5,17 @@ const marked = require('marked').marked;
 const Handlebars = require('handlebars');
 
 // Register Handlebars helpers
-Handlebars.registerHelper('formatDate', function(date) {
+Handlebars.registerHelper('formatDate', function (date) {
     return new Date(date).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
     });
+});
+
+// Add a helper for URL generation
+Handlebars.registerHelper('blogUrl', function (fileName) {
+    return `/blog/${fileName}`;
 });
 
 // Use relative paths based on the current structure
@@ -49,7 +54,10 @@ fs.readdir(postsDir, (err, files) => {
         process.exit(1);
     }
 
-    files.forEach(file => {
+    // Filter for markdown files and sort by date
+    const markdownFiles = files.filter(file => file.endsWith('.md'));
+
+    markdownFiles.forEach(file => {
         try {
             console.log(`Processing post: ${file}`);
             const filePath = path.join(postsDir, file);
@@ -57,13 +65,25 @@ fs.readdir(postsDir, (err, files) => {
             const { attributes, body } = fm(markdown);
             const htmlContent = marked(body);
 
+            // Generate excerpt from content
+            const excerpt = body
+                .replace(/[#*`]/g, '')
+                .split('\n')
+                .filter(line => line.trim())
+                .slice(0, 2)
+                .join(' ')
+                .substring(0, 150) + '...';
+
+            const outputFileName = file.replace('.md', '.html');
             const data = {
                 title: attributes.title,
                 author: attributes.author,
                 date: attributes.date,
                 categories: attributes.categories || [],
                 tags: attributes.tags || [],
-                content: htmlContent
+                content: htmlContent,
+                excerpt: attributes.excerpt || excerpt,
+                url: `/blog/${outputFileName}`
             };
 
             // Add metadata to sets for filtering
@@ -75,20 +95,19 @@ fs.readdir(postsDir, (err, files) => {
             const filledTemplate = postTemplate(data);
 
             // Output filename for each blog post
-            const outputFileName = file.replace('.md', '.html');
             const outputPath = path.join(outputDir, outputFileName);
             fs.writeFileSync(outputPath, filledTemplate);
 
             // Store post metadata for the index
-            blogIndex.push({
-                ...data,
-                fileName: outputFileName
-            });
+            blogIndex.push(data);
 
         } catch (err) {
             console.error(`Error processing ${file}:`, err);
         }
     });
+
+    // Sort posts by date before generating index
+    blogIndex.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     generateIndexPage();
 });
@@ -97,9 +116,9 @@ fs.readdir(postsDir, (err, files) => {
 function generateIndexPage() {
     const indexData = {
         posts: blogIndex,
-        authors: Array.from(authors),
-        categories: Array.from(categories),
-        tags: Array.from(tags)
+        authors: Array.from(authors).sort(),
+        categories: Array.from(categories).sort(),
+        tags: Array.from(tags).sort()
     };
 
     // Generate HTML using Handlebars template
@@ -108,14 +127,13 @@ function generateIndexPage() {
 
     // Generate a JSON file with recent posts for the home page
     const recentPosts = blogIndex
-        .sort((a, b) => new Date(b.date) - new Date(a.date))
         .slice(0, 3)
         .map(post => ({
             title: post.title,
             date: post.date,
             category: post.categories[0] || '',
-            excerpt: post.content.substring(0, 150) + '...',
-            url: `/blog/${post.fileName}`
+            excerpt: post.excerpt,
+            url: post.url
         }));
 
     fs.writeFileSync(
