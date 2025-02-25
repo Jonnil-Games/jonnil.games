@@ -1186,3 +1186,110 @@ address a:hover {
   );
   border: 2px solid rgba(37, 99, 235, 0.2);
 }
+
+/* Team Section Styles */
+.team-section {
+  margin-top: var(--spacing-2xl);
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
+}
+
+@media (min-width: 768px) {
+  .team-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.team-card {
+  background: linear-gradient(135deg, #ffffff, rgba(37, 99, 235, 0.05));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  transition: transform var(--transition-normal),
+    box-shadow var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-xl);
+  text-align: center;
+}
+
+.team-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-xl);
+}
+
+.profile-pic {
+  width: 180px;
+  height: 180px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  border: 4px solid white;
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--spacing-lg);
+  transition: transform var(--transition-normal);
+}
+
+.team-card:hover .profile-pic {
+  transform: scale(1.05);
+}
+
+.team-info h3 {
+  color: var(--text-gray-900);
+  margin-bottom: var(--spacing-xs);
+  background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.team-info .title {
+  color: var(--blue-600);
+  font-weight: 500;
+  margin-bottom: var(--spacing-xs);
+}
+
+.team-info .pronouns {
+  color: var(--text-gray-600);
+  font-size: 0.9rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.team-info blockquote {
+  position: relative;
+  font-style: italic;
+  color: var(--text-gray-700);
+  padding: var(--spacing-md);
+  background: rgba(37, 99, 235, 0.05);
+  border-radius: var(--radius-md);
+  margin-top: var(--spacing-md);
+}
+
+.team-info blockquote::before {
+  content: '"';
+  position: absolute;
+  top: -0.5rem;
+  left: 0.5rem;
+  font-size: 3rem;
+  color: var(--blue-600);
+  opacity: 0.2;
+  font-family: serif;
+}
+
+/* Print styles */
+@media print {
+  .team-card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+
+  .profile-pic {
+    border: 2px solid #ddd;
+    box-shadow: none;
+  }
+}
