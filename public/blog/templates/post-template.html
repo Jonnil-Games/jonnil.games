@@ -123,29 +123,29 @@
       </div>
     </div>
 
-    <main class="container">
-      <article class="blog-post">
-        <header class="post-header">
-          <h1>{{title}}</h1>
-          <div class="post-meta">
-            <time datetime="{{date}}">{{formatDate date}}</time>
-            <p class="post-author">By {{author}}</p>
-            {{#if categories.length}}
-            <div class="post-categories">
-              {{#each categories}}
-              <span class="post-category">{{this}}</span>
-              {{/each}}
-            </div>
-            {{/if}} {{#if tags.length}}
-            <div class="post-tags">
-              {{#each tags}}
-              <span class="tag">{{this}}</span>
-              {{/each}}
-            </div>
-            {{/if}}
+    <main>
+      <section class="blog-header">
+        <h1>{{title}}</h1>
+        <div class="post-meta">
+          <time datetime="{{date}}">{{formatDate date}}</time>
+          <p class="post-author">By {{author}}</p>
+          {{#if categories.length}}
+          <div class="post-categories">
+            {{#each categories}}
+            <span class="post-category">{{this}}</span>
+            {{/each}}
           </div>
-        </header>
+          {{/if}} {{#if tags.length}}
+          <div class="post-tags">
+            {{#each tags}}
+            <span class="tag">{{this}}</span>
+            {{/each}}
+          </div>
+          {{/if}}
+        </div>
+      </section>
 
+      <article class="blog-post">
         <div class="post-content">{{{content}}}</div>
       </article>
     </main>
