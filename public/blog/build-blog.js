@@ -4,6 +4,15 @@ const fm = require('front-matter');
 const marked = require('marked').marked;
 const Handlebars = require('handlebars');
 
+// Register Handlebars helpers
+Handlebars.registerHelper('formatDate', function(date) {
+    return new Date(date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+});
+
 // Use relative paths based on the current structure
 const postsDir = path.join('public/blog/posts/');
 const outputDir = path.join('public/blog/');
