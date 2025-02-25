@@ -37,5 +37,33 @@ document.addEventListener("DOMContentLoaded", function () {
             post.style.display = (matchesAuthor && matchesCategory && matchesTag && matchesSearch) ? "block" : "none";
         });
     }
+
+    // Mobile menu functionality
+    const hamburger = document.querySelector(".hamburger");
+    const mobileMenu = document.querySelector(".mobile-menu");
+    const body = document.body;
+
+    hamburger.addEventListener("click", () => {
+        const isOpen = mobileMenu.classList.toggle("open");
+        hamburger.classList.toggle("active");
+        body.classList.toggle("no-scroll", isOpen);
+        hamburger.setAttribute("aria-expanded", isOpen);
+        mobileMenu.setAttribute("aria-hidden", !isOpen);
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener("click", (e) => {
+        if (
+            !mobileMenu.contains(e.target) &&
+            !hamburger.contains(e.target) &&
+            mobileMenu.classList.contains("open")
+        ) {
+            mobileMenu.classList.remove("open");
+            hamburger.classList.remove("active");
+            body.classList.remove("no-scroll");
+            hamburger.setAttribute("aria-expanded", "false");
+            mobileMenu.setAttribute("aria-hidden", "true");
+        }
+    });
 });
 
