@@ -1265,20 +1265,38 @@ address a:hover {
   font-style: italic;
   color: var(--text-gray-700);
   padding: var(--spacing-md);
+  padding-top: var(--spacing-lg);
   background: rgba(37, 99, 235, 0.05);
   border-radius: var(--radius-md);
   margin-top: var(--spacing-md);
+  min-height: 80px;
+  display: flex;
+  align-items: center;
 }
 
 .team-info blockquote::before {
   content: '"';
   position: absolute;
-  top: -0.5rem;
+  top: -0.2rem;
   left: 0.5rem;
   font-size: 3rem;
   color: var(--blue-600);
   opacity: 0.2;
   font-family: serif;
+}
+
+.team-info .personal-link {
+  display: inline-block;
+  margin-top: var(--spacing-sm);
+  color: var(--blue-600);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color var(--transition-normal);
+}
+
+.team-info .personal-link:hover {
+  color: var(--purple-600);
+  text-decoration: underline;
 }
 
 /* Print styles */
