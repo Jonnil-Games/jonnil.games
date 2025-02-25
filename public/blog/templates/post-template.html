@@ -123,20 +123,24 @@
       </div>
     </div>
 
-    <main>
+    <main class="container">
       <article class="blog-post">
         <header class="post-header">
           <h1>{{title}}</h1>
           <div class="post-meta">
-            <p>By {{author}} on {{formatDate date}}</p>
+            <time datetime="{{date}}">{{formatDate date}}</time>
+            <p class="post-author">By {{author}}</p>
             {{#if categories.length}}
             <div class="post-categories">
-              Categories: {{#each categories}}{{#if @index}},
-              {{/if}}{{this}}{{/each}}
+              {{#each categories}}
+              <span class="post-category">{{this}}</span>
+              {{/each}}
             </div>
             {{/if}} {{#if tags.length}}
             <div class="post-tags">
-              Tags: {{#each tags}}{{#if @index}}, {{/if}}{{this}}{{/each}}
+              {{#each tags}}
+              <span class="tag">{{this}}</span>
+              {{/each}}
             </div>
             {{/if}}
           </div>
