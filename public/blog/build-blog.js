@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const fm = require('front-matter');
 const marked = require('marked').marked;
+const Handlebars = require('handlebars');
 
 // Use relative paths based on the current structure
 const postsDir = path.join('public/blog/posts/');
@@ -17,9 +18,13 @@ if (!fs.existsSync(outputDir)) {
 }
 
 // Templates
-console.log("Loading templates...");
-const postTemplate = fs.readFileSync(path.join(templateDir, 'post-template.html'), 'utf8');
-const indexTemplate = fs.readFileSync(path.join(templateDir, 'index-template.html'), 'utf8');
+console.log("Loading and compiling templates...");
+const postTemplateSource = fs.readFileSync(path.join(templateDir, 'post-template.html'), 'utf8');
+const indexTemplateSource = fs.readFileSync(path.join(templateDir, 'index-template.html'), 'utf8');
+
+// Compile templates
+const postTemplate = Handlebars.compile(postTemplateSource);
+const indexTemplate = Handlebars.compile(indexTemplateSource);
 
 // Store blog metadata for the index
 let blogIndex = [];
@@ -49,71 +54,65 @@ fs.readdir(postsDir, (err, files) => {
                 date: attributes.date,
                 categories: attributes.categories || [],
                 tags: attributes.tags || [],
-                content: htmlContent,
+                content: htmlContent
             };
 
-            // Fill in the post template with data from the markdown file
-            const filledTemplate = postTemplate
-                .replace('{{ title }}', data.title)
-                .replace('{{ author }}', data.author)
-                .replace('{{ date }}', data.date)
-                .replace('{{ categories }}', data.categories.join(', '))
-                .replace('{{ tags }}', data.tags.join(', '))
-                .replace('{{ content }}', data.content);
-
-            // Output filename for each blog post
-            const outputFileName = file.replace('.md', '.html');
-            console.log(`Writing post to: ${path.join(outputDir, outputFileName)}`);
-            fs.writeFileSync(path.join(outputDir, outputFileName), filledTemplate);
-
-            // Collect metadata for the blog index
-            blogIndex.push({
-                title: data.title,
-                author: data.author,
-                fileName: outputFileName,
-                date: data.date,
-                categories: data.categories,
-                tags: data.tags,
-            });
-
-            // Add author, categories, and tags for filtering
+            // Add metadata to sets for filtering
             authors.add(data.author);
             data.categories.forEach(cat => categories.add(cat));
             data.tags.forEach(tag => tags.add(tag));
-        } catch (postError) {
-            console.error(`Error processing post ${file}:`, postError);
+
+            // Generate HTML using Handlebars template
+            const filledTemplate = postTemplate(data);
+
+            // Output filename for each blog post
+            const outputFileName = file.replace('.md', '.html');
+            const outputPath = path.join(outputDir, outputFileName);
+            fs.writeFileSync(outputPath, filledTemplate);
+
+            // Store post metadata for the index
+            blogIndex.push({
+                ...data,
+                fileName: outputFileName
+            });
+
+        } catch (err) {
+            console.error(`Error processing ${file}:`, err);
         }
     });
 
-    console.log("Generating blog index...");
     generateIndexPage();
 });
 
 // Generate the index page for the blog
 function generateIndexPage() {
-    let postListHtml = '';
-    blogIndex.forEach(post => {
-        postListHtml += `
-            <li class="post-item" data-author="${post.author}" data-categories="${post.categories.join(',')}" data-tags="${post.tags.join(',')}" data-title="${post.title.toLowerCase()}">
-                <a href="${post.fileName}">${post.title}</a> by ${post.author} on ${post.date}
-                <br>Categories: ${post.categories.join(', ')}<br>Tags: ${post.tags.join(', ')}
-            </li>
-        `;
-    });
+    const indexData = {
+        posts: blogIndex,
+        authors: Array.from(authors),
+        categories: Array.from(categories),
+        tags: Array.from(tags)
+    };
 
-    const authorOptions = Array.from(authors).map(author => `<option value="${author}">${author}</option>`).join('');
-    const categoryOptions = Array.from(categories).map(cat => `<option value="${cat}">${cat}</option>`).join('');
-    const tagOptions = Array.from(tags).map(tag => `<option value="${tag}">${tag}</option>`).join('');
-
-    // Fill in the index template with the post list and filter options
-    const filledIndexTemplate = indexTemplate
-        .replace('{{ postList }}', postListHtml)
-        .replace('{{ authorOptions }}', authorOptions)
-        .replace('{{ categoryOptions }}', categoryOptions)
-        .replace('{{ tagOptions }}', tagOptions);
-
-    console.log(`Writing blog index to: ${path.join(outputDir, 'index.html')}`);
+    // Generate HTML using Handlebars template
+    const filledIndexTemplate = indexTemplate(indexData);
     fs.writeFileSync(path.join(outputDir, 'index.html'), filledIndexTemplate);
 
-    console.log("Blog build process completed successfully.");
+    // Generate a JSON file with recent posts for the home page
+    const recentPosts = blogIndex
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 3)
+        .map(post => ({
+            title: post.title,
+            date: post.date,
+            category: post.categories[0] || '',
+            excerpt: post.content.substring(0, 150) + '...',
+            url: `/blog/${post.fileName}`
+        }));
+
+    fs.writeFileSync(
+        path.join(outputDir, 'recent-posts.json'),
+        JSON.stringify(recentPosts, null, 2)
+    );
+
+    console.log("Blog build completed successfully!");
 }
