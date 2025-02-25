@@ -138,76 +138,148 @@
       <!-- Timeline Section -->
       <section class="timeline-section">
         <div class="timeline">
-          <!-- Timeline Item 1: Newest Game -->
+          <!-- Game Release -->
           <div class="timeline-item">
             <div class="timeline-content">
-              <h3>Latest Game Title</h3>
-              <span class="timeline-date">2024</span>
+              <span class="timeline-date">March 2024</span>
+              <h3>Project Nebula</h3>
               <p>
-                A brief description of the latest game, highlighting its
-                features, genre, and what makes it unique.
+                Our upcoming space exploration game that challenges players to
+                discover and colonize new worlds.
               </p>
               <div class="tags">
-                <span class="tag tag-genre">Action</span>
-                <span class="tag tag-platform">PC, Console</span>
-                <span class="tag tag-status">Released</span>
+                <span class="tag tag-genre">Space Sim</span>
+                <span class="tag tag-platform">PC</span>
+                <span class="tag tag-status">In Development</span>
               </div>
               <div class="game-links">
-                <a href="/games/latest-game" class="button">Learn More →</a>
-                <a href="/games/latest-game/play" class="button play-now"
-                  >Play Now</a
+                <a href="/games/project-nebula" class="button primary-button"
+                  >Learn More →</a
+                >
+                <a
+                  href="https://discord.gg/jonnilgames"
+                  class="button secondary-button"
+                  >Join Beta</a
                 >
               </div>
             </div>
           </div>
 
-          <!-- Timeline Item 2 -->
+          <!-- Team Milestone -->
+          <div class="timeline-item milestone">
+            <div class="timeline-content">
+              <span class="timeline-date">January 2024</span>
+              <h3>Studio Expansion</h3>
+              <p>
+                Welcomed two new team members to help accelerate our game
+                development process.
+              </p>
+              <div class="tags">
+                <span class="tag tag-status">Company Update</span>
+              </div>
+              <div class="game-links">
+                <a href="/team.html" class="button secondary-button"
+                  >Meet the Team</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Game Release -->
           <div class="timeline-item">
             <div class="timeline-content">
-              <h3>Previous Game Title</h3>
-              <span class="timeline-date">2023</span>
+              <span class="timeline-date">November 2023</span>
+              <h3>Pixel Quest</h3>
               <p>
-                A brief description of a previous game, outlining its success,
-                reception, and key features.
+                A retro-inspired platformer featuring dynamic level generation
+                and challenging gameplay.
               </p>
               <div class="tags">
                 <span class="tag tag-genre">Platformer</span>
-                <span class="tag tag-platform">PC</span>
+                <span class="tag tag-platform">PC / Mobile</span>
                 <span class="tag tag-status">Released</span>
               </div>
               <div class="game-links">
-                <a href="/games/previous-game" class="button">Learn More →</a>
-                <a href="/games/previous-game/play" class="button play-now"
-                  >Play Now</a
+                <a href="/games/pixel-quest" class="button primary-button"
+                  >Play Now →</a
+                >
+                <a
+                  href="/games/pixel-quest/updates"
+                  class="button secondary-button"
+                  >Updates</a
                 >
               </div>
             </div>
           </div>
 
-          <!-- Timeline Item 3: Oldest Game -->
-          <div class="timeline-item">
+          <!-- Community Milestone -->
+          <div class="timeline-item milestone">
             <div class="timeline-content">
-              <h3>First Game Title</h3>
-              <span class="timeline-date">2022</span>
+              <span class="timeline-date">September 2023</span>
+              <h3>Discord Launch</h3>
               <p>
-                A brief description of the first game developed by Jonnil Games,
-                its inception, and initial reception.
+                Launched our official Discord community to better connect with
+                our players.
               </p>
               <div class="tags">
-                <span class="tag tag-genre">Puzzle</span>
+                <span class="tag tag-status">Community</span>
+              </div>
+              <div class="game-links">
+                <a
+                  href="https://discord.gg/jonnilgames"
+                  class="button primary-button"
+                  >Join Discord →</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- First Game -->
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <span class="timeline-date">June 2023</span>
+              <h3>Cube Runner</h3>
+              <p>
+                Our first game! A minimalist endless runner that started our
+                journey in game development.
+              </p>
+              <div class="tags">
+                <span class="tag tag-genre">Runner</span>
                 <span class="tag tag-platform">Mobile</span>
                 <span class="tag tag-status">Released</span>
               </div>
               <div class="game-links">
-                <a href="/games/first-game" class="button">Learn More →</a>
-                <a href="/games/first-game/play" class="button play-now"
-                  >Play Now</a
+                <a href="/games/cube-runner" class="button primary-button"
+                  >Play Now →</a
+                >
+                <a
+                  href="/blog/posts/cube-runner-story.html"
+                  class="button secondary-button"
+                  >Our Story</a
                 >
               </div>
             </div>
           </div>
 
-          <!-- Add more timeline items as needed -->
+          <!-- Studio Launch -->
+          <div class="timeline-item milestone">
+            <div class="timeline-content">
+              <span class="timeline-date">May 2023</span>
+              <h3>Studio Launch</h3>
+              <p>
+                Jonnil Games was founded with a mission to create innovative and
+                inclusive gaming experiences.
+              </p>
+              <div class="tags">
+                <span class="tag tag-status">Company Update</span>
+              </div>
+              <div class="game-links">
+                <a href="/about.html" class="button secondary-button"
+                  >Learn More</a
+                >
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </main>
@@ -343,13 +415,12 @@
       });
 
       /* Timeline Fade-Up Animation */
-      const timelineItems = document.querySelectorAll(".timeline-item");
-
       const observerOptions = {
-        threshold: 0.1,
+        threshold: 0.2,
+        rootMargin: "50px",
       };
 
-      const observer = new IntersectionObserver((entries, observer) => {
+      const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("fade-up");
@@ -358,7 +429,8 @@
         });
       }, observerOptions);
 
-      timelineItems.forEach((item) => {
+      // Observe all timeline items
+      document.querySelectorAll(".timeline-item").forEach((item) => {
         observer.observe(item);
       });
     </script>
