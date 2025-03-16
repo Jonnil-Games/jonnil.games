@@ -1,0 +1,156 @@
+/* Import base styles */
+@import url("/styles.css");
+
+/* Dark theme overrides */
+:root {
+  --accent-color: #4caf50;
+  --accent-color-hover: #45a049;
+}
+
+body {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+header,
+.navbar {
+  background-color: #1e1e1e;
+}
+
+.nav-links li a {
+  color: #e0e0e0;
+}
+
+.nav-links li a:hover,
+.nav-links li a.active {
+  color: var(--accent-color);
+}
+
+.nav-links li a::after {
+  background-color: var(--accent-color);
+}
+
+.logo-text {
+  background: linear-gradient(90deg, var(--accent-color), #66bb6a);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.hamburger-bar {
+  background-color: #e0e0e0;
+}
+
+.hamburger.active .hamburger-bar {
+  background-color: var(--accent-color);
+}
+
+.mobile-menu {
+  background-color: #1e1e1e;
+}
+
+.mobile-nav-links a {
+  color: #e0e0e0;
+}
+
+.mobile-nav-links a:hover,
+.mobile-nav-links a.active {
+  color: var(--accent-color);
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+.social-icon {
+  background-color: var(--accent-color);
+}
+
+.social-icon:hover {
+  background-color: var(--accent-color-hover);
+}
+
+.game-card,
+.post-card {
+  background-color: #1e1e1e;
+  border: 1px solid #2e2e2e;
+}
+
+.game-info h3,
+.post-card h3 {
+  color: #e0e0e0;
+}
+
+.game-info p,
+.post-card p {
+  color: #a0a0a0;
+}
+
+.button.primary-button {
+  background-color: var(--accent-color);
+}
+
+.button.primary-button:hover {
+  background-color: var(--accent-color-hover);
+}
+
+.button.secondary-button {
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.button.secondary-button:hover {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: var(--accent-color-hover);
+  border-color: var(--accent-color-hover);
+}
+
+.post-category {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: var(--accent-color);
+}
+
+footer {
+  background-color: #1e1e1e;
+  border-top: 1px solid #2e2e2e;
+}
+
+.footer-section h3::after {
+  background-color: var(--accent-color);
+}
+
+.footer-social .social-icon:hover {
+  background-color: var(--accent-color);
+}
+
+/* Newsletter section dark theme */
+.newsletter-section {
+  background: linear-gradient(
+    135deg,
+    rgba(76, 175, 80, 0.1),
+    rgba(102, 187, 106, 0.1)
+  );
+}
+
+.form-group input {
+  background-color: #1e1e1e;
+  border-color: #2e2e2e;
+  color: #e0e0e0;
+}
+
+.form-group input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+/* Timeline dark theme adjustments */
+.timeline-content {
+  background-color: #1e1e1e;
+  border: 1px solid #2e2e2e;
+}
+
+.timeline-date {
+  background: linear-gradient(90deg, var(--accent-color), #66bb6a);
+}
+
+.timeline-content h3 {
+  background: linear-gradient(90deg, var(--accent-color), #66bb6a);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
