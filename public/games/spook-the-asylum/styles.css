@@ -3,13 +3,20 @@
 
 /* Dark theme overrides */
 :root {
-  --accent-color: #4caf50;
-  --accent-color-hover: #45a049;
+  --accent-light: #00ff94;
+  --accent-dark: #00be6e;
+  --accent-color: var(--accent-dark);
+  --accent-color-hover: var(--accent-light);
 }
 
+/* Base theme overrides */
 body {
   background-color: #121212;
   color: #e0e0e0;
+}
+
+main {
+  padding-top: 6rem;
 }
 
 header,
@@ -23,15 +30,15 @@ header,
 
 .nav-links li a:hover,
 .nav-links li a.active {
-  color: var(--accent-color);
+  color: var(--accent-light);
 }
 
 .nav-links li a::after {
-  background-color: var(--accent-color);
+  background-color: var(--accent-light);
 }
 
 .logo-text {
-  background: linear-gradient(90deg, var(--accent-color), #66bb6a);
+  background: linear-gradient(90deg, var(--accent-light), var(--accent-dark));
   -webkit-background-clip: text;
   background-clip: text;
 }
@@ -41,116 +48,159 @@ header,
 }
 
 .hamburger.active .hamburger-bar {
-  background-color: var(--accent-color);
+  background-color: var(--accent-light);
 }
 
-.mobile-menu {
+/* Content styling */
+.hero {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 3rem;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(90deg, var(--accent-light), var(--accent-dark));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: #a0a0a0;
+  line-height: 1.6;
+}
+
+.game-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.feature-card {
   background-color: #1e1e1e;
-}
-
-.mobile-nav-links a {
-  color: #e0e0e0;
-}
-
-.mobile-nav-links a:hover,
-.mobile-nav-links a.active {
-  color: var(--accent-color);
-  background-color: rgba(76, 175, 80, 0.1);
-}
-
-.social-icon {
-  background-color: var(--accent-color);
-}
-
-.social-icon:hover {
-  background-color: var(--accent-color-hover);
-}
-
-.game-card,
-.post-card {
-  background-color: #1e1e1e;
+  padding: 1.5rem;
+  border-radius: 12px;
   border: 1px solid #2e2e2e;
+  text-align: center;
 }
 
-.game-info h3,
-.post-card h3 {
-  color: #e0e0e0;
+.feature-card h3 {
+  color: var(--accent-light);
+  margin-bottom: 1rem;
 }
 
-.game-info p,
-.post-card p {
+.feature-card p {
   color: #a0a0a0;
 }
 
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, var(--accent-light), var(--accent-dark));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.divider {
+  background: linear-gradient(90deg, var(--accent-light), var(--accent-dark));
+}
+
+/* Game info section */
+.game-info {
+  background-color: #1e1e1e;
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid #2e2e2e;
+  margin-bottom: 3rem;
+}
+
+.game-info p {
+  color: #a0a0a0;
+  line-height: 1.8;
+}
+
 .button.primary-button {
-  background-color: var(--accent-color);
+  background: linear-gradient(90deg, var(--accent-dark), var(--accent-light));
+  color: #121212;
+  font-weight: bold;
+  transition: transform 0.3s, filter 0.3s;
 }
 
 .button.primary-button:hover {
-  background-color: var(--accent-color-hover);
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  color: #121212;
 }
 
 .button.secondary-button {
-  color: var(--accent-color);
-  border-color: var(--accent-color);
+  color: var(--accent-light);
+  border: 2px solid var(--accent-light);
 }
 
 .button.secondary-button:hover {
-  background-color: rgba(76, 175, 80, 0.1);
-  color: var(--accent-color-hover);
-  border-color: var(--accent-color-hover);
+  background-color: rgba(0, 255, 148, 0.1);
+  border-color: var(--accent-light);
+  color: var(--accent-light);
 }
 
-.post-category {
-  background-color: rgba(76, 175, 80, 0.1);
-  color: var(--accent-color);
+/* Screenshots section */
+.screenshots {
+  margin: 3rem 0;
 }
 
+.screenshots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.screenshot {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #2e2e2e;
+  transition: transform 0.3s;
+}
+
+.screenshot:hover {
+  transform: scale(1.02);
+}
+
+.screenshot img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Newsletter section override */
+.newsletter-section {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 255, 148, 0.1),
+    rgba(0, 190, 110, 0.1)
+  );
+}
+
+.form-group input:focus {
+  border-color: var(--accent-light);
+  box-shadow: 0 0 0 3px rgba(0, 255, 148, 0.2);
+}
+
+/* Footer overrides */
 footer {
   background-color: #1e1e1e;
   border-top: 1px solid #2e2e2e;
 }
 
 .footer-section h3::after {
-  background-color: var(--accent-color);
+  background: linear-gradient(90deg, var(--accent-light), var(--accent-dark));
 }
 
 .footer-social .social-icon:hover {
-  background-color: var(--accent-color);
-}
-
-/* Newsletter section dark theme */
-.newsletter-section {
-  background: linear-gradient(
-    135deg,
-    rgba(76, 175, 80, 0.1),
-    rgba(102, 187, 106, 0.1)
-  );
-}
-
-.form-group input {
-  background-color: #1e1e1e;
-  border-color: #2e2e2e;
-  color: #e0e0e0;
-}
-
-.form-group input:focus {
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
-}
-
-/* Timeline dark theme adjustments */
-.timeline-content {
-  background-color: #1e1e1e;
-  border: 1px solid #2e2e2e;
-}
-
-.timeline-date {
-  background: linear-gradient(90deg, var(--accent-color), #66bb6a);
-}
-
-.timeline-content h3 {
-  background: linear-gradient(90deg, var(--accent-color), #66bb6a);
-  -webkit-background-clip: text;
-  background-clip: text;
+  background: linear-gradient(135deg, var(--accent-dark), var(--accent-light));
 }
