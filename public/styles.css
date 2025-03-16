@@ -347,18 +347,29 @@ main {
 /* Hero Section */
 .hero {
   text-align: center;
-  padding: var(--spacing-2xl) 0;
+  padding: var(--spacing-2xl) 0 0;
   position: relative;
 }
 
 .hero h1 {
   font-size: 2.75rem;
   margin-bottom: var(--spacing-lg);
-  background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
+  background: linear-gradient(90deg, var(--blue-600), var(--purple-600), var(--blue-600), var(--purple-600));
+  background-size: 300% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   display: inline-block;
+  animation: gradient-shift 2s linear infinite;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* Animated Text Container */
