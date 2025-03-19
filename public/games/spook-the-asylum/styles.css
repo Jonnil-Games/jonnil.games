@@ -58,6 +58,13 @@ header,
   margin: 0 auto 3rem;
 }
 
+/* Responsive logo styling */
+.responsive-logo {
+  max-width: 90%;
+  height: auto;
+  margin: 0 auto;
+}
+
 .hero h1 {
   font-size: 3rem;
   margin-bottom: 1.5rem;
@@ -186,9 +193,41 @@ header,
   );
 }
 
+.newsletter-container p {
+  color: #e0e0e0; /* Improved contrast from the previous lighter color */
+  font-weight: 400;
+  line-height: 1.8;
+}
+
 .form-group input:focus {
   border-color: var(--accent-light);
   box-shadow: 0 0 0 3px rgba(0, 255, 148, 0.2);
+}
+
+/* Character sprite styling */
+.character-container {
+  position: relative;
+  margin-top: 3rem;
+  text-align: left;
+  width: 40vw;
+  max-width: 350px;
+  min-width: 200px;
+  display: inline-block;
+  z-index: -1;
+}
+
+.character-sprite {
+  width: 100%;
+  opacity: 0.5;
+}
+
+.ghost-sprite {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0.3;
+  pointer-events: none;
 }
 
 /* Footer overrides */
@@ -203,4 +242,24 @@ footer {
 
 .footer-social .social-icon:hover {
   background: linear-gradient(135deg, var(--accent-dark), var(--accent-light));
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .character-container {
+    width: 60vw;
+    margin: 2rem auto;
+    display: block;
+    text-align: center;
+  }
+
+  .responsive-logo {
+    max-width: 85%;
+  }
+}
+
+@media (max-width: 480px) {
+  .character-container {
+    width: 80vw;
+  }
 }
