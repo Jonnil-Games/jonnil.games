@@ -245,20 +245,58 @@
       </section>
     </main>
 
-    <!-- Main character sprite placed at the bottom of the content -->
-    <img
-      src="./juni.png"
-      alt="Main Character"
-      class="character-sprite"
+    <!-- Main character sprite with ghostly effect -->
+    <div
+      class="character-container"
       style="
+        position: relative;
         margin-top: 100%;
         text-align: left;
         width: 25vw;
         display: inline-block;
         z-index: -1;
-        opacity: 0.5;
       "
-    />
+    >
+      <!-- Base character image -->
+      <img
+        src="./juni.png"
+        alt="Main Character"
+        class="character-sprite"
+        style="width: 100%; opacity: 0.5"
+      />
+      <!-- Ghostly overlay image that will shift around -->
+      <img
+        src="./juni.png"
+        alt=""
+        class="ghost-sprite"
+        style="
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          opacity: 0.3;
+          pointer-events: none;
+        "
+      />
+    </div>
+
+    <script>
+      // Ghost effect for character sprite
+      const ghostSprite = document.querySelector(".ghost-sprite");
+
+      function moveGhost() {
+        const xShift = Math.random() * 6 - 3; // Random value between -3 and +3
+        const yShift = Math.random() * 6 - 3; // Random value between -3 and +3
+
+        ghostSprite.style.transform = `translate(${xShift}px, ${yShift}px)`;
+
+        // Schedule next movement
+        setTimeout(moveGhost, 100 + Math.random() * 200);
+      }
+
+      // Start the ghostly movement
+      moveGhost();
+    </script>
 
     <!-- Footer -->
     <footer>
