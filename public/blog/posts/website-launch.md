@@ -1,6 +1,6 @@
 ---
 title: "Hello, World!"
-date: "2025-XX-XX"
+date: "2025-04-07"
 author: "Cyan"
 tags: [launch, website, update]
 ---
