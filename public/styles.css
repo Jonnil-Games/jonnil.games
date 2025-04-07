@@ -1204,17 +1204,15 @@ address a:hover {
   border: 2px solid rgba(37, 99, 235, 0.2);
 }
 
-/* Legacy Timeline Card Format */
-.timeline-item.legacy {
-  width: 100%;
-  margin: var(--spacing-md) 0;
-}
-
+/* Legacy Timeline Card Format - Compact with Updated Background */
 .timeline-item.legacy .timeline-content {
-  width: 100%;
-  margin: 0 auto;
   padding: var(--spacing-md);
-  background: #ffffff;
+  background: linear-gradient(
+    135deg,
+    rgba(37, 99, 235, 0.1),
+    rgba(124, 58, 237, 0.1)
+  );
+  border: 1px solid rgba(37, 99, 235, 0.2);
   box-shadow: var(--shadow-md);
   border-radius: var(--radius-md);
   transition: transform var(--transition-fast),
@@ -1224,16 +1222,6 @@ address a:hover {
 .timeline-item.legacy .timeline-content:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-lg);
-}
-
-.timeline-item.legacy .timeline-date {
-  display: block;
-  font-size: 0.8rem;
-  margin-bottom: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
-  color: white;
-  border-radius: var(--radius-full);
 }
 
 .timeline-item.legacy h3 {
@@ -1246,6 +1234,15 @@ address a:hover {
   font-size: 0.9rem;
   margin-bottom: var(--spacing-xs);
   color: var(--text-gray-600);
+}
+
+.timeline-item.legacy .timeline-date {
+  font-size: 0.8rem;
+  margin-bottom: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
+  color: white;
+  border-radius: var(--radius-full);
 }
 
 .timeline-item.legacy .tags {
