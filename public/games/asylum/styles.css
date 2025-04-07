@@ -263,3 +263,8 @@ footer {
     width: 80vw;
   }
 }
+
+/* Title Flickering Effect */
+.flickering-title {
+  transition: opacity 0.05s ease;
+}

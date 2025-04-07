@@ -95,12 +95,12 @@
 
     <main>
       <section class="hero">
-        <!-- Game Title Image -->
+        <!-- Game Title Image with flickering effect -->
         <h1>
           <img
             src="./title.png"
             alt="Juni's Asylum"
-            class="game-title responsive-logo"
+            class="game-title responsive-logo flickering-title"
           />
         </h1>
       </section>
@@ -381,6 +381,50 @@
           mobileMenu.setAttribute("aria-hidden", "true");
         }
       });
+
+      // Title flickering effect - enhanced candle-like randomness
+      const flickeringTitle = document.querySelector(".flickering-title");
+      const titleImages = ["./title.png", "./title-dark.png"];
+      let currentImage = 0;
+      let flickerIntensity = 0.3; // Base flicker chance
+
+      function flickerTitle() {
+        // Randomly increase flicker intensity occasionally (simulating air current)
+        if (Math.random() < 0.1) {
+          flickerIntensity = Math.min(
+            0.7,
+            flickerIntensity + Math.random() * 0.3
+          );
+
+          // After a burst of flickering, return to normal
+          setTimeout(() => {
+            flickerIntensity = 0.3;
+          }, 800 + Math.random() * 1200);
+        }
+
+        // Determine if we should flicker with variable intensity
+        if (Math.random() < flickerIntensity) {
+          // Switch between images
+          currentImage = (currentImage + 1) % titleImages.length;
+          flickeringTitle.src = titleImages[currentImage];
+
+          // Variable opacity for more natural candle effect
+          const opacityValue = 0.7 + Math.random() * 0.3;
+          flickeringTitle.style.opacity = opacityValue.toString();
+
+          // Reset opacity after a brief, variable delay
+          setTimeout(() => {
+            flickeringTitle.style.opacity = "1";
+          }, 20 + Math.random() * 80);
+        }
+
+        // Schedule next flicker at more variable intervals (candle-like)
+        const nextFlickerTime = 100 + Math.random() * 400;
+        setTimeout(flickerTitle, nextFlickerTime);
+      }
+
+      // Start the flickering effect
+      flickerTitle();
     </script>
   </body>
 </html>
