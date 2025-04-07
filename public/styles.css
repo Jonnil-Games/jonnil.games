@@ -354,7 +354,13 @@ main {
 .hero h1 {
   font-size: 2.75rem;
   margin-bottom: var(--spacing-lg);
-  background: linear-gradient(90deg, var(--blue-600), var(--purple-600), var(--blue-600), var(--purple-600));
+  background: linear-gradient(
+    90deg,
+    var(--blue-600),
+    var(--purple-600),
+    var(--blue-600),
+    var(--purple-600)
+  );
   background-size: 300% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -1196,6 +1202,54 @@ address a:hover {
     rgba(124, 58, 237, 0.1)
   );
   border: 2px solid rgba(37, 99, 235, 0.2);
+}
+
+/* Legacy Timeline Card Format */
+.timeline-item.legacy {
+  width: 100%;
+  margin: var(--spacing-md) 0;
+}
+
+.timeline-item.legacy .timeline-content {
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--spacing-md);
+  background: #ffffff;
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-md);
+  transition: transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.timeline-item.legacy .timeline-content:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.timeline-item.legacy .timeline-date {
+  display: block;
+  font-size: 0.8rem;
+  margin-bottom: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
+  color: white;
+  border-radius: var(--radius-full);
+}
+
+.timeline-item.legacy h3 {
+  font-size: 1.25rem;
+  margin-bottom: var(--spacing-xs);
+  color: var(--text-gray-900);
+}
+
+.timeline-item.legacy p {
+  font-size: 0.9rem;
+  margin-bottom: var(--spacing-xs);
+  color: var(--text-gray-600);
+}
+
+.timeline-item.legacy .tags {
+  margin-bottom: var(--spacing-xs);
 }
 
 /* Team Section Styles */
