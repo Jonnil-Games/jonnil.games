@@ -1231,7 +1231,6 @@ address a:hover {
   color: #fff;
   border-radius: var(--radius-full);
   font-weight: 500;
-  text-transform: uppercase;
 }
 
 /* Team Section Styles */
