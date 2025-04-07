@@ -207,7 +207,7 @@ header,
 /* Character sprite styling */
 .character-container {
   position: relative;
-  margin-top: 3rem;
+  margin-top: 10rem;
   text-align: left;
   width: 40vw;
   max-width: 350px;
