@@ -315,18 +315,27 @@
   box-shadow: var(--shadow-md);
   padding: 0;
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.3s ease;
+    box-shadow 0.3s ease, opacity 0.3s ease-in-out;
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
   position: relative;
-  will-change: transform;
+  will-change: transform, opacity;
+  opacity: 1;
 }
 
 .post-card:hover {
   transform: translateY(-8px);
   box-shadow: var(--shadow-lg);
+}
+
+.post-card.fade-out {
+  opacity: 0;
+}
+
+.post-card.hidden {
+  display: none;
 }
 
 .post-card .post-meta {
