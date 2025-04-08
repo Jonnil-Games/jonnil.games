@@ -1,9 +1,8 @@
 ---
 title: "Game Design Philosophy"
 author: "Cyan"
-date: "2025-04-07"
+date: "2025-04-08"
 categories: ["Game Design"]
-tags: ["Design", "Philosophy", "Accessibility"]
 ---
 
 Creating engaging gameplay is more than just mechanics and visuals—it's about crafting experiences that resonate with players on multiple levels. At Jonnil Games, we embrace flexibility in our game design philosophy, always open to evolving our methods as the industry continues to grow and change.

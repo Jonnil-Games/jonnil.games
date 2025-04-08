@@ -1,9 +1,8 @@
 ---
 title: 'What is a "Legacy" Game?'
 author: "Cyan"
-date: "2025-04-07"
+date: "2025-04-08"
 categories: ["Game Design"]
-tags: ["Legacy Games", "Game History", "Jonnil Games"]
 ---
 
 # What Exactly is a "Legacy" Game at Jonnil Games?

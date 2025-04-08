@@ -422,3 +422,64 @@
     gap: var(--spacing-sm);
   }
 }
+
+/* Discussion Card Styles */
+.discussion-card {
+  margin-top: 3rem;
+  padding: 1.5rem;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  border-left: 4px solid #556eed;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.discussion-card h3 {
+  margin-top: 0;
+  color: #333;
+  font-size: 1.4rem;
+}
+
+.discussion-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+  .discussion-links {
+    flex-direction: row;
+    gap: 1.2rem;
+  }
+}
+
+.discussion-link {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1.2rem;
+  border-radius: 6px;
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.discussion-link svg {
+  margin-right: 0.8rem;
+}
+
+.mastodon-link {
+  background-color: #2b90d9;
+}
+
+.mastodon-link:hover {
+  background-color: #1c85d0;
+}
+
+.discord-link {
+  background-color: #5865f2;
+}
+
+.discord-link:hover {
+  background-color: #4752c4;
+}
