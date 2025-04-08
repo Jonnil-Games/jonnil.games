@@ -133,6 +133,7 @@ function generateIndexPage() {
     date: post.date,
     category: post.categories[0] || "",
     excerpt: post.excerpt,
+    author: post.author,
     url: post.url,
   }));
 
