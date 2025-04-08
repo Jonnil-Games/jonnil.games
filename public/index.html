@@ -585,11 +585,18 @@
               })}</time>
                       <span class="post-category">${post.category}</span>
                   </div>
-                  <h3>${post.title}</h3>
+                  <h3><a href="${post.url}" class="post-title">${
+                post.title
+              }</a></h3>
                   <p>${post.excerpt}</p>
-                  <a href="${
-                    post.url
-                  }" class="button text-button">Read More →</a>
+                  <div class="post-footer">
+                      <span class="post-author">By ${
+                        post.author || "Team Jonnil"
+                      }</span>
+                      <a href="${
+                        post.url
+                      }" class="read-more-link">Read More →</a>
+                  </div>
               </article>
           `
             )
