@@ -1,53 +1,39 @@
 ---
 title: 'What is a "Legacy" Game?'
-author: "Cyan"
+author: "Jonna"
 date: "2025-04-08"
 categories: ["Game Design"]
 ---
 
-# What Exactly is a "Legacy" Game at Jonnil Games?
+# What's a "Legacy" game anyway?
 
-If you've spent any time browsing our Games page, you've probably noticed some titles labeled with a curious "Legacy" tag. So, what's that all about? Let's dive in and uncover this special slice of our game development history!
+You might've noticed some games labeled with a "Legacy" tag when browsing the project timeline page. So... what's that mean, exactly?
 
-## Our Legacy Collection: Games That Started It All
+Legacy games are the ones that started it all—my earliest creations from back when Jonnil was just me (or occasionally me and a friend). They're rough around the edges, a bit quirky, but absolutely bursting with love and history.
 
-At Jonnil Games, the term "Legacy" highlights early titles that capture our development journey. Our Legacy games are early titles that capture key moments of Jonna's journey as a game developer—long before Jonnil Games grew into the team it is today.
+## What counts as "Legacy"?
 
-Think of these games as our creative baby photos: they might show some rough edges or quirky ideas, but they're absolutely packed with heart and history.
+- Games I made solo or in early collaborations.
+- Small passion projects and experiments.
+- Prototypes that led to bigger, better things later on.
+- Old styles I've moved away from but still have a soft spot for.
+- Basically, any game I made before I published _Sticky Paws_. :P
 
-## What Makes a Game "Legacy"?
+## Why they're still here
 
-A Legacy game from our catalog usually checks one or more of these boxes:
+These games are my roots—I don't wanna hide them. They show where I started and how far I've come. Sure, they're messy in places, but they're authentic, heartfelt, and important to me.
 
-- **Early Works**: Games created during Jonna’s solo dev days or initial collaborations.
-- **Experimental Projects**: Smaller games, prototypes, or passion projects that weren’t intended as major releases.
-- **Historical Milestones**: Titles that introduced mechanics, ideas, or lessons that shaped our later works.
-- **Different Design Approaches**: Games that reflect ideas and styles we no longer pursue but once passionately explored.
+If you've ever wondered, "How did Jonnil get to _Sticky Paws_ or any other game?", exploring these legacy titles might shed some light on my journey. You'll see firsthand how many missteps, quirky experiments, and weirdly incomprehensible ideas I went through before reaching where I am today. Honestly, half the time I can't even remember what my brain was up to when I made these games—but revisiting them always hits me right in the nostalgia. <3
 
-## Why Keep Our Legacy Games Around?
+## The heart behind them
 
-Sure, we could quietly retire these older games and move on—but that wouldn't feel right. These games represent important chapters in our story, capturing how we've evolved as creators. Keeping them visible is our way of embracing transparency and celebrating our roots.
+Every legacy game has a story—maybe it was an idea I was playing with, something new I was trying, or just me figuring out how games even worked. You'll find simpler mechanics, wilder concepts, and tons of rough edges... but you'll also catch a glimpse of that same creative spark fueling everything I make today.
 
-If you're new around here, our Legacy games offer a fascinating peek at our humble beginnings. And for longtime supporters, revisiting these titles might spark a bit of nostalgia.
+## Legacy = Love + Growth
 
-## Explore the Stories Behind Our Legacy Titles
+Yeah, they're old, but they're still part of me. I'll always keep them around as a reminder of where everything began. <3
 
-Each Legacy game has its own backstory—showcasing the steps, stumbles, and surprises that led us to where we are today. Some feature early attempts at mechanics we later refined, while others represent wild experiments that were fun to explore but didn't quite stick.
+Have you checked any of them out yet? If you do, please be gentle—I was young, inexperienced, and very much figuring things out. ówò
+I'd love to hear what you think!
 
-Playing one of these games means engaging directly with our history. You might encounter simpler gameplay or quirky mechanics compared to our recent projects, but you'll also feel the raw passion and creativity that continue to fuel us today.
-
-## Connecting the Past and Present
-
-Our Legacy titles aren't just relics—they're foundational to who we've become. Ideas born in these early projects still ripple through our current work, sometimes in subtle and unexpected ways.
-
-Even though our team, production quality, and design sophistication have grown significantly, our drive to create engaging, memorable experiences remains unchanged.
-
-## Honoring Our Past, Inspiring Our Future
-
-As we keep pushing forward with new, ambitious games, our Legacy collection remains a constant reminder of our journey—highlighting how far we've come and illuminating paths forward.
-
-Curious about the origins of Jonnil Games? Dive into our Legacy titles and experience firsthand the creativity, lessons, and sheer joy of experimentation that built the foundation of our studio. Plus, they're honestly still pretty fun to play!
-
-Have you tried any of our Legacy games yet? Share your thoughts, memories, and experiences with us in the comments—we'd love to hear from you!
-
-— Cyan
+— Jonna
