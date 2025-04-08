@@ -7,7 +7,7 @@ const Handlebars = require("handlebars");
 // Register Handlebars helpers
 Handlebars.registerHelper("formatDate", function (date) {
   const options = { year: "numeric", month: "long", day: "numeric" };
-  const utcDate = new Date(date + "T00:00:00Z"); // Ensure UTC interpretation
+  const utcDate = new Date(date + "T12:00:00Z"); // Use noon UTC to avoid timezone issues
   return utcDate.toLocaleDateString("en-US", options);
 });
 
