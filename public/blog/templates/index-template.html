@@ -162,16 +162,6 @@
               {{/each}}
             </select>
           </div>
-
-          <div class="filter-group">
-            <label for="tag-filter">Filter by Tag</label>
-            <select id="tag-filter">
-              <option value="">All Tags</option>
-              {{#each tags}}
-              <option value="{{this}}">{{this}}</option>
-              {{/each}}
-            </select>
-          </div>
         </div>
       </div>
 
@@ -186,15 +176,8 @@
           <p>{{excerpt}}</p>
           <div class="post-footer">
             <span class="post-author">By {{author}}</span>
-            {{#if tags.length}}
-            <div class="post-tags">
-              {{#each tags}}
-              <span class="tag">{{this}}</span>
-              {{/each}}
-            </div>
-            {{/if}}
+            <a href="{{url}}" class="read-more-link">Read More →</a>
           </div>
-          <a href="{{url}}" class="button text-button">Read More →</a>
         </article>
         {{/each}}
       </div>
