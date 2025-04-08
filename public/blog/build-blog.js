@@ -6,11 +6,9 @@ const Handlebars = require("handlebars");
 
 // Register Handlebars helpers
 Handlebars.registerHelper("formatDate", function (date) {
-  return new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  const utcDate = new Date(date + "T00:00:00Z"); // Ensure UTC interpretation
+  return utcDate.toLocaleDateString("en-US", options);
 });
 
 // Add a helper for URL generation
