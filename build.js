@@ -45,6 +45,15 @@ function writeFile(filePath, content) {
   }
 }
 
+// Create a backup of the original file
+function backupFile(filePath) {
+  if (fileExists(filePath)) {
+    const backupPath = `${filePath}.backup`;
+    fs.copyFileSync(filePath, backupPath);
+    console.log(`Created backup: ${backupPath}`);
+  }
+}
+
 // Inject components into a page
 function injectComponents(pagePath) {
   console.log(`Injecting components into: ${pagePath}`);
@@ -52,6 +61,9 @@ function injectComponents(pagePath) {
     console.error(`Page not found: ${pagePath}`);
     return null;
   }
+
+  // Backup the original file
+  backupFile(pagePath);
 
   let pageContent = readFile(pagePath);
 
@@ -69,35 +81,78 @@ function injectComponents(pagePath) {
   return pageContent;
 }
 
-// Combine styles
-function combineStyles() {
-  console.log("Combining styles...");
-  let combinedStyles = "";
+// Get component styles
+function getComponentStyles() {
+  console.log("Collecting component styles...");
+  let componentStyles = "";
 
-  // Add reset.css if it exists
-  const resetCssPath = path.join(stylesDir, "reset.css");
-  if (fileExists(resetCssPath)) {
-    combinedStyles += readFile(resetCssPath) + "\n\n";
-  }
-
-  // Add variables.css if it exists
-  const variablesCssPath = path.join(stylesDir, "variables.css");
-  if (fileExists(variablesCssPath)) {
-    combinedStyles += readFile(variablesCssPath) + "\n\n";
-  }
-
-  // Add component styles
+  // Add header component styles
   const headerStylesPath = path.join(componentsDir, "header", "header.css");
   if (fileExists(headerStylesPath)) {
-    combinedStyles += readFile(headerStylesPath) + "\n\n";
+    console.log(`Adding styles from: ${headerStylesPath}`);
+    const headerCss = readFile(headerStylesPath);
+    componentStyles += `/* Header Component Styles */\n${headerCss}\n\n`;
   }
 
-  return combinedStyles;
+  // Add more component styles here as they are created
+  // ...
+
+  return componentStyles;
+}
+
+// Update the styles in public/styles.css
+function updateStyles() {
+  const stylesPath = path.join(publicDir, "styles.css");
+
+  // Backup the original styles.css
+  backupFile(stylesPath);
+
+  // Read the existing styles
+  let existingStyles = "";
+  if (fileExists(stylesPath)) {
+    existingStyles = readFile(stylesPath);
+  }
+
+  // Find if there's a components section already
+  const componentStartMarker = "/* BEGIN COMPONENT STYLES */";
+  const componentEndMarker = "/* END COMPONENT STYLES */";
+
+  let updatedStyles = "";
+
+  if (
+    existingStyles.includes(componentStartMarker) &&
+    existingStyles.includes(componentEndMarker)
+  ) {
+    // Replace the existing component styles section
+    const beforeComponents = existingStyles.split(componentStartMarker)[0];
+    const afterComponents = existingStyles.split(componentEndMarker)[1];
+
+    updatedStyles =
+      beforeComponents +
+      componentStartMarker +
+      "\n" +
+      getComponentStyles() +
+      componentEndMarker +
+      afterComponents;
+  } else {
+    // Add component styles at the end
+    updatedStyles =
+      existingStyles +
+      "\n\n" +
+      componentStartMarker +
+      "\n" +
+      getComponentStyles() +
+      componentEndMarker +
+      "\n";
+  }
+
+  // Write the updated styles
+  writeFile(stylesPath, updatedStyles);
 }
 
 // Build process
 function build() {
-  console.log("Starting build process...");
+  console.log("Starting component build process...");
 
   // Process index.html
   const indexPath = path.join(publicDir, "index.html");
@@ -107,14 +162,10 @@ function build() {
     writeFile(indexPath, updatedIndexContent);
   }
 
-  // Combine and write styles
-  const combinedStyles = combineStyles();
-  if (combinedStyles) {
-    const stylesPath = path.join(publicDir, "styles.css");
-    writeFile(stylesPath, combinedStyles);
-  }
+  // Update styles with component styles
+  updateStyles();
 
-  console.log("Build complete!");
+  console.log("Component build complete!");
 }
 
 build();
