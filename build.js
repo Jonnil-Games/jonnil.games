@@ -74,6 +74,14 @@ function injectComponents(pagePath) {
     const headerContent = readFile(headerPath);
     // Replace the placeholder with the component content
     pageContent = pageContent.replace("<!-- HEADER -->", headerContent);
+
+    // Make sure the header.js script is included
+    if (!pageContent.includes("header.js")) {
+      // Add header.js script reference before the closing body tag
+      const scriptTag = `<script src="/src/components/header/header.js"></script>\n</body>`;
+      pageContent = pageContent.replace("</body>", scriptTag);
+      console.log("Added header.js script to the page");
+    }
   } else {
     console.error(`Header component not found: ${headerPath}`);
   }
@@ -177,17 +185,40 @@ function updateStyles() {
   writeFile(stylesPath, updatedStyles);
 }
 
+// Process all HTML files in a directory
+function processDirectory(dirPath) {
+  console.log(`Processing directory: ${dirPath}`);
+
+  try {
+    const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+
+    for (const entry of entries) {
+      const fullPath = path.join(dirPath, entry.name);
+
+      if (entry.isDirectory()) {
+        // Recursively process subdirectories
+        processDirectory(fullPath);
+      } else if (entry.name.endsWith(".html")) {
+        // Process HTML files
+        console.log(`Found HTML file: ${fullPath}`);
+        const updatedContent = injectComponents(fullPath);
+
+        if (updatedContent) {
+          writeFile(fullPath, updatedContent);
+        }
+      }
+    }
+  } catch (error) {
+    console.error(`Error processing directory ${dirPath}:`, error);
+  }
+}
+
 // Build process
 function build() {
   console.log("Starting component build process...");
 
-  // Process index.html
-  const indexPath = path.join(publicDir, "index.html");
-  const updatedIndexContent = injectComponents(indexPath);
-
-  if (updatedIndexContent) {
-    writeFile(indexPath, updatedIndexContent);
-  }
+  // Process all HTML files in the public directory and its subdirectories
+  processDirectory(publicDir);
 
   // Update styles with component styles
   updateStyles();
