@@ -81,6 +81,18 @@ function injectComponents(pagePath) {
   return pageContent;
 }
 
+// Get CSS variables from variables.css
+function getCSSVariables() {
+  const variablesPath = path.join(stylesDir, "variables.css");
+  if (fileExists(variablesPath)) {
+    console.log(`Reading CSS variables from: ${variablesPath}`);
+    const variablesCss = readFile(variablesPath);
+    return `/* CSS Variables - Automatically injected from variables.css */\n${variablesCss}\n\n`;
+  }
+  console.error(`CSS variables file not found: ${variablesPath}`);
+  return "";
+}
+
 // Get component styles
 function getComponentStyles() {
   console.log("Collecting component styles...");
@@ -113,11 +125,26 @@ function updateStyles() {
     existingStyles = readFile(stylesPath);
   }
 
+  // Get CSS variables
+  const cssVariables = getCSSVariables();
+
   // Find if there's a components section already
   const componentStartMarker = "/* BEGIN COMPONENT STYLES */";
   const componentEndMarker = "/* END COMPONENT STYLES */";
 
+  // Find if there's a root variables section (to remove it)
+  const rootVarsPattern = /\/\* Root Variables \*\/[\s\S]*?}/;
+
+  // Remove the existing root variables section if it exists
+  if (rootVarsPattern.test(existingStyles)) {
+    console.log("Removing existing root variables section");
+    existingStyles = existingStyles.replace(rootVarsPattern, "");
+  }
+
   let updatedStyles = "";
+
+  // Add CSS variables at the beginning
+  updatedStyles = cssVariables;
 
   if (
     existingStyles.includes(componentStartMarker) &&
@@ -127,7 +154,7 @@ function updateStyles() {
     const beforeComponents = existingStyles.split(componentStartMarker)[0];
     const afterComponents = existingStyles.split(componentEndMarker)[1];
 
-    updatedStyles =
+    updatedStyles +=
       beforeComponents +
       componentStartMarker +
       "\n" +
@@ -136,7 +163,7 @@ function updateStyles() {
       afterComponents;
   } else {
     // Add component styles at the end
-    updatedStyles =
+    updatedStyles +=
       existingStyles +
       "\n\n" +
       componentStartMarker +

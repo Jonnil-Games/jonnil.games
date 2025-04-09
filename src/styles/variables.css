@@ -7,12 +7,33 @@
   --accent: #bb86fc;
   --error: #b00020;
 
+  /* Text colors from public/styles.css */
+  --text-gray-600: #4b5563;
+  --text-gray-700: #374151;
+  --text-gray-900: #111827;
+
+  /* Color variations from public/styles.css */
+  --blue-600: #2563eb;
+  --blue-700: #1d4ed8;
+  --blue-800: #1e40af;
+  --green-600: #065f46;
+  --green-700: #064e3b;
+  --yellow-600: #92400e;
+  --yellow-700: #78350f;
+  --purple-600: #7c3aed;
+  --purple-700: #6d28d9;
+  --pink-600: #db2777;
+  --pink-700: #be185d;
+  --red-600: #dc2626;
+  --red-700: #b91c1c;
+
   /* Spacing */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
 
   /* Typography */
   --font-family: "Poppins", sans-serif;
@@ -27,4 +48,24 @@
   --border-radius-md: 8px;
   --border-radius-lg: 16px;
   --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  /* Border radius from public/styles.css */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-full: 9999px;
+
+  /* Transitions from public/styles.css */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  /* Shadows from public/styles.css */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
