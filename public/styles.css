@@ -302,16 +302,13 @@ header {
 }
 
 .social-icon {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-full);
-  background-color: var(--blue-600);
-  color: white;
-  transition: transform var(--transition-fast),
-    background-color var(--transition-fast);
+  width: 24px;
+  height: 24px;
+  font-size: 24px; /* Ensures consistent size for font-based icons like BlueSky and GitHub */
+  color: inherit;
 }
 
 .social-icon:hover {
