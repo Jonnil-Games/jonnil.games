@@ -1,20 +1,20 @@
 # 🧱 The Cyan Stack – Project Structure & Build Guidelines
 
-This document formalizes our approach to structuring and building websites under the Cyan Stack. It outlines our philosophy, file organization, component system, styling strategy, and build process to ensure consistency, scalability, and good vibes across all projects, including Jonnil Games (which may eventually have its own specialized stack).
+This document formalizes the Cyan Stack: a structured, modular, and fully static site-building system based on modern web standards. It defines our project architecture, reusable component strategy, styling methodology, and build process to ensure clean, maintainable, and scalable development for all Cyan-led projects—including Jonnil Games.
 
 ---
 
 ## 🧠 Philosophy
 
-- **Modular**: Everything should be broken into reusable, self-contained parts.
-- **Readable**: Structure should be easy to navigate and understand.
-- **Vanilla-First**: Built using modern web standards—HTML, CSS, JS—without unnecessary frameworks.
-- **Buildable**: Pages are assembled at build time, allowing us to serve static, SEO-friendly HTML.
-- **Brain-Friendly**: Designed for creative flow, neurodivergent accessibility, and maximum control.
+- **Modular**: Code is broken into small, self-contained, reusable parts.
+- **Readable**: File structure and code should be intuitive and consistent.
+- **Vanilla-First**: Built on plain HTML, CSS, and JavaScript using web standards.
+- **Pre-Built**: All content is compiled at build time to static HTML.
+- **Neurodivergent-Friendly**: Organized for clarity and flexibility to reduce cognitive overhead.
 
 ---
 
-## 📁 Folder Structure
+## 📁 Folder Structure Overview
 
 ```
 cyan-stack/
@@ -22,101 +22,154 @@ cyan-stack/
 │   ├── index.html
 │   ├── about.html
 │   ├── blog/
-│   ├── styles.css        # Compiled universal + component styles
-│   └── assets/           # Images, fonts, favicons, etc.
+│   ├── styles.css
+│   └── assets/
 │
-├── src/                  # Source files, not served directly
-│   ├── pages/            # Raw HTML content for each page
-│   ├── components/       # Self-contained folders for each reusable component
-│   │   ├── header/
-│   │   │   ├── header.html
-│   │   │   ├── header.css
-│   │   │   └── README.md
-│   │   ├── footer/
-│   │   │   ├── footer.html
-│   │   │   ├── footer.css
-│   │   │   └── README.md
-│   │   └── ...
-│   ├── styles/           # Universal styles and CSS variables
-│   │   ├── variables.css
-│   │   ├── base.css
-│   │   ├── layout.css
-│   │   └── reset.css
-│   ├── data/             # Site-wide JSON or JS data (e.g. team bios, config)
-│   └── scripts/          # Web Components or client-side JS
+├── src/                  # Source files
+│   ├── pages/            # Page templates
+│   ├── components/       # Reusable layout elements
+│   ├── styles/           # Global styles & CSS variables
+│   ├── data/             # JSON/JS content config
+│   └── scripts/          # Optional client-side JS
 │
-├── build.js              # Custom build script that assembles everything
-├── netlify.toml          # Netlify deployment config
-└── README.md
+├── build.js              # Custom build script
+├── netlify.toml          # Netlify config
+├── README.md
+└── GUIDELINES.md         # This file
 ```
 
 ---
 
 ## 🧩 Component System
 
-Each component lives in its own subfolder under `src/components/` and consists of:
+### Structure
 
-- An `.html` partial with reusable markup
-- A `.css` file with scoped styles
-- A `README.md` file explaining what the component does and how to use it
+Each component resides in its own folder within `src/components/` and contains:
 
-These components are injected into page templates during the build process.
+- `component-name.html` — HTML partial
+- `component-name.css` — Scoped styles
+- `README.md` — Documentation and usage
 
-**Example: `src/components/header/`**
+### Example
+
+```
+src/components/header/
+├── header.html
+├── header.css
+└── README.md
+```
+
+### Usage
+
+Components are injected into page templates using placeholders like:
 
 ```html
-<!-- header.html -->
-<header>
-  <nav>
-    <a href="/">Home</a>
-    <a href="/games">Games</a>
-    <a href="/blog">Blog</a>
-  </nav>
-</header>
+<!-- HEADER -->
 ```
 
-```css
-/* header.css */
-header {
-  background: var(--bg);
-  color: var(--text);
-  padding: 1rem;
-}
-```
+The build system replaces these with the component’s HTML and optionally pulls in the styles.
 
-```markdown
-<!-- README.md -->
+---
 
-# Header Component
+## 🎨 Styling System
 
-The main site header with navigation links. Used across all pages. Injected via build script.
+### Global Styles
+
+Located in `src/styles/`, global CSS files define the base appearance of the site:
+
+- `variables.css` — Design tokens (colors, spacing, etc.)
+- `reset.css` — CSS reset/normalization
+- `base.css` — Typography, general rules
+- `layout.css` — Grid/flex helpers
+
+### Component Styles
+
+Each component folder includes its own `component-name.css`, allowing styles to be modular and scoped.
+
+### Build Output
+
+All styles are compiled into `public/styles.css` during the build step.
+
+---
+
+## ✏️ Page Templates System
+
+Pages live in `src/pages/` and represent the raw content before the build. Each HTML file may include placeholders for components.
+
+Example:
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <!-- HEADER -->
+    <main>
+      <h1>Welcome!</h1>
+    </main>
+    <!-- FOOTER -->
+  </body>
+</html>
 ```
 
 ---
 
-## 🎨 Styling Strategy
+## 📰 Blog System
 
-- **CSS Variables** live in `src/styles/variables.css`
-- **Universal Styles** (typography, layout, base resets) are split into modular CSS files
-- **Component Styles** live alongside their HTML in `src/components/[name]/`
+### Structure
 
-During the build:
+The blog lives in its own folder under `src/blog/` and is managed separately from static pages.
 
-- Component styles are collected and injected inline or bundled into `public/styles.css`
-- Universal styles are merged or copied directly into `public/styles.css`
+```
+src/blog/
+├── posts/                # Markdown or HTML blog entries
+├── templates/            # Page and post templates
+├── recent-posts.json     # Optional feed generation
+└── build-blog.js         # Custom builder for blog output
+```
 
-This keeps styles modular, editable, and themeable.
+### Features
+
+- Automatically generates pages for individual blog posts
+- Outputs to `public/blog/`
+- Can be integrated into other pages (e.g. home, sidebar)
+
+### Future Enhancements
+
+- Markdown support
+- Pagination
+- RSS generation
 
 ---
 
-## ⚙️ Build Process
+## ⚙️ Build System
 
-The `build.js` script does the following:
+### Main Script: `build.js`
 
-1. Reads all pages in `src/pages/`
-2. Injects partials from `src/components/[name]/` where `<!-- HEADER -->`, etc., appear
-3. Collects CSS from components and universal styles
-4. Builds each page into `public/`
-5. Outputs a single `public/styles.css` (or inlined styles, if preferred)
+This custom build script does the following:
 
-This makes our site static, fast, and crawlable—with no reliance on JavaScript for rendering structure or content.
+1. Scans `src/pages/` for `.html` files
+2. Replaces component placeholders with actual component markup
+3. Combines all universal and component styles into one stylesheet
+4. Outputs completed pages to `public/`
+
+### Component Injection
+
+Components are matched by folder name (e.g. `<!-- HEADER -->` → `src/components/header/`). The HTML is injected into the page, and the CSS is either injected inline or added to the global style output.
+
+---
+
+## 🚀 Roadmap & Future Improvements
+
+- CLI helpers for creating new components with boilerplate
+- Dark mode toggle using CSS variables
+- Minification and cache busting
+
+---
+
+Built with love, structure, and occasional cat hair. 💖
+
+— Cyan
