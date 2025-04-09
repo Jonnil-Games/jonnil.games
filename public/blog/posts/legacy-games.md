@@ -5,8 +5,6 @@ date: "2025-04-08"
 categories: ["Game Design"]
 ---
 
-# What's a "Legacy" game anyway?
-
 You might've noticed some games labeled with a "Legacy" tag when browsing the project timeline page. So... what's that mean, exactly?
 
 Legacy games are the ones that started it all—my earliest creations from back when Jonnil was just me (or occasionally me and a friend). They're rough around the edges, a bit quirky, but absolutely bursting with love and history.

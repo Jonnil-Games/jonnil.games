@@ -5,8 +5,6 @@ date: "2025-04-08"
 categories: ["Game Design"]
 ---
 
-# Our game design philosophy <3
-
 Okay, so—is there such a thing as "perfect game design"? A "one true way" to make games? Nah, not really. I'm not a perfect game designer, but I _do_ have some principles that I stick to. These are things I’ve figured out through trial, error, and a lot of joyful tinkering on my own game design journey.
 
 I used to think mechanics were _the_ core of a great game—that if you nailed the gameplay, everything else would fall into place. But the more I’ve made games, the more I’ve realized: it’s not just about mechanics. You need visuals, you need sound, and most importantly, you need to understand how something _feels_.

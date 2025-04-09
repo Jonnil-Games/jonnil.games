@@ -5,8 +5,6 @@ date: "2025-04-08"
 categories: ["Web Dev"]
 ---
 
-# Hello, World!
-
 Huge news, friends—we’ve totally rebuilt our website from scratch! 🚀 After finally ditching Google Sites (good riddance, honestly), we now have a cozy digital home that actually reflects the heart, soul, and playful spirit of Jonnil Games. No more wrestling with awkward third-party limitations—our new site is fully customized and ready to flex its wings!
 
 ## A Fresh Look, A Comfy Feel
