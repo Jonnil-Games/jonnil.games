@@ -1,10 +1,19 @@
-/* styles.css - Enhanced version */
-
-/* Root Variables */
+/* CSS Variables - Automatically injected from variables.css */
 :root {
+  /* Colors */
+  --bg: #ffffff;
+  --text: #333333;
+  --primary: #6200ee;
+  --secondary: #03dac6;
+  --accent: #bb86fc;
+  --error: #b00020;
+
+  /* Text colors from public/styles.css */
   --text-gray-600: #4b5563;
   --text-gray-700: #374151;
   --text-gray-900: #111827;
+
+  /* Color variations from public/styles.css */
   --blue-600: #2563eb;
   --blue-700: #1d4ed8;
   --blue-800: #1e40af;
@@ -19,7 +28,7 @@
   --red-600: #dc2626;
   --red-700: #b91c1c;
 
-  /* Spacing variables */
+  /* Spacing */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
@@ -27,18 +36,32 @@
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
 
-  /* Border radius */
+  /* Typography */
+  --font-family: "Poppins", sans-serif;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-xxl: 2rem;
+
+  /* Effects */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 16px;
+  --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  /* Border radius from public/styles.css */
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-full: 9999px;
 
-  /* Transitions */
+  /* Transitions from public/styles.css */
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
 
-  /* Shadows */
+  /* Shadows from public/styles.css */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -47,6 +70,11 @@
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
+
+
+/* styles.css - Enhanced version */
+
+
 
 /* Reset and Box Sizing */
 *,
@@ -1354,3 +1382,336 @@ address a:hover {
     box-shadow: none;
   }
 }
+
+
+/* BEGIN COMPONENT STYLES */
+/* footer Component Styles */
+/* ======================================================
+   ✅ Cyan Stack – footer.css
+   Purpose: Styles for the site-wide footer component
+   Notes: Uses CSS variables from variables.css
+   ====================================================== */
+
+.footer-container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.footer-section h3 {
+  margin-bottom: var(--spacing-md);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.footer-social {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.social-icon {
+  color: var(--text-muted);
+  transition: color 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.social-icon:hover {
+  color: var(--primary-color);
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links li {
+  margin-bottom: var(--spacing-sm);
+}
+
+.footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: var(--primary-color);
+}
+
+.footer-bottom {
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.footer-legal {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.footer-legal a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-legal a:hover {
+  color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-legal {
+    justify-content: center;
+  }
+}
+
+
+/* header Component Styles */
+/* Fixed Navbar */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4rem;
+  background-color: #ffffff;
+  box-shadow: var(--shadow-md);
+  z-index: 1001;
+}
+
+/* Ensure content below the header is visible */
+main {
+  margin-top: 4rem; /* Same as header height */
+}
+
+/* Navbar Container */
+.navbar {
+  max-width: 1200px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 var(--spacing-xl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo Styling */
+.logo a {
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--blue-600);
+  display: flex;
+  align-items: center;
+  transition: transform var(--transition-fast);
+}
+
+.logo a:hover {
+  transform: scale(1.05);
+}
+
+.logo-text {
+  background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Desktop Navigation Links */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: var(--spacing-xl);
+}
+
+.nav-links li a {
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-gray-700);
+  transition: color var(--transition-fast);
+  position: relative;
+  padding: var(--spacing-xs) 0;
+}
+
+.nav-links li a::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--blue-600);
+  transition: width var(--transition-normal);
+}
+
+.nav-links li a:hover,
+.nav-links li a.active {
+  color: var(--blue-600);
+}
+
+.nav-links li a:hover::after,
+.nav-links li a.active::after {
+  width: 100%;
+}
+
+/* Hamburger Button Styling */
+.hamburger {
+  display: none; /* Hidden on desktop */
+  flex-direction: column;
+  justify-content: space-between;
+  width: 25px;
+  height: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: transform var(--transition-normal);
+  z-index: 1002;
+}
+
+.hamburger-bar {
+  width: 100%;
+  height: 3px;
+  background-color: var(--text-gray-900);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-normal);
+}
+
+/* Hamburger to Close Animation */
+.hamburger.active .hamburger-bar:nth-child(1) {
+  transform: translateY(7.5px) rotate(45deg);
+  background-color: var(--blue-600);
+}
+
+.hamburger.active .hamburger-bar:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active .hamburger-bar:nth-child(3) {
+  transform: translateY(-7.5px) rotate(-45deg);
+  background-color: var(--blue-600);
+}
+
+/* Ensure main content starts below the fixed header */
+main {
+  max-width: 1200px;
+  margin: 4rem auto 0 auto; /* Top margin to account for fixed navbar */
+  padding: var(--spacing-xl);
+}
+
+/* Mobile Menu Styles */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 85%;
+  max-width: 400px;
+  height: 100%;
+  background-color: var(--white);
+  box-shadow: var(--shadow-xl);
+  padding: var(--spacing-xl);
+  z-index: 1000;
+  overflow-y: auto;
+  transition: right var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-menu.open {
+  right: 0;
+}
+
+.mobile-nav-links {
+  list-style: none;
+  margin-top: calc(var(--spacing-xl) * 2);
+  margin-bottom: var(--spacing-xl);
+}
+
+.mobile-nav-links li {
+  margin-bottom: var(--spacing-lg);
+}
+
+.mobile-nav-links li a {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-gray-900);
+  text-decoration: none;
+  display: block;
+  padding: var(--spacing-sm) 0;
+  transition: color var(--transition-normal);
+}
+
+.mobile-nav-links li a:hover,
+.mobile-nav-links li a.active {
+  color: var(--blue-600);
+}
+
+.mobile-social-links {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-top: auto;
+  margin-bottom: var(--spacing-lg);
+}
+
+.mobile-social-links .social-icon {
+  color: var(--text-gray-700);
+  font-size: 1.5rem;
+  transition: color var(--transition-normal);
+}
+
+.mobile-social-links .social-icon:hover {
+  color: var(--blue-600);
+}
+
+.mobile-footer-info {
+  font-size: 0.875rem;
+  color: var(--text-gray-600);
+  margin-top: var(--spacing-md);
+}
+
+.mobile-footer-info a {
+  color: var(--blue-600);
+  text-decoration: none;
+}
+
+.mobile-footer-info p {
+  margin-bottom: var(--spacing-sm);
+}
+
+/* No scroll class for body when mobile menu is open */
+body.no-scroll {
+  overflow: hidden;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  /* Hide desktop nav links on mobile */
+  .nav-links {
+    display: none;
+  }
+
+  /* Show hamburger on mobile */
+  .hamburger {
+    display: flex;
+  }
+}
+
+
+/* END COMPONENT STYLES */
