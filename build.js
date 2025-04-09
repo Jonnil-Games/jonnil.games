@@ -67,23 +67,37 @@ function injectComponents(pagePath) {
 
   let pageContent = readFile(pagePath);
 
-  // Inject header component
-  const headerPath = path.join(componentsDir, "header", "header.html");
-  if (fileExists(headerPath)) {
-    console.log(`Injecting header from: ${headerPath}`);
-    const headerContent = readFile(headerPath);
-    // Replace the placeholder with the component content
-    pageContent = pageContent.replace("<!-- HEADER -->", headerContent);
+  // Find all cyan component tags
+  const componentRegex = /<cyan\s+component="([^"]+)"[^>]*><\/cyan>/g;
+  let match;
 
-    // Make sure the header.js script is included
-    if (!pageContent.includes("header.js")) {
-      // Add header.js script reference before the closing body tag
-      const scriptTag = `<script src="/src/components/header/header.js"></script>\n</body>`;
-      pageContent = pageContent.replace("</body>", scriptTag);
-      console.log("Added header.js script to the page");
+  while ((match = componentRegex.exec(pageContent)) !== null) {
+    const [fullMatch, componentName] = match;
+    const componentPath = path.join(
+      componentsDir,
+      componentName,
+      `${componentName}.html`
+    );
+
+    if (fileExists(componentPath)) {
+      console.log(`Injecting ${componentName} from: ${componentPath}`);
+      const componentContent = readFile(componentPath);
+      pageContent = pageContent.replace(fullMatch, componentContent);
+
+      // Add component's JS if it exists
+      const jsPath = path.join(
+        componentsDir,
+        componentName,
+        `${componentName}.js`
+      );
+      if (fileExists(jsPath) && !pageContent.includes(`${componentName}.js`)) {
+        const scriptTag = `<script src="/src/components/${componentName}/${componentName}.js"></script>\n</body>`;
+        pageContent = pageContent.replace("</body>", scriptTag);
+        console.log(`Added ${componentName}.js script to the page`);
+      }
+    } else {
+      console.error(`Component not found: ${componentPath}`);
     }
-  } else {
-    console.error(`Header component not found: ${headerPath}`);
   }
 
   return pageContent;
@@ -106,16 +120,21 @@ function getComponentStyles() {
   console.log("Collecting component styles...");
   let componentStyles = "";
 
-  // Add header component styles
-  const headerStylesPath = path.join(componentsDir, "header", "header.css");
-  if (fileExists(headerStylesPath)) {
-    console.log(`Adding styles from: ${headerStylesPath}`);
-    const headerCss = readFile(headerStylesPath);
-    componentStyles += `/* Header Component Styles */\n${headerCss}\n\n`;
-  }
+  // Read all component directories
+  const componentDirs = fs.readdirSync(componentsDir);
 
-  // Add more component styles here as they are created
-  // ...
+  for (const componentName of componentDirs) {
+    const componentStylePath = path.join(
+      componentsDir,
+      componentName,
+      `${componentName}.css`
+    );
+    if (fileExists(componentStylePath)) {
+      console.log(`Adding styles from: ${componentStylePath}`);
+      const componentCss = readFile(componentStylePath);
+      componentStyles += `/* ${componentName} Component Styles */\n${componentCss}\n\n`;
+    }
+  }
 
   return componentStyles;
 }
