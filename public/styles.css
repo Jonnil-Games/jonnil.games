@@ -71,10 +71,7 @@
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-
 /* styles.css - Enhanced version */
-
-
 
 /* Reset and Box Sizing */
 *,
@@ -1335,8 +1332,7 @@ address a:hover {
   position: relative;
   font-style: italic;
   color: var(--text-gray-700);
-  padding: var(--spacing-md);
-  padding-top: var(--spacing-lg);
+  padding: var(--spacing-lg);
   background: rgba(37, 99, 235, 0.05);
   border-radius: var(--radius-md);
   margin-top: var(--spacing-md);
@@ -1382,7 +1378,6 @@ address a:hover {
     box-shadow: none;
   }
 }
-
 
 /* BEGIN COMPONENT STYLES */
 /* footer Component Styles */
@@ -1480,7 +1475,6 @@ address a:hover {
     justify-content: center;
   }
 }
-
 
 /* header Component Styles */
 /* Fixed Navbar */
@@ -1712,6 +1706,5 @@ body.no-scroll {
     display: flex;
   }
 }
-
 
 /* END COMPONENT STYLES */
