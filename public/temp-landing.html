@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jonnil Games - Coming Soon</title>
+
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Jonnil Games - Coming Soon" />
+    <meta
+      name="description"
+      content="Indie game development studio creating inclusive and innovative gaming experiences"
+    />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://jonnil.games/" />
+    <meta property="og:title" content="Jonnil Games - Coming Soon" />
+    <meta
+      property="og:description"
+      content="Indie game development studio creating inclusive and innovative gaming experiences"
+    />
+    <meta
+      property="og:image"
+      content="https://jonnil.games/images/og-preview.png"
+    />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Jonnil Games - Coming Soon" />
+    <meta
+      name="twitter:description"
+      content="Indie game development studio creating inclusive and innovative gaming experiences"
+    />
+    <meta
+      name="twitter:image"
+      content="https://jonnil.games/images/og-preview.png"
+    />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <style>
+      :root {
+        --color-primary: #6a5acd;
+        --color-secondary: #ff69b4;
+        --color-accent: #ffd700;
+        --color-accent-dark: #ffa500;
+        --color-background: #121212;
+        --color-surface: #1e1e1e;
+        --color-text: #ffffff;
+        --color-text-secondary: #b0b0b0;
+
+        --spacing-xs: 0.25rem;
+        --spacing-sm: 0.5rem;
+        --spacing-md: 1rem;
+        --spacing-lg: 1.5rem;
+        --spacing-xl: 2rem;
+        --spacing-xxl: 3rem;
+
+        --border-radius: 8px;
+        --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Base Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: var(--color-background);
+        color: var(--color-text);
+        line-height: 1.6;
+        overflow-x: hidden;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Container */
+      .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: var(--spacing-lg) 0;
+      }
+
+      /* Header */
+      .site-header {
+        background: var(--color-surface);
+        padding: var(--spacing-lg);
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .logo {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(
+          90deg,
+          var(--color-primary),
+          var(--color-secondary)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .coming-soon {
+        font-size: 1.2rem;
+        margin-bottom: var(--spacing-lg);
+        color: var(--color-text-secondary);
+      }
+
+      /* Main Content */
+      main {
+        flex: 1;
+        padding: var(--spacing-xl) 0;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin-bottom: var(--spacing-lg);
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        text-align: center;
+        background: linear-gradient(
+          90deg,
+          var(--color-accent),
+          var(--color-accent-dark)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        padding-bottom: var(--spacing-lg);
+      }
+
+      h2 {
+        font-size: 2rem;
+        border-bottom: 2px solid var(--color-primary);
+        padding-bottom: var(--spacing-sm);
+        margin-top: var(--spacing-xxl);
+      }
+
+      h3 {
+        font-size: 1.5rem;
+        color: var(--color-accent);
+      }
+
+      p {
+        margin-bottom: var(--spacing-lg);
+      }
+
+      /* Game Info Section */
+      .game-intro {
+        background: var(--color-surface);
+        padding: var(--spacing-xl);
+        border-radius: var(--border-radius);
+        margin-bottom: var(--spacing-xl);
+        box-shadow: var(--box-shadow);
+      }
+
+      /* Steam Widget */
+      .steam-widget {
+        display: flex;
+        justify-content: center;
+        margin: var(--spacing-xl) 0;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      /* Video Section */
+      .videos {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-xl);
+        margin: var(--spacing-xl) 0;
+      }
+
+      .video-container {
+        position: relative;
+        width: 100%;
+        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        height: 0;
+        overflow: hidden;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+      }
+
+      .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+
+      /* Features List */
+      .features-list {
+        background: var(--color-surface);
+        padding: var(--spacing-xl);
+        border-radius: var(--border-radius);
+        margin-bottom: var(--spacing-xl);
+        box-shadow: var(--box-shadow);
+      }
+
+      .features-list ul {
+        list-style-position: inside;
+        padding-left: var(--spacing-lg);
+      }
+
+      .features-list li {
+        margin-bottom: var(--spacing-md);
+      }
+
+      /* Footer */
+      footer {
+        background: var(--color-surface);
+        padding: var(--spacing-xl);
+        text-align: center;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .social-links {
+        display: flex;
+        justify-content: center;
+        gap: var(--spacing-lg);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .social-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        color: var(--color-text);
+        text-decoration: none;
+        transition: background 0.3s ease;
+      }
+
+      .social-link:hover {
+        background: var(--color-primary);
+      }
+
+      .copyright {
+        color: var(--color-text-secondary);
+        font-size: 0.9rem;
+      }
+
+      /* Responsive */
+      @media (min-width: 768px) {
+        .videos {
+          flex-direction: row;
+        }
+
+        .video-container {
+          flex: 1;
+        }
+      }
+
+      @media (max-width: 767px) {
+        .container {
+          width: 95%;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+
+        h2 {
+          font-size: 1.5rem;
+        }
+
+        .steam-widget iframe {
+          width: 100%;
+          max-width: 600px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <div class="logo">JONNIL GAMES</div>
+        <div class="coming-soon">
+          New website coming soon! In the meantime, check out our featured game:
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <h1>STICKY PAWS</h1>
+
+        <div class="steam-widget">
+          <iframe
+            src="https://store.steampowered.com/widget/1129090/"
+            frameborder="0"
+            width="600"
+            height="190"
+          ></iframe>
+        </div>
+
+        <div class="videos">
+          <div class="video-container">
+            <iframe
+              src="https://www.youtube.com/embed/PPYN8mHpwqk"
+              title="Sticky Paws Gameplay Video"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+          <div class="video-container">
+            <iframe
+              src="https://www.youtube.com/embed/QdVdIrQNyPM"
+              title="Sticky Paws Gameplay Video"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+
+        <div class="game-intro">
+          <h2>Game Introduction</h2>
+          <p>
+            Sticky the Cat is on a little adventure to retrieve a cake that a
+            mouse stole. Help Sticky through 8 levels full of dangerous mice. Go
+            about the adventure however you like at your own pace.
+          </p>
+        </div>
+
+        <div class="features-list">
+          <h2>Game Features</h2>
+          <ul>
+            <li>
+              Multiplayer with up to 4 players! You can play locally or you can
+              use Steam's built-in Remote Play Together, where only one player
+              needs to own the game and 3 other Steam friends can play together
+              online!
+            </li>
+            <li>
+              2 Characters, Sticky and Catlyn! More custom characters can be
+              added!
+            </li>
+            <li>
+              Level Editor! Make a level and then export the level, and send the
+              level to other players so they can play your level! Or your
+              friends can make a level for you to play, that you import into the
+              game!
+            </li>
+            <li>
+              Fun movement, like climbing walls and pouncing through cardboard
+              boxes!
+            </li>
+            <li>
+              High score and Speedrun! Each level keeps track of your highest
+              score and fastest time!
+            </li>
+            <li>
+              Compete with your friends and see who has the highest score or
+              fastest time on each level and try to beat theirs!
+            </li>
+          </ul>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div class="social-links">
+          <a
+            href="https://discord.gg/GAmTXwqH9V"
+            class="social-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span>DC</span>
+          </a>
+          <a
+            href="https://bsky.app/profile/jonnil.games"
+            class="social-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span>BS</span>
+          </a>
+          <a
+            href="https://store.steampowered.com/app/1129090/Sticky_Paws/"
+            class="social-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span>ST</span>
+          </a>
+        </div>
+        <p class="copyright">© 2025 Jonnil Games. All rights reserved.</p>
+        <p class="contact">
+          Contact:
+          <a
+            href="mailto:contact@jonnil.games"
+            style="color: var(--color-accent)"
+            >contact@jonnil.games</a
+          >
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
