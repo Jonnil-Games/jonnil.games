@@ -2,13 +2,18 @@
   "name": "dynamic-blog",
   "version": "1.0.0",
   "scripts": {
-    "build": "node build.js && node ./public/blog/build-blog.js",
+    "build": "node build.js && node ./src/blog/build-blog.js",
     "build:components": "node build.js",
-    "build:blog": "node ./public/blog/build-blog.js"
+    "build:blog": "node ./src/blog/build-blog.js",
+    "dev": "sh -c 'nodemon -w src -e html,css,js,md --exec \"node build.js\" & live-server public'"
   },
   "dependencies": {
     "front-matter": "^4.0.2",
     "handlebars": "^4.7.8",
     "marked": "^4.0.12"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "nodemon": "^3.1.10"
   }
 }

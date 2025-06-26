@@ -16,10 +16,12 @@ Handlebars.registerHelper("blogUrl", function (fileName) {
   return `/blog/${fileName}`;
 });
 
-// Use relative paths based on the current structure
-const postsDir = path.join("public/blog/posts/");
-const outputDir = path.join("public/blog/");
-const templateDir = path.join("public/blog/templates/");
+// Paths
+const postsDir = path.join(__dirname, "posts");
+const templateDir = path.join(__dirname, "templates");
+const outputDir = path.join(__dirname, "..", "..", "public", "blog");
+const stylesFile = path.join(__dirname, "styles.css");
+const scriptsDir = path.join(__dirname, "scripts");
 
 console.log("Starting the blog build process...");
 
@@ -27,6 +29,18 @@ console.log("Starting the blog build process...");
 if (!fs.existsSync(outputDir)) {
   console.log(`Creating directory: ${outputDir}`);
   fs.mkdirSync(outputDir, { recursive: true });
+}
+
+copyStaticAssets();
+
+// Copy static styles and scripts to output
+function copyStaticAssets() {
+  if (fs.existsSync(stylesFile)) {
+    fs.copyFileSync(stylesFile, path.join(outputDir, "styles.css"));
+  }
+  if (fs.existsSync(scriptsDir)) {
+    fs.cpSync(scriptsDir, path.join(outputDir, "scripts"), { recursive: true });
+  }
 }
 
 // Templates
