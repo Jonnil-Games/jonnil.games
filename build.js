@@ -6,6 +6,8 @@ const srcDir = path.join(__dirname, "src");
 const publicDir = path.join(__dirname, "public");
 const componentsDir = path.join(srcDir, "components");
 const stylesDir = path.join(srcDir, "styles");
+const pagesDir = path.join(srcDir, "pages");
+const assetsDir = path.join(srcDir, "assets");
 
 // Helper to ensure directory exists
 function ensureDirectoryExists(dirPath) {
@@ -54,6 +56,30 @@ function backupFile(filePath) {
   }
 }
 
+// Remove and recreate a directory
+function cleanDirectory(dirPath) {
+  if (fs.existsSync(dirPath)) {
+    fs.rmSync(dirPath, { recursive: true, force: true });
+  }
+  fs.mkdirSync(dirPath, { recursive: true });
+}
+
+// Recursively copy a directory
+function copyDirectory(src, dest) {
+  if (!fs.existsSync(src)) return;
+  ensureDirectoryExists(dest);
+  const entries = fs.readdirSync(src, { withFileTypes: true });
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      copyDirectory(srcPath, destPath);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
 // Inject components into a page
 function injectComponents(pagePath) {
   console.log(`Injecting components into: ${pagePath}`);
@@ -91,7 +117,7 @@ function injectComponents(pagePath) {
         `${componentName}.js`
       );
       if (fileExists(jsPath) && !pageContent.includes(`${componentName}.js`)) {
-        const scriptTag = `<script src="/src/components/${componentName}/${componentName}.js"></script>\n</body>`;
+        const scriptTag = `<script src="/components/${componentName}/${componentName}.js"></script>\n</body>`;
         pageContent = pageContent.replace("</body>", scriptTag);
         console.log(`Added ${componentName}.js script to the page`);
       }
@@ -143,92 +169,63 @@ function getComponentStyles() {
 function updateStyles() {
   const stylesPath = path.join(publicDir, "styles.css");
 
-  // Backup the original styles.css
-  backupFile(stylesPath);
-
-  // Read the existing styles
-  let existingStyles = "";
-  if (fileExists(stylesPath)) {
-    existingStyles = readFile(stylesPath);
-  }
+  // Read the base styles from src
+  const baseStylesPath = path.join(stylesDir, "base.css");
+  const existingStyles = readFile(baseStylesPath);
 
   // Get CSS variables
   const cssVariables = getCSSVariables();
 
-  // Find if there's a components section already
   const componentStartMarker = "/* BEGIN COMPONENT STYLES */";
   const componentEndMarker = "/* END COMPONENT STYLES */";
-
-  // Find if there's a root variables section (to remove it)
-  const rootVarsPattern = /\/\* Root Variables \*\/[\s\S]*?}/;
-
-  // Remove the existing root variables section if it exists
-  if (rootVarsPattern.test(existingStyles)) {
-    console.log("Removing existing root variables section");
-    existingStyles = existingStyles.replace(rootVarsPattern, "");
-  }
 
   let updatedStyles = "";
 
   // Add CSS variables at the beginning
   updatedStyles = cssVariables;
 
-  if (
-    existingStyles.includes(componentStartMarker) &&
-    existingStyles.includes(componentEndMarker)
-  ) {
-    // Replace the existing component styles section
-    const beforeComponents = existingStyles.split(componentStartMarker)[0];
-    const afterComponents = existingStyles.split(componentEndMarker)[1];
-
-    updatedStyles +=
-      beforeComponents +
-      componentStartMarker +
-      "\n" +
-      getComponentStyles() +
-      componentEndMarker +
-      afterComponents;
-  } else {
-    // Add component styles at the end
-    updatedStyles +=
-      existingStyles +
-      "\n\n" +
-      componentStartMarker +
-      "\n" +
-      getComponentStyles() +
-      componentEndMarker +
-      "\n";
-  }
+  updatedStyles +=
+    existingStyles +
+    "\n\n" +
+    componentStartMarker +
+    "\n" +
+    getComponentStyles() +
+    componentEndMarker +
+    "\n";
 
   // Write the updated styles
   writeFile(stylesPath, updatedStyles);
 }
 
 // Process all HTML files in a directory
-function processDirectory(dirPath) {
-  console.log(`Processing directory: ${dirPath}`);
+function processDirectory(srcPath, destPath) {
+  console.log(`Processing directory: ${srcPath}`);
+  ensureDirectoryExists(destPath);
 
   try {
-    const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+    const entries = fs.readdirSync(srcPath, { withFileTypes: true });
 
     for (const entry of entries) {
-      const fullPath = path.join(dirPath, entry.name);
+      const srcFull = path.join(srcPath, entry.name);
+      const destFull = path.join(destPath, entry.name);
 
       if (entry.isDirectory()) {
         // Recursively process subdirectories
-        processDirectory(fullPath);
+        processDirectory(srcFull, destFull);
       } else if (entry.name.endsWith(".html")) {
         // Process HTML files
-        console.log(`Found HTML file: ${fullPath}`);
-        const updatedContent = injectComponents(fullPath);
+        console.log(`Found HTML file: ${srcFull}`);
+        const updatedContent = injectComponents(srcFull);
 
         if (updatedContent) {
-          writeFile(fullPath, updatedContent);
+          writeFile(destFull, updatedContent);
         }
+      } else {
+        fs.copyFileSync(srcFull, destFull);
       }
     }
   } catch (error) {
-    console.error(`Error processing directory ${dirPath}:`, error);
+    console.error(`Error processing directory ${srcPath}:`, error);
   }
 }
 
@@ -236,8 +233,16 @@ function processDirectory(dirPath) {
 function build() {
   console.log("Starting component build process...");
 
-  // Process all HTML files in the public directory and its subdirectories
-  processDirectory(publicDir);
+  // Clean public directory
+  cleanDirectory(publicDir);
+
+  // Process all HTML files from src/pages into public
+  processDirectory(pagesDir, publicDir);
+
+  // Copy static assets
+  copyDirectory(assetsDir, publicDir);
+  // Copy component scripts
+  copyDirectory(componentsDir, path.join(publicDir, "components"));
 
   // Update styles with component styles
   updateStyles();
