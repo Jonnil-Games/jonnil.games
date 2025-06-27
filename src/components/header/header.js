@@ -12,6 +12,7 @@ class HeaderComponent {
   constructor() {
     this.hamburger = document.querySelector(".hamburger");
     this.mobileMenu = document.querySelector(".mobile-menu");
+    this.overlay = document.querySelector(".menu-overlay");
     this.body = document.body;
 
     // Initialize
@@ -32,6 +33,10 @@ class HeaderComponent {
       this.hamburger.addEventListener("click", () => this.toggleMobileMenu());
     }
 
+    if (this.overlay) {
+      this.overlay.addEventListener("click", () => this.toggleMobileMenu());
+    }
+
     // Close mobile menu when clicking outside
     document.addEventListener("click", (e) => this.handleOutsideClick(e));
   }
@@ -40,10 +45,20 @@ class HeaderComponent {
     const isOpen = this.mobileMenu.classList.toggle("open");
     this.hamburger.classList.toggle("active", isOpen);
     this.body.classList.toggle("no-scroll", isOpen);
+    if (this.overlay) {
+      this.overlay.classList.toggle("open", isOpen);
+    }
 
     // Update ARIA attributes for accessibility
+    this.hamburger.setAttribute(
+      "aria-label",
+      isOpen ? "Close navigation menu" : "Open navigation menu"
+    );
     this.hamburger.setAttribute("aria-expanded", isOpen);
     this.mobileMenu.setAttribute("aria-hidden", !isOpen);
+    if (this.overlay) {
+      this.overlay.setAttribute("aria-hidden", !isOpen);
+    }
   }
 
   handleOutsideClick(e) {
@@ -53,6 +68,7 @@ class HeaderComponent {
       this.hamburger &&
       !this.mobileMenu.contains(e.target) &&
       !this.hamburger.contains(e.target) &&
+      (!this.overlay || !this.overlay.contains(e.target)) &&
       this.mobileMenu.classList.contains("open")
     ) {
       this.toggleMobileMenu();
