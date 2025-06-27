@@ -147,10 +147,14 @@ main {
   transition: right var(--transition-normal);
   display: flex;
   flex-direction: column;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .mobile-menu.open {
   right: 0;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .mobile-nav-links {
