@@ -30,7 +30,8 @@ body::before {
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--transition-normal);
-  z-index: 1100;
+  /* Place the overlay below the header so the mobile menu remains clickable */
+  z-index: 1000;
 }
 
 body.no-scroll {
