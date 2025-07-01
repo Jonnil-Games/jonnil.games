@@ -30,7 +30,7 @@ body::before {
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--transition-normal);
-  z-index: 999;
+  z-index: 1100;
 }
 
 body.no-scroll {
@@ -225,7 +225,7 @@ header {
   background-color: #ffffff;
   overflow: hidden;
   transition: height var(--transition-normal);
-  z-index: 1000;
+  z-index: 1200;
   box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
