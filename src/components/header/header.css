@@ -139,7 +139,7 @@ main {
   width: 85%;
   max-width: 400px;
   height: 100%;
-  background-color: var(--white);
+  background-color: #ffffff;
   box-shadow: var(--shadow-xl);
   padding: var(--spacing-xl);
   z-index: 1000;
