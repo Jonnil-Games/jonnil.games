@@ -21,9 +21,26 @@ body {
   overflow-x: hidden;
 }
 
-/* Prevent Background Scrolling */
-.no-scroll {
+/* Prevent background scrolling and add page overlay when menus are open */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+  /* Place the overlay below the header so the mobile menu remains clickable */
+  z-index: 1000;
+}
+
+body.no-scroll {
   overflow: hidden;
+}
+
+body.no-scroll::before {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* Typography */
@@ -202,22 +219,26 @@ header {
 /* Mobile Menu Styling */
 .mobile-menu {
   position: fixed;
-  top: 4rem; /* Below the navbar */
-  left: 0;
+  top: 0;
+  right: -100%;
   width: 100%;
-  height: 0;
+  height: 100vh;
   background-color: #ffffff;
-  overflow: hidden;
-  transition: height var(--transition-normal);
-  z-index: 1000;
   box-shadow: var(--shadow-lg);
+  padding: var(--spacing-xl);
+  z-index: 1200;
+  overflow-y: auto;
+  transition: right var(--transition-normal);
   display: flex;
   flex-direction: column;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .mobile-menu.open {
-  height: calc(100vh - 4rem); /* Full viewport height minus navbar */
-  overflow-y: auto;
+  right: 0;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .mobile-nav-links {
