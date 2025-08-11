@@ -68,6 +68,27 @@ const blogStylesFile = path.join(blogDir, "styles.css");
 const blogScriptsDir = path.join(blogDir, "scripts");
 
 // -----------------------------
+// Site URL (Netlify-aware)
+// -----------------------------
+function getSiteUrl() {
+  const raw =
+    process.env.SITE_URL ||
+    process.env.URL || // Netlify production site URL
+    process.env.DEPLOY_PRIME_URL || // Deploy Preview URL
+    process.env.DEPLOY_URL || // Specific deploy URL
+    "http://localhost:8888";
+  return String(raw).replace(/\/+$/, "");
+}
+const SITE_URL = getSiteUrl();
+
+// Blog feed meta (env-overridable)
+const BLOG_TITLE = process.env.BLOG_TITLE || "Jonnil Games Blog";
+const BLOG_DESC =
+  process.env.BLOG_DESC || "Indie dev logs, updates, and brain leaks.";
+const BLOG_LANG = process.env.BLOG_LANG || "en-us";
+const BLOG_AUTHOR = process.env.BLOG_AUTHOR || "Jonnil";
+
+// -----------------------------
 // FS helpers
 // -----------------------------
 function ensureDirectoryExists(dirPath) {
@@ -258,6 +279,177 @@ function copyComponentScriptsToPublic() {
 }
 
 // -----------------------------
+// Feeds (RSS 2.0 and Atom 1.0)
+// -----------------------------
+function xmlEscape(s = "") {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+function absUrl(p = "") {
+  return p.startsWith("http") ? p : SITE_URL + p;
+}
+function rfc2822(dateStr) {
+  return new Date(dateStr).toUTCString();
+}
+function iso8601(dateStr) {
+  return new Date(dateStr).toISOString();
+}
+
+function buildRSS(posts) {
+  const lastBuild = posts[0]?.date
+    ? rfc2822(posts[0].date)
+    : new Date().toUTCString();
+  const items = posts
+    .map((p) => {
+      const link = absUrl(p.url);
+      const cats = (p.categories || [])
+        .map((c) => `    <category>${xmlEscape(c)}</category>`)
+        .join("\n");
+      return [
+        "  <item>",
+        `    <title>${xmlEscape(p.title)}</title>`,
+        `    <link>${link}</link>`,
+        `    <guid isPermaLink="true">${link}</guid>`,
+        `    <pubDate>${rfc2822(p.date)}</pubDate>`,
+        cats,
+        `    <description>${xmlEscape(p.excerpt || "")}</description>`,
+        `    <content:encoded><![CDATA[${p.content || ""}]]></content:encoded>`,
+        "  </item>",
+      ]
+        .filter(Boolean)
+        .join("\n");
+    })
+    .join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<channel>
+  <title>${xmlEscape(BLOG_TITLE)}</title>
+  <link>${absUrl("/blog/")}</link>
+  <description>${xmlEscape(BLOG_DESC)}</description>
+  <language>${xmlEscape(BLOG_LANG)}</language>
+  <lastBuildDate>${lastBuild}</lastBuildDate>
+${items}
+</channel>
+</rss>
+`;
+}
+
+function buildAtom(posts) {
+  const updated = posts[0]?.date
+    ? iso8601(posts[0].date)
+    : new Date().toISOString();
+  const entries = posts
+    .map((p) => {
+      const link = absUrl(p.url);
+      const cats = (p.categories || [])
+        .map((c) => `    <category term="${xmlEscape(c)}"/>`)
+        .join("\n");
+      return [
+        "  <entry>",
+        `    <title>${xmlEscape(p.title)}</title>`,
+        `    <id>${link}</id>`,
+        `    <link href="${link}"/>`,
+        `    <updated>${iso8601(p.date)}</updated>`,
+        `    <published>${iso8601(p.date)}</published>`,
+        `    <author><name>${xmlEscape(
+          p.author || BLOG_AUTHOR
+        )}</name></author>`,
+        cats,
+        `    <summary type="html">${xmlEscape(p.excerpt || "")}</summary>`,
+        `    <content type="html">${xmlEscape(p.content || "")}</content>`,
+        "  </entry>",
+      ]
+        .filter(Boolean)
+        .join("\n");
+    })
+    .join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>${xmlEscape(BLOG_TITLE)}</title>
+  <id>${absUrl("/blog/")}</id>
+  <updated>${updated}</updated>
+  <link href="${absUrl("/blog/atom.xml")}" rel="self"/>
+  <link href="${absUrl("/blog/")}"/>
+  <author><name>${xmlEscape(BLOG_AUTHOR)}</name></author>
+${entries}
+</feed>
+`;
+}
+
+// -----------------------------
+// Sitemap generator
+// -----------------------------
+function walkHtmlFiles(dir, base = publicDir) {
+  const results = [];
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      results.push(...walkHtmlFiles(full, base));
+    } else if (entry.isFile() && entry.name.toLowerCase().endsWith(".html")) {
+      const rel = path.relative(base, full).replace(/\\/g, "/");
+      results.push({ full, rel });
+    }
+  }
+  return results;
+}
+
+function relPathToUrl(rel) {
+  // map index.html to directory URL, otherwise keep the .html filename
+  if (rel === "index.html") return "/";
+  if (rel.endsWith("/index.html"))
+    return `/${rel.slice(0, -"index.html".length)}`;
+  return `/${rel}`;
+}
+
+function fileLastModISO(fullPath) {
+  try {
+    const stat = fs.statSync(fullPath);
+    // YYYY-MM-DD format is valid for <lastmod>, but ISO8601 is also fine
+    return new Date(stat.mtime).toISOString();
+  } catch {
+    return new Date().toISOString();
+  }
+}
+
+function buildSitemap() {
+  console.log("Generating sitemap.xml…");
+  const pages = walkHtmlFiles(publicDir)
+    // Exclude anything inside blog/scripts (non-pages)
+    .filter((f) => !/^blog\/scripts\//.test(f.rel));
+
+  const urlset = pages
+    .map(({ full, rel }) => {
+      const loc = absUrl(relPathToUrl(rel));
+      const lastmod = fileLastModISO(full);
+      // changefreq/priority are optional; set gentle defaults
+      return [
+        "  <url>",
+        `    <loc>${xmlEscape(loc)}</loc>`,
+        `    <lastmod>${lastmod}</lastmod>`,
+        `    <changefreq>weekly</changefreq>`,
+        `    <priority>${rel === "index.html" ? "1.0" : "0.7"}</priority>`,
+        "  </url>",
+      ].join("\n");
+    })
+    .join("\n");
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urlset}
+</urlset>
+`;
+  writeFile(path.join(publicDir, "sitemap.xml"), xml);
+}
+
+// -----------------------------
 // Blog builder (integrated)
 // -----------------------------
 function readTemplateOrExit(templatePath) {
@@ -367,6 +559,7 @@ function buildBlog() {
         content: htmlContent,
         excerpt,
         url: `/blog/${outputFileName}`,
+        siteUrl: SITE_URL, // for canonical in templates
       };
 
       authors.add(data.author);
@@ -393,6 +586,8 @@ function buildBlog() {
       posts: blogIndex,
       authors: Array.from(authors).sort(),
       categories: Array.from(categories).sort(),
+      siteUrl: SITE_URL, // for canonical in templates
+      url: "/blog/", // canonical path for blog index
     };
     const filledIndexTemplate = indexTemplate(indexData);
     fs.writeFileSync(
@@ -416,6 +611,13 @@ function buildBlog() {
       path.join(blogOutputDir, "recent-posts.json"),
       JSON.stringify(recentPosts, null, 2)
     );
+
+    // Feeds
+    const rssXml = buildRSS(blogIndex);
+    writeFile(path.join(blogOutputDir, "rss.xml"), rssXml);
+
+    const atomXml = buildAtom(blogIndex);
+    writeFile(path.join(blogOutputDir, "atom.xml"), atomXml);
 
     if (blogIndex.length === 0) {
       console.warn("No blog posts found. Generated index with no entries.");
@@ -447,6 +649,9 @@ function build() {
 
   // Blog
   buildBlog();
+
+  // Sitemap
+  buildSitemap();
 
   console.log("Build complete -> public/");
 }
