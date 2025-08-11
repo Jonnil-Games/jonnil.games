@@ -133,7 +133,7 @@
         }
       }
 
-      /* (3) Sticky year headers */
+      /* (3) Sticky year headers — show only the active one to avoid stacking */
       .timeline-year {
         position: sticky;
         top: 4.5rem; /* header is 4rem */
@@ -146,6 +146,14 @@
         color: #fff;
         border-radius: var(--radius-full);
         width: fit-content;
+        opacity: 0; /* hidden by default */
+        transform: translateY(4px);
+        transition: opacity var(--transition-fast),
+          transform var(--transition-fast);
+      }
+      .timeline-year.is-active {
+        opacity: 1;
+        transform: none;
       }
 
       /* (4) Deep-linkable cards + highlight */
@@ -187,6 +195,44 @@
         to {
           transform: none;
         }
+      }
+
+      /* (7) Compact half-height cards that link to Sticky Paws */
+      .timeline-item.compact .timeline-content {
+        padding: var(--spacing-md);
+      }
+      .timeline-item.compact h3 {
+        font-size: 1.1rem;
+        margin-bottom: var(--spacing-xs);
+      }
+      .timeline-item.compact p {
+        font-size: 0.95rem;
+        color: var(--text-gray-700);
+        /* clamp to ~2 lines */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .timeline-item.compact .tags {
+        margin-bottom: 0;
+      }
+      /* Make the whole card clickable without nesting anchors */
+      .timeline-item .timeline-content {
+        position: relative;
+      }
+      .timeline-item.compact .link-mask {
+        position: absolute;
+        inset: 0;
+        border-radius: var(--radius-lg);
+        text-indent: -9999px;
+        overflow: hidden;
+      }
+      .timeline-item.compact .timeline-content:hover {
+        box-shadow: var(--shadow-xl);
+        transform: translateY(-3px);
+        transition: transform var(--transition-normal),
+          box-shadow var(--transition-normal);
       }
 
       /* (8) Microinteractions on the spine & date chip */
@@ -251,6 +297,27 @@
             </div>
           </article>
 
+          <!-- NEW: Sticky Paws Switch Update (compact link card) -->
+          <article class="timeline-item compact" tabindex="0">
+            <div class="timeline-content">
+              <a
+                href="#sticky-paws"
+                class="link-mask"
+                aria-label="Go to Sticky Paws"
+              ></a>
+              <span class="timeline-date">TBD</span>
+              <h3>Sticky Paws: Switch Update</h3>
+              <p>
+                In development alongside a big refresh: major improvements and
+                new online features for custom characters and levels.
+              </p>
+              <div class="tags">
+                <span class="tag tag-status">Update</span>
+                <span class="tag tag-platform">Switch</span>
+              </div>
+            </div>
+          </article>
+
           <!-- Group label -->
           <div class="timeline-year" aria-hidden="true">2023</div>
 
@@ -280,6 +347,30 @@
                 <a href="/team.html" class="button primary-button"
                   >Meet the Team!</a
                 >
+              </div>
+            </div>
+          </article>
+
+          <!-- NEW YEAR: 2022 -->
+          <div class="timeline-year" aria-hidden="true">2022</div>
+
+          <!-- NEW: Sticky Paws DX Update (compact link card) -->
+          <article class="timeline-item compact" tabindex="0">
+            <div class="timeline-content">
+              <a
+                href="#sticky-paws"
+                class="link-mask"
+                aria-label="Go to Sticky Paws"
+              ></a>
+              <span class="timeline-date">Apr 16, 2022</span>
+              <h3>Sticky Paws: DX Update</h3>
+              <p>
+                A definitive refresh with revamped levels, quality-of-life
+                improvements, and broad polish across the game.
+              </p>
+              <div class="tags">
+                <span class="tag tag-status">Update</span>
+                <span class="tag tag-platform">Steam</span>
               </div>
             </div>
           </article>
@@ -746,7 +837,7 @@
     <!-- Footer component -->
     <cyan component="footer"></cyan>
 
-    <!-- Page script: fade-up with stagger, roving focus, microinteraction toggle -->
+    <!-- Page script: fade-up with stagger, roving focus, microinteraction toggle, sticky-year controller -->
     <script>
       // (1) Respect reduced motion
       const prefersReducedMotion =
@@ -814,6 +905,42 @@
           behavior: "smooth",
         });
       });
+
+      // ---- Fix for stacked sticky year chips ----
+      // Only one .timeline-year should be visible at a time.
+      const yearChips = Array.from(document.querySelectorAll(".timeline-year"));
+
+      function getTopOffset() {
+        const header = document.querySelector("header");
+        // Add a tiny buffer so the chip swaps a touch before overlapping
+        return (header?.offsetHeight || 64) + 8;
+      }
+
+      function updateActiveYear() {
+        const topOffset = getTopOffset();
+        // Default to the first chip
+        let active = yearChips[0] || null;
+
+        for (const chip of yearChips) {
+          const rect = chip.getBoundingClientRect();
+          // If the chip's top has reached/passed the sticky top, make it the active one.
+          if (rect.top - topOffset <= 0) {
+            active = chip;
+          } else {
+            break; // chips are in order; no need to check further
+          }
+        }
+
+        yearChips.forEach((chip) =>
+          chip.classList.toggle("is-active", chip === active)
+        );
+      }
+
+      // Initialize and bind
+      updateActiveYear();
+      document.addEventListener("scroll", updateActiveYear, { passive: true });
+      window.addEventListener("resize", updateActiveYear);
+      window.addEventListener("orientationchange", updateActiveYear);
     </script>
   </body>
 </html>
