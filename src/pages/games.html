@@ -52,7 +52,7 @@
       href="/blog/atom.xml"
     />
 
-    <!-- Schema.org: list our games with corrected URLs -->
+    <!-- Schema.org: list our games -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -156,14 +156,14 @@
         transform: none;
       }
 
-      /* (4) Deep-linkable cards + highlight */
+      /* (4) Deep-linkable cards + highlight ONLY the card */
       .timeline-item {
         position: relative;
         scroll-margin-top: 5rem; /* (10) guard against CLS / fixed header */
         --stagger: 0s; /* (5) stagger default */
       }
-      .timeline-item:target,
-      .timeline-item:focus-within {
+      .timeline-item:target .timeline-content,
+      .timeline-item:focus-within .timeline-content {
         outline: 3px solid rgba(37, 99, 235, 0.35);
         outline-offset: 4px;
         border-radius: 12px;
@@ -246,6 +246,28 @@
         transform: translateY(-1px);
         filter: brightness(1.1);
       }
+
+      /* (Fix) Alternate sides based on ARTICLE index only (ignore year chips) */
+      /* Override base.css nth-child logic using more specific selectors + :nth-of-type */
+      .timeline > article.timeline-item:nth-of-type(odd) .timeline-content {
+        margin-left: auto;
+      }
+      .timeline
+        > article.timeline-item:nth-of-type(odd)
+        .timeline-content::before {
+        left: calc(-1 * var(--spacing-xl));
+        right: auto;
+        border-right-color: white;
+        border-left-color: transparent;
+      }
+      .timeline
+        > article.timeline-item:nth-of-type(even)
+        .timeline-content::before {
+        right: calc(-1 * var(--spacing-xl));
+        left: auto;
+        border-left-color: white;
+        border-right-color: transparent;
+      }
     </style>
   </head>
   <body>
@@ -308,8 +330,8 @@
               <span class="timeline-date">TBD</span>
               <h3>Sticky Paws: Switch Update</h3>
               <p>
-                In development alongside a big refresh: major improvements and
-                new online features for custom characters and levels.
+                Switch version in dev with online sharing for custom characters
+                and levels.
               </p>
               <div class="tags">
                 <span class="tag tag-status">Update</span>
@@ -365,8 +387,8 @@
               <span class="timeline-date">Apr 16, 2022</span>
               <h3>Sticky Paws: DX Update</h3>
               <p>
-                A definitive refresh with revamped levels, quality-of-life
-                improvements, and broad polish across the game.
+                Definitive refresh with revamped levels, QoL upgrades, and broad
+                polish.
               </p>
               <div class="tags">
                 <span class="tag tag-status">Update</span>
@@ -906,29 +928,36 @@
         });
       });
 
-      // ---- Fix for stacked sticky year chips ----
-      // Only one .timeline-year should be visible at a time.
+      // ---- Fix for stacked/never-switching sticky year chips ----
+      // Only one .timeline-year should be visible at a time; switch as each chip crosses the sticky boundary.
       const yearChips = Array.from(document.querySelectorAll(".timeline-year"));
 
       function getTopOffset() {
         const header = document.querySelector("header");
-        // Add a tiny buffer so the chip swaps a touch before overlapping
-        return (header?.offsetHeight || 64) + 8;
+        return (header?.offsetHeight || 64) + 8; // header height + small buffer
       }
 
       function updateActiveYear() {
         const topOffset = getTopOffset();
-        // Default to the first chip
-        let active = yearChips[0] || null;
+        let active = null;
 
         for (const chip of yearChips) {
           const rect = chip.getBoundingClientRect();
-          // If the chip's top has reached/passed the sticky top, make it the active one.
-          if (rect.top - topOffset <= 0) {
+          // Active if the sticky header boundary lies between the chip's top and bottom
+          if (rect.top <= topOffset && rect.bottom > topOffset) {
             active = chip;
-          } else {
-            break; // chips are in order; no need to check further
+            break;
           }
+        }
+        // Fallbacks
+        if (!active) {
+          // If we've not reached any chip yet, show the first; if we're past all, show the last
+          const firstRect = yearChips[0]?.getBoundingClientRect();
+          const lastRect =
+            yearChips[yearChips.length - 1]?.getBoundingClientRect();
+          if (firstRect && firstRect.top > topOffset) active = yearChips[0];
+          else if (lastRect && lastRect.bottom <= topOffset)
+            active = yearChips[yearChips.length - 1];
         }
 
         yearChips.forEach((chip) =>
