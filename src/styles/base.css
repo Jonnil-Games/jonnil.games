@@ -1,5 +1,4 @@
-
-/* styles.css - Enhanced version */
+/* styles.css */
 
 /* Reset and Box Sizing */
 *,
@@ -14,7 +13,7 @@
 body {
   font-family: "Poppins", Arial, sans-serif;
   min-height: 100vh;
-  background-color: #ffffff;
+  background-color: var(--bg);
   color: var(--text-gray-900);
   line-height: 1.6;
   transition: background-color 0.3s, color 0.3s;
@@ -283,6 +282,8 @@ header {
   height: 24px;
   font-size: 24px; /* Ensures consistent size for font-based icons like BlueSky and GitHub */
   color: inherit;
+  transition: transform var(--transition-normal),
+    background-color var(--transition-normal);
 }
 
 .social-icon:hover {
@@ -439,7 +440,7 @@ section {
 
 /* Game Cards */
 .game-card {
-  background-color: #ffffff;
+  background-color: var(--bg);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
@@ -453,6 +454,7 @@ section {
 .game-card:hover {
   transform: translateY(-8px);
   box-shadow: var(--shadow-xl);
+  will-change: transform;
 }
 
 .game-image {
@@ -623,7 +625,7 @@ section {
 
 /* Post Cards */
 .post-card {
-  background-color: #ffffff;
+  background-color: var(--bg);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   padding: var(--spacing-xl);
@@ -637,6 +639,7 @@ section {
 .post-card:hover {
   transform: translateY(-8px);
   box-shadow: var(--shadow-lg);
+  will-change: transform;
 }
 
 .post-meta {
@@ -947,6 +950,7 @@ address a:hover {
   .game-card:hover,
   .post-card:hover {
     transform: translateY(-10px) scale(1.02);
+    will-change: transform;
   }
 
   /* Larger hero text on desktop */
@@ -991,9 +995,12 @@ address a:hover {
 }
 
 /* Accessibility Improvements */
-:focus {
+:focus-visible {
   outline: 3px solid rgba(37, 99, 235, 0.5);
   outline-offset: 2px;
+}
+:focus {
+  outline: none;
 }
 
 .visually-hidden {
@@ -1006,6 +1013,18 @@ address a:hover {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* Reduced Motion Preference */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .hero h1 {
+    animation: none !important;
+  }
 }
 
 /* Print Styles */
@@ -1077,7 +1096,7 @@ address a:hover {
   position: relative;
   width: calc(50% - var(--spacing-2xl));
   padding: var(--spacing-xl);
-  background: white;
+  background: var(--bg);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   transition: transform var(--transition-normal),
@@ -1100,7 +1119,7 @@ address a:hover {
   top: 50%;
   transform: translateY(-50%);
   border: var(--spacing-sm) solid transparent;
-  border-right-color: white;
+  border-right-color: var(--bg);
 }
 
 .timeline-item:nth-child(even) .timeline-content::before {
@@ -1110,7 +1129,7 @@ address a:hover {
   top: 50%;
   transform: translateY(-50%);
   border: var(--spacing-sm) solid transparent;
-  border-left-color: white;
+  border-left-color: var(--bg);
 }
 
 .timeline-date {
@@ -1150,13 +1169,13 @@ address a:hover {
 
   .timeline-item:nth-child(odd) .timeline-content::before {
     left: calc(-1 * var(--spacing-sm));
-    border-right-color: white;
+    border-right-color: var(--bg);
   }
 
   .timeline-item:nth-child(even) .timeline-content::before {
     left: calc(-1 * var(--spacing-sm));
     right: auto;
-    border-right-color: white;
+    border-right-color: var(--bg);
     border-left-color: transparent;
   }
 }
@@ -1327,4 +1346,3 @@ address a:hover {
     box-shadow: none;
   }
 }
-

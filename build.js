@@ -1,28 +1,84 @@
 const fs = require("fs");
 const path = require("path");
+const fm = require("front-matter");
+const marked = require("marked").marked;
+const Handlebars = require("handlebars");
 
+// -----------------------------
+// Quiet mode & Markdown config
+// -----------------------------
+const QUIET =
+  process.argv.includes("--quiet") ||
+  process.env.BUILD_QUIET === "1" ||
+  process.env.BLOG_QUIET === "1";
+if (QUIET) {
+  // Keep warnings/errors; silence standard logs
+  // eslint-disable-next-line no-console
+  console.log = () => {};
+}
+marked.setOptions({
+  gfm: true,
+  breaks: false,
+  headerIds: true,
+  mangle: false,
+});
+
+// -----------------------------
+// Handlebars helpers (shared)
+// -----------------------------
+Handlebars.registerHelper("formatDate", function (date) {
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  const utcDate = new Date(date + "T12:00:00Z"); // noon UTC avoids tz drift
+  return utcDate.toLocaleDateString("en-US", options);
+});
+Handlebars.registerHelper("blogUrl", function (fileName) {
+  return `/blog/${fileName}`;
+});
+Handlebars.registerHelper("slug", function (str) {
+  return String(str || "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+});
+Handlebars.registerHelper("truncate", function (str, len) {
+  const s = String(str || "");
+  if (s.length <= len) return s;
+  return s.slice(0, len - 1) + "…";
+});
+
+// -----------------------------
 // Paths
-const srcDir = path.join(__dirname, "src");
-const publicDir = path.join(__dirname, "public");
+// -----------------------------
+const rootDir = __dirname;
+const srcDir = path.join(rootDir, "src");
+const publicDir = path.join(rootDir, "public");
 const componentsDir = path.join(srcDir, "components");
 const stylesDir = path.join(srcDir, "styles");
 const pagesDir = path.join(srcDir, "pages");
 const assetsDir = path.join(srcDir, "assets");
 
-// Helper to ensure directory exists
+// Blog-specific paths
+const blogDir = path.join(srcDir, "blog");
+const postsDir = path.join(blogDir, "posts");
+const templateDir = path.join(blogDir, "templates");
+const blogOutputDir = path.join(publicDir, "blog");
+const blogStylesFile = path.join(blogDir, "styles.css");
+const blogScriptsDir = path.join(blogDir, "scripts");
+
+// -----------------------------
+// FS helpers
+// -----------------------------
 function ensureDirectoryExists(dirPath) {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
     console.log(`Created directory: ${dirPath}`);
   }
 }
-
-// Helper to check if file exists
 function fileExists(filePath) {
   return fs.existsSync(filePath);
 }
-
-// Helper to read a file safely
 function readFile(filePath) {
   try {
     if (fileExists(filePath)) {
@@ -35,8 +91,6 @@ function readFile(filePath) {
     return "";
   }
 }
-
-// Helper to write a file
 function writeFile(filePath, content) {
   try {
     ensureDirectoryExists(path.dirname(filePath));
@@ -46,25 +100,12 @@ function writeFile(filePath, content) {
     console.error(`Error writing file ${filePath}:`, error);
   }
 }
-
-// Create a backup of the original file
-function backupFile(filePath) {
-  if (fileExists(filePath)) {
-    const backupPath = `${filePath}.backup`;
-    fs.copyFileSync(filePath, backupPath);
-    console.log(`Created backup: ${backupPath}`);
-  }
-}
-
-// Remove and recreate a directory
 function cleanDirectory(dirPath) {
   if (fs.existsSync(dirPath)) {
     fs.rmSync(dirPath, { recursive: true, force: true });
   }
   fs.mkdirSync(dirPath, { recursive: true });
 }
-
-// Recursively copy a directory
 function copyDirectory(src, dest) {
   if (!fs.existsSync(src)) return;
   ensureDirectoryExists(dest);
@@ -80,56 +121,51 @@ function copyDirectory(src, dest) {
   }
 }
 
-// Inject components into a page
+// -----------------------------
+// Site: component injection & styles
+// -----------------------------
 function injectComponents(pagePath) {
   console.log(`Injecting components into: ${pagePath}`);
   if (!fileExists(pagePath)) {
     console.error(`Page not found: ${pagePath}`);
     return null;
   }
-
-  // Backup the original file
-  backupFile(pagePath);
-
   let pageContent = readFile(pagePath);
+  pageContent = pageContent.replace(
+    /<cyan\s+component="([^"]+)"[^>]*><\/cyan>/g,
+    (_full, componentName) => {
+      const componentPath = path.join(
+        componentsDir,
+        componentName,
+        `${componentName}.html`
+      );
+      if (!fileExists(componentPath)) {
+        console.error(`Component not found: ${componentPath}`);
+        return `<!-- missing component: ${componentName} -->`;
+      }
+      const componentHtml = readFile(componentPath);
 
-  // Find all cyan component tags
-  const componentRegex = /<cyan\s+component="([^"]+)"[^>]*><\/cyan>/g;
-  let match;
-
-  while ((match = componentRegex.exec(pageContent)) !== null) {
-    const [fullMatch, componentName] = match;
-    const componentPath = path.join(
-      componentsDir,
-      componentName,
-      `${componentName}.html`
-    );
-
-    if (fileExists(componentPath)) {
-      console.log(`Injecting ${componentName} from: ${componentPath}`);
-      const componentContent = readFile(componentPath);
-      pageContent = pageContent.replace(fullMatch, componentContent);
-
-      // Add component's JS if it exists
+      // Ensure component JS is included once
       const jsPath = path.join(
         componentsDir,
         componentName,
         `${componentName}.js`
       );
-      if (fileExists(jsPath) && !pageContent.includes(`${componentName}.js`)) {
-        const scriptTag = `<script src="/components/${componentName}/${componentName}.js"></script>\n</body>`;
-        pageContent = pageContent.replace("</body>", scriptTag);
+      const publicJsRef = `/components/${componentName}/${componentName}.js`;
+      if (fileExists(jsPath) && !pageContent.includes(publicJsRef)) {
+        const scriptTag = `<script src="${publicJsRef}"></script>`;
+        const bodyCloseRe = /<\/body>/i;
+        pageContent = bodyCloseRe.test(pageContent)
+          ? pageContent.replace(bodyCloseRe, `${scriptTag}\n</body>`)
+          : `${pageContent}\n${scriptTag}`;
         console.log(`Added ${componentName}.js script to the page`);
       }
-    } else {
-      console.error(`Component not found: ${componentPath}`);
-    }
-  }
 
+      return componentHtml;
+    }
+  );
   return pageContent;
 }
-
-// Get CSS variables from variables.css
 function getCSSVariables() {
   const variablesPath = path.join(stylesDir, "variables.css");
   if (fileExists(variablesPath)) {
@@ -140,15 +176,17 @@ function getCSSVariables() {
   console.error(`CSS variables file not found: ${variablesPath}`);
   return "";
 }
-
-// Get component styles
 function getComponentStyles() {
   console.log("Collecting component styles...");
+  if (!fs.existsSync(componentsDir)) return "";
   let componentStyles = "";
-
-  // Read all component directories
-  const componentDirs = fs.readdirSync(componentsDir);
-
+  const componentDirs = fs
+    .readdirSync(componentsDir)
+    .filter((name) => {
+      const p = path.join(componentsDir, name);
+      return fs.statSync(p).isDirectory();
+    })
+    .sort((a, b) => a.localeCompare(b));
   for (const componentName of componentDirs) {
     const componentStylePath = path.join(
       componentsDir,
@@ -161,65 +199,38 @@ function getComponentStyles() {
       componentStyles += `/* ${componentName} Component Styles */\n${componentCss}\n\n`;
     }
   }
-
   return componentStyles;
 }
-
-// Update the styles in public/styles.css
 function updateStyles() {
   const stylesPath = path.join(publicDir, "styles.css");
-
-  // Read the base styles from src
   const baseStylesPath = path.join(stylesDir, "base.css");
-  const existingStyles = readFile(baseStylesPath);
-
-  // Get CSS variables
+  const base = readFile(baseStylesPath);
+  if (!base) console.warn(`Warning: Base styles missing at ${baseStylesPath}`);
   const cssVariables = getCSSVariables();
-
-  const componentStartMarker = "/* BEGIN COMPONENT STYLES */";
-  const componentEndMarker = "/* END COMPONENT STYLES */";
-
-  let updatedStyles = "";
-
-  // Add CSS variables at the beginning
-  updatedStyles = cssVariables;
-
-  updatedStyles +=
-    existingStyles +
-    "\n\n" +
-    componentStartMarker +
-    "\n" +
-    getComponentStyles() +
-    componentEndMarker +
-    "\n";
-
-  // Write the updated styles
+  const updatedStyles = [
+    cssVariables,
+    base,
+    "",
+    "/* BEGIN COMPONENT STYLES */",
+    getComponentStyles(),
+    "/* END COMPONENT STYLES */",
+    "",
+  ].join("\n");
   writeFile(stylesPath, updatedStyles);
 }
-
-// Process all HTML files in a directory
 function processDirectory(srcPath, destPath) {
   console.log(`Processing directory: ${srcPath}`);
   ensureDirectoryExists(destPath);
-
   try {
     const entries = fs.readdirSync(srcPath, { withFileTypes: true });
-
     for (const entry of entries) {
       const srcFull = path.join(srcPath, entry.name);
       const destFull = path.join(destPath, entry.name);
-
       if (entry.isDirectory()) {
-        // Recursively process subdirectories
         processDirectory(srcFull, destFull);
       } else if (entry.name.endsWith(".html")) {
-        // Process HTML files
-        console.log(`Found HTML file: ${srcFull}`);
         const updatedContent = injectComponents(srcFull);
-
-        if (updatedContent) {
-          writeFile(destFull, updatedContent);
-        }
+        if (updatedContent) writeFile(destFull, updatedContent);
       } else {
         fs.copyFileSync(srcFull, destFull);
       }
@@ -228,26 +239,216 @@ function processDirectory(srcPath, destPath) {
     console.error(`Error processing directory ${srcPath}:`, error);
   }
 }
+function copyComponentScriptsToPublic() {
+  if (!fs.existsSync(componentsDir)) return;
+  const destBase = path.join(publicDir, "components");
+  ensureDirectoryExists(destBase);
+  const entries = fs.readdirSync(componentsDir, { withFileTypes: true });
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    const name = entry.name;
+    const jsPath = path.join(componentsDir, name, `${name}.js`);
+    if (fileExists(jsPath)) {
+      const outDir = path.join(destBase, name);
+      ensureDirectoryExists(outDir);
+      fs.copyFileSync(jsPath, path.join(outDir, `${name}.js`));
+      console.log(`Copied component script: ${name}.js`);
+    }
+  }
+}
 
-// Build process
+// -----------------------------
+// Blog builder (integrated)
+// -----------------------------
+function readTemplateOrExit(templatePath) {
+  if (!fs.existsSync(templatePath)) {
+    console.error(`Template missing: ${templatePath}`);
+    process.exit(1);
+  }
+  return fs.readFileSync(templatePath, "utf8");
+}
+function copyBlogStaticAssets() {
+  if (fs.existsSync(blogStylesFile)) {
+    fs.copyFileSync(blogStylesFile, path.join(blogOutputDir, "styles.css"));
+    console.log(`Copied blog styles: ${blogStylesFile}`);
+  }
+  if (fs.existsSync(blogScriptsDir)) {
+    const dest = path.join(blogOutputDir, "scripts");
+    fs.cpSync(blogScriptsDir, dest, { recursive: true });
+    console.log(`Copied blog scripts: ${blogScriptsDir}`);
+  }
+}
+function buildBlog() {
+  console.log("Starting the blog build process...");
+  ensureDirectoryExists(blogOutputDir);
+  copyBlogStaticAssets();
+
+  console.log("Loading and compiling templates...");
+  const postTemplateSource = readTemplateOrExit(
+    path.join(templateDir, "post-template.html")
+  );
+  const indexTemplateSource = readTemplateOrExit(
+    path.join(templateDir, "index-template.html")
+  );
+  const postTemplate = Handlebars.compile(postTemplateSource);
+  const indexTemplate = Handlebars.compile(indexTemplateSource);
+
+  let blogIndex = [];
+  let authors = new Set();
+  let categories = new Set();
+
+  console.log("Reading blog posts...");
+  if (!fs.existsSync(postsDir)) {
+    console.warn(
+      `No posts directory found at ${postsDir}. Generating an empty index.`
+    );
+    generateIndexPage();
+    return;
+  }
+
+  const files = fs.readdirSync(postsDir).filter((file) => file.endsWith(".md"));
+
+  for (const file of files) {
+    try {
+      console.log(`Processing post: ${file}`);
+      const filePath = path.join(postsDir, file);
+      const markdown = fs.readFileSync(filePath, "utf8");
+      const { attributes, body } = fm(markdown);
+
+      // Skip drafts unless explicitly included
+      if (attributes.draft && process.env.BLOG_INCLUDE_DRAFTS !== "1") {
+        console.log(`Skipping draft: ${file}`);
+        continue;
+      }
+      // Validation / normalization
+      if (!attributes.title) {
+        console.warn(`Post missing title: ${file} — using filename as title`);
+        attributes.title = path.basename(file, ".md");
+      }
+      if (!attributes.date || isNaN(new Date(attributes.date).getTime())) {
+        console.warn(
+          `Post has invalid or missing date: ${file} — using file mtime`
+        );
+        const stat = fs.statSync(filePath);
+        attributes.date = new Date(stat.mtime).toISOString().slice(0, 10);
+      }
+      if (attributes.categories && !Array.isArray(attributes.categories)) {
+        attributes.categories = [String(attributes.categories)];
+      }
+
+      const htmlContent = marked(body);
+
+      // Generate excerpt (prefer front-matter)
+      const plainBody = body
+        .replace(/```[\s\S]*?```/g, "") // fenced code
+        .replace(/`[^`]*`/g, "") // inline code
+        .replace(
+          /!$begin:math:display$[^$end:math:display$]*\]$begin:math:text$[^)]+$end:math:text$/g,
+          ""
+        ) // images
+        .replace(
+          /$begin:math:display$[^$end:math:display$]*\]$begin:math:text$[^)]+$end:math:text$/g,
+          ""
+        ) // links
+        .replace(/[#>*_~\-]+/g, " ") // md punctuation
+        .replace(/\s+/g, " ")
+        .trim();
+      const rawExcerpt = (attributes.excerpt || plainBody.slice(0, 180)).trim();
+      const excerpt = /[.!?…]$/.test(rawExcerpt)
+        ? rawExcerpt
+        : rawExcerpt + "…";
+
+      const outputFileName = file.replace(".md", ".html");
+      const data = {
+        title: attributes.title,
+        author: attributes.author || "Unknown",
+        date: attributes.date,
+        categories: attributes.categories || [],
+        content: htmlContent,
+        excerpt,
+        url: `/blog/${outputFileName}`,
+      };
+
+      authors.add(data.author);
+      data.categories.forEach((cat) => categories.add(cat));
+
+      const filledTemplate = postTemplate(data);
+      const outputPath = path.join(blogOutputDir, outputFileName);
+      fs.writeFileSync(outputPath, filledTemplate);
+
+      blogIndex.push(data);
+    } catch (err) {
+      console.error(`Error processing ${file}:`, err);
+    }
+  }
+
+  blogIndex.sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+
+  generateIndexPage();
+
+  function generateIndexPage() {
+    const indexData = {
+      posts: blogIndex,
+      authors: Array.from(authors).sort(),
+      categories: Array.from(categories).sort(),
+    };
+    const filledIndexTemplate = indexTemplate(indexData);
+    fs.writeFileSync(
+      path.join(blogOutputDir, "index.html"),
+      filledIndexTemplate
+    );
+
+    const RECENT_COUNT = Math.max(
+      0,
+      parseInt(process.env.BLOG_RECENT_COUNT || "3", 10) || 3
+    );
+    const recentPosts = blogIndex.slice(0, RECENT_COUNT).map((post) => ({
+      title: post.title,
+      date: post.date,
+      category: post.categories[0] || "",
+      excerpt: post.excerpt,
+      author: post.author,
+      url: post.url,
+    }));
+    fs.writeFileSync(
+      path.join(blogOutputDir, "recent-posts.json"),
+      JSON.stringify(recentPosts, null, 2)
+    );
+
+    if (blogIndex.length === 0) {
+      console.warn("No blog posts found. Generated index with no entries.");
+    }
+    console.log("Blog build completed successfully!");
+  }
+}
+
+// -----------------------------
+// Top-level build
+// -----------------------------
 function build() {
-  console.log("Starting component build process...");
+  console.log("Starting site build…");
 
   // Clean public directory
   cleanDirectory(publicDir);
 
-  // Process all HTML files from src/pages into public
+  // Pages -> public (component injection)
   processDirectory(pagesDir, publicDir);
 
-  // Copy static assets
+  // Static assets
   copyDirectory(assetsDir, publicDir);
-  // Copy component scripts
-  copyDirectory(componentsDir, path.join(publicDir, "components"));
 
-  // Update styles with component styles
+  // Component scripts (JS only)
+  copyComponentScriptsToPublic();
+
+  // Styles bundle
   updateStyles();
 
-  console.log("Component build complete!");
+  // Blog
+  buildBlog();
+
+  console.log("Build complete -> public/");
 }
 
 build();
