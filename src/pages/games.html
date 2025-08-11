@@ -133,34 +133,42 @@
         }
       }
 
-      /* (3) Sticky year headers — show only the active one to avoid stacking */
-      .timeline-year {
+      /* --- YEAR LABELS --- */
+
+      /* We render one sticky indicator that updates as you scroll. */
+      .year-indicator {
         position: sticky;
-        top: 4.5rem; /* header is 4rem */
-        z-index: 5;
+        top: 4.5rem; /* header is ~4rem */
+        z-index: 6;
         font-weight: 700;
         letter-spacing: 0.02em;
         padding: 0.25rem 0.75rem;
-        margin: 2rem 0 1rem;
+        margin: 0 0 0.75rem;
         background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
         color: #fff;
         border-radius: var(--radius-full);
         width: fit-content;
-        opacity: 0; /* hidden by default */
-        transform: translateY(4px);
-        transition: opacity var(--transition-fast),
-          transform var(--transition-fast);
-      }
-      .timeline-year.is-active {
-        opacity: 1;
-        transform: none;
       }
 
-      /* (4) Deep-linkable cards + highlight ONLY the card */
+      /* In-flow year chips are no longer sticky (prevents stacking).
+         Keep them visible as separators. */
+      .timeline-year {
+        position: static !important;
+        opacity: 1;
+        transform: none;
+        margin: 2rem 0 1rem;
+        padding: 0.25rem 0.75rem;
+        background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
+        color: #fff;
+        border-radius: var(--radius-full);
+        width: fit-content;
+      }
+
+      /* --- TARGET HIGHLIGHT: only the card, not full width --- */
       .timeline-item {
         position: relative;
-        scroll-margin-top: 5rem; /* (10) guard against CLS / fixed header */
-        --stagger: 0s; /* (5) stagger default */
+        scroll-margin-top: 5rem; /* guard against fixed header */
+        --stagger: 0s; /* default */
       }
       .timeline-item:target .timeline-content,
       .timeline-item:focus-within .timeline-content {
@@ -168,6 +176,7 @@
         outline-offset: 4px;
         border-radius: 12px;
       }
+
       /* Optional anchor hash link shown on hover/focus */
       .anchor-link {
         position: absolute;
@@ -202,7 +211,7 @@
         padding: var(--spacing-md);
       }
       .timeline-item.compact h3 {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         margin-bottom: var(--spacing-xs);
       }
       .timeline-item.compact p {
@@ -247,13 +256,13 @@
         filter: brightness(1.1);
       }
 
-      /* (Fix) Alternate sides based on ARTICLE index only (ignore year chips) */
-      /* Override base.css nth-child logic using more specific selectors + :nth-of-type */
-      .timeline > article.timeline-item:nth-of-type(odd) .timeline-content {
-        margin-left: auto;
+      /* --- ALTERNATION: even on right, odd on left (ignore year divs) --- */
+      .timeline > article.timeline-item:nth-of-type(even) .timeline-content {
+        margin-left: auto; /* right column */
       }
+      /* Pointers for sides */
       .timeline
-        > article.timeline-item:nth-of-type(odd)
+        > article.timeline-item:nth-of-type(even)
         .timeline-content::before {
         left: calc(-1 * var(--spacing-xl));
         right: auto;
@@ -261,12 +270,26 @@
         border-left-color: transparent;
       }
       .timeline
-        > article.timeline-item:nth-of-type(even)
+        > article.timeline-item:nth-of-type(odd)
         .timeline-content::before {
         right: calc(-1 * var(--spacing-xl));
         left: auto;
         border-left-color: white;
         border-right-color: transparent;
+      }
+
+      /* On narrow viewports, one column layout anyway */
+      @media (max-width: 768px) {
+        .timeline > article.timeline-item:nth-of-type(even) .timeline-content,
+        .timeline > article.timeline-item:nth-of-type(odd) .timeline-content {
+          margin-left: 0;
+        }
+        .timeline > article.timeline-item .timeline-content::before {
+          right: auto;
+          left: var(--spacing-md);
+          border-right-color: white;
+          border-left-color: transparent;
+        }
       }
     </style>
   </head>
@@ -288,7 +311,10 @@
         <h2 id="games-timeline" class="visually-hidden">Games Timeline</h2>
 
         <div class="timeline">
-          <!-- (3) Sticky group label -->
+          <!-- Single sticky indicator that updates as you scroll -->
+          <div class="year-indicator" aria-live="polite">Upcoming</div>
+
+          <!-- In-flow year chips (non-sticky separators) -->
           <div class="timeline-year" aria-hidden="true">Upcoming</div>
 
           <!-- Latest Game (In Development) -->
@@ -330,8 +356,8 @@
               <span class="timeline-date">TBD</span>
               <h3>Sticky Paws: Switch Update</h3>
               <p>
-                Switch version in dev with online sharing for custom characters
-                and levels.
+                Switch version with online sharing for custom characters and
+                levels.
               </p>
               <div class="tags">
                 <span class="tag tag-status">Update</span>
@@ -340,7 +366,6 @@
             </div>
           </article>
 
-          <!-- Group label -->
           <div class="timeline-year" aria-hidden="true">2023</div>
 
           <!-- Community Milestone -->
@@ -373,7 +398,6 @@
             </div>
           </article>
 
-          <!-- NEW YEAR: 2022 -->
           <div class="timeline-year" aria-hidden="true">2022</div>
 
           <!-- NEW: Sticky Paws DX Update (compact link card) -->
@@ -387,8 +411,7 @@
               <span class="timeline-date">Apr 16, 2022</span>
               <h3>Sticky Paws: DX Update</h3>
               <p>
-                Definitive refresh with revamped levels, QoL upgrades, and broad
-                polish.
+                Definitive refresh: revamped stages, QoL upgrades, broad polish.
               </p>
               <div class="tags">
                 <span class="tag tag-status">Update</span>
@@ -397,7 +420,6 @@
             </div>
           </article>
 
-          <!-- Group label -->
           <div class="timeline-year" aria-hidden="true">2019</div>
 
           <!-- Sticky Paws -->
@@ -436,7 +458,6 @@
             </div>
           </article>
 
-          <!-- Group label -->
           <div class="timeline-year" aria-hidden="true">2016</div>
 
           <!-- Community Milestone -->
@@ -620,7 +641,6 @@
             </div>
           </article>
 
-          <!-- Group label -->
           <div class="timeline-year" aria-hidden="true">2014</div>
 
           <!-- Jonnil TimeTravel -->
@@ -859,23 +879,22 @@
     <!-- Footer component -->
     <cyan component="footer"></cyan>
 
-    <!-- Page script: fade-up with stagger, roving focus, microinteraction toggle, sticky-year controller -->
+    <!-- Page script: reveal, roving focus, sticky-year indicator -->
     <script>
-      // (1) Respect reduced motion
+      // Respect reduced motion
       const prefersReducedMotion =
         window.matchMedia &&
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      // Collect timeline items and set stagger variables (5)
+      // Collect items and add a gentle stagger
       const timeline = document.querySelector(".timeline");
       const items = Array.from(document.querySelectorAll(".timeline-item"));
-
       items.forEach((el, i) => {
-        const delay = Math.min(i * 0.04, 0.24); // cap at ~240ms
+        const delay = Math.min(i * 0.04, 0.24);
         el.style.setProperty("--stagger", delay + "s");
       });
 
-      // IntersectionObserver reveal (with stagger). If reduced-motion, show immediately.
+      // Reveal-on-scroll
       if (prefersReducedMotion) {
         items.forEach((el) => el.classList.add("fade-up"));
       } else {
@@ -889,19 +908,19 @@
                 any = true;
               }
             });
-            if (any) timeline.classList.add("timeline-active"); // (8) bump spine opacity
+            if (any) timeline.classList.add("timeline-active");
           },
           { threshold: 0.2, rootMargin: "50px" }
         );
         items.forEach((el) => io.observe(el));
       }
 
-      // (4) Add “#” copy-links to deep-linkable cards (ids already present)
+      // Add “#” copy-links to deep-linkable cards (ids already present)
       document.querySelectorAll(".timeline-item[id]").forEach((el) => {
         const content = el.querySelector(".timeline-content");
         if (!content) return;
         const existing = content.querySelector(".anchor-link");
-        if (existing) return; // already added in markup
+        if (existing) return;
         const a = document.createElement("a");
         a.href = `#${el.id}`;
         a.className = "anchor-link";
@@ -910,7 +929,7 @@
         content.prepend(a);
       });
 
-      // (7) Roving focus with ArrowUp/ArrowDown
+      // Roving focus with ArrowUp/ArrowDown
       const focusable = items.filter((el) => el.hasAttribute("tabindex"));
       document.addEventListener("keydown", (e) => {
         if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
@@ -928,8 +947,8 @@
         });
       });
 
-      // ---- Fix for stacked/never-switching sticky year chips ----
-      // Only one .timeline-year should be visible at a time; switch as each chip crosses the sticky boundary.
+      // ---- Single sticky year indicator (fixes stacking & non-switching) ----
+      const yearIndicator = document.querySelector(".year-indicator");
       const yearChips = Array.from(document.querySelectorAll(".timeline-year"));
 
       function getTopOffset() {
@@ -937,39 +956,35 @@
         return (header?.offsetHeight || 64) + 8; // header height + small buffer
       }
 
-      function updateActiveYear() {
+      function updateYearIndicator() {
         const topOffset = getTopOffset();
-        let active = null;
+        let activeText = yearChips[0]?.textContent?.trim() || " ";
 
         for (const chip of yearChips) {
           const rect = chip.getBoundingClientRect();
-          // Active if the sticky header boundary lies between the chip's top and bottom
+          // Active when the chip top has crossed the sticky line, but its bottom hasn't
           if (rect.top <= topOffset && rect.bottom > topOffset) {
-            active = chip;
+            activeText = chip.textContent.trim();
             break;
           }
-        }
-        // Fallbacks
-        if (!active) {
-          // If we've not reached any chip yet, show the first; if we're past all, show the last
-          const firstRect = yearChips[0]?.getBoundingClientRect();
-          const lastRect =
-            yearChips[yearChips.length - 1]?.getBoundingClientRect();
-          if (firstRect && firstRect.top > topOffset) active = yearChips[0];
-          else if (lastRect && lastRect.bottom <= topOffset)
-            active = yearChips[yearChips.length - 1];
+          // If we've scrolled past a chip entirely, keep its text until the next one qualifies
+          if (rect.top <= topOffset && rect.bottom <= topOffset) {
+            activeText = chip.textContent.trim();
+          }
         }
 
-        yearChips.forEach((chip) =>
-          chip.classList.toggle("is-active", chip === active)
-        );
+        if (yearIndicator && yearIndicator.textContent !== activeText) {
+          yearIndicator.textContent = activeText;
+        }
       }
 
       // Initialize and bind
-      updateActiveYear();
-      document.addEventListener("scroll", updateActiveYear, { passive: true });
-      window.addEventListener("resize", updateActiveYear);
-      window.addEventListener("orientationchange", updateActiveYear);
+      updateYearIndicator();
+      document.addEventListener("scroll", updateYearIndicator, {
+        passive: true,
+      });
+      window.addEventListener("resize", updateYearIndicator);
+      window.addEventListener("orientationchange", updateYearIndicator);
     </script>
   </body>
 </html>
