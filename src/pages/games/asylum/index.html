@@ -5,20 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Juni's Asylum - Jonnil Games</title>
 
-    <!-- Primary Meta Tags -->
+    <!-- Primary Meta -->
     <meta name="title" content="Juni's Asylum - Jonnil Games" />
     <meta
       name="description"
-      content="Enter Juni's Asylum, a haunting horror adventure game. A spiritual successor to our previous horror titles, reimagined with years of experience and a larger team."
+      content="Enter Juni's Asylum, a haunting horror adventure. A spiritual successor reimagined with years of experience and a larger team."
     />
 
-    <!-- Open Graph / Facebook -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://jonnil.games/games/asylum/" />
     <meta property="og:title" content="Juni's Asylum - Jonnil Games" />
     <meta
       property="og:description"
-      content="Enter Juni's Asylum, a haunting horror adventure game. A spiritual successor to our previous horror titles, reimagined with years of experience and a larger team."
+      content="Enter Juni's Asylum, a haunting horror adventure. A spiritual successor reimagined with years of experience and a larger team."
     />
     <meta
       property="og:image"
@@ -30,7 +30,7 @@
     <meta name="twitter:title" content="Juni's Asylum - Jonnil Games" />
     <meta
       name="twitter:description"
-      content="Enter Juni's Asylum, a haunting horror adventure game. A spiritual successor to our previous horror titles, reimagined with years of experience and a larger team."
+      content="Enter Juni's Asylum, a haunting horror adventure. A spiritual successor reimagined with years of experience and a larger team."
     />
     <meta
       name="twitter:image"
@@ -42,7 +42,24 @@
     <meta property="og:game:release_date" content="TBA" />
     <meta property="og:game:genre" content="Horror Adventure" />
 
-    <!-- Existing head content -->
+    <!-- Canonical + Feeds -->
+    <link rel="canonical" href="https://jonnil.games/games/asylum/" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="RSS"
+      href="/blog/rss.xml"
+    />
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="Atom"
+      href="/blog/atom.xml"
+    />
+
+    <!-- Styles & Fonts -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -53,80 +70,16 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css"
     />
-    <link rel="stylesheet" href="styles.css" />
+
+    <!-- Preload alt title for flicker -->
+    <link rel="preload" as="image" href="./title-dark.png" />
+
     <!-- Favicon -->
     <link rel="icon" href="/favicon.ico" />
   </head>
   <body>
-    <!-- Fixed Navbar -->
-    <header>
-      <nav class="navbar">
-        <div class="logo">
-          <a href="/" aria-label="Jonnil Games Home">
-            <span class="logo-text">Jonnil Games</span>
-          </a>
-        </div>
-        <!-- Desktop Navigation Links -->
-        <ul class="nav-links">
-          <li><a href="/">Home</a></li>
-          <li><a href="/games.html" class="active">Games</a></li>
-          <li><a href="/blog/index.html">Blog</a></li>
-          <li><a href="/team.html">Team</a></li>
-          <li><a href="/about.html">About</a></li>
-        </ul>
-        <!-- Hamburger Button for Mobile -->
-        <button
-          class="hamburger"
-          aria-label="Open navigation menu"
-          aria-expanded="false"
-        >
-          <span class="hamburger-bar"></span>
-          <span class="hamburger-bar"></span>
-          <span class="hamburger-bar"></span>
-        </button>
-      </nav>
-    </header>
-
-    <!-- Mobile Menu -->
-    <div class="mobile-menu" aria-hidden="true">
-      <ul class="mobile-nav-links">
-        <li><a href="/">Home</a></li>
-        <li><a href="/games.html" class="active">Games</a></li>
-        <li><a href="/blog/index.html">Blog</a></li>
-        <li><a href="/team.html">Team</a></li>
-        <li><a href="/about.html">About</a></li>
-      </ul>
-      <div class="mobile-social-links">
-        <a
-          href="https://bsky.app/profile/jonnil.games"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Follow us on BlueSky"
-          class="social-icon"
-        >
-          <i class="ri-bluesky-fill"></i>
-        </a>
-        <a
-          href="https://discord.gg/GAmTXwqH9V"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Join our Discord"
-          class="social-icon"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path
-              d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"
-            />
-          </svg>
-        </a>
-      </div>
-    </div>
+    <!-- Header component -->
+    <cyan component="header"></cyan>
 
     <main>
       <section class="hero">
@@ -136,6 +89,8 @@
             src="./title.png"
             alt="Juni's Asylum"
             class="game-title responsive-logo flickering-title"
+            fetchpriority="high"
+            decoding="async"
           />
         </h1>
       </section>
@@ -145,12 +100,10 @@
       <div class="sub-hero">
         <p>
           Prepare to step into a narrative-driven horror platformer where
-          nothing is quite as it seems. On the surface, a seemingly
-          straightforward horror tale unfolds—but hidden within are layers of
-          intricate puzzles, secret easter eggs, and multiple endings. Drawing
-          inspiration from classic RPGMaker indie horror games and reimagining
-          the raw ideas of Spook: The Clinic, this game challenges you to
-          uncover its dark, twisting mystery on your own terms.
+          nothing is quite as it seems. On the surface, a straightforward horror
+          tale unfolds—but hidden within are layers of intricate puzzles,
+          secrets, and multiple endings inspired by classic RPGMaker-era indie
+          horror.
         </p>
       </div>
 
@@ -159,35 +112,32 @@
           <div class="feature-icon">🕯️</div>
           <h3>Immersive Horror</h3>
           <p>
-            Delve into a world where every shadow and eerie sound builds a
-            chilling atmosphere. Our game captures the classic indie horror vibe
-            with a modern, refined twist.
+            Every shadow and sound builds a chilling atmosphere—classic indie
+            horror, refined.
           </p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🕹️</div>
           <h3>Challenging Platforming</h3>
           <p>
-            Jump, dash, and navigate treacherous obstacles in levels designed to
-            test your reflexes and keep your heart racing.
+            Jump, dash, and thread through treacherous spaces that test reflex
+            and nerve.
           </p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🧩</div>
-          <h3>Puzzles & Hidden Secrets</h3>
+          <h3>Puzzles & Secrets</h3>
           <p>
-            Every corridor and crumbling wall hides clues—solve intricate
-            puzzles and unearth secret easter eggs that reveal the asylum’s
-            mysterious past.
+            Hidden clues, layered puzzles, and easter eggs reveal the asylum’s
+            deeper truth.
           </p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">📜</div>
           <h3>Branching Narratives</h3>
           <p>
-            Your choices carve your fate. Experience multiple endings and
-            divergent story paths that invite you to explore the deeper, dark
-            narrative at your own pace.
+            Your choices matter—multiple endings and paths invite replays and
+            theorycrafting.
           </p>
         </div>
       </div>
@@ -197,50 +147,47 @@
       <section class="game-info">
         <h2>Current Development Status</h2>
         <p>
-          Spook: The Asylum is in active development, and we’re hard at work
-          blending the classic charm of indie horror with modern platforming
-          gameplay. Heavily inspired by RPGMaker story-driven titles, this game
-          takes the raw ideas of Spook: The Clinic and refines them into an
-          experience that’s as much about uncovering hidden lore as it is about
-          heart-pounding action.
-        </p>
-        <p>
-          At first glance, you’ll encounter a straightforward horror tale—but
-          dive deeper, and you’ll find a labyrinth of puzzles, secret areas, and
-          branching storylines that change with every decision you make. We’re
-          retooling old concepts with fresh storytelling, innovative game
-          design, and improved programming to deliver a haunting mystery that
-          you must piece together on your own.
+          Juni’s Asylum is in active development—refining old concepts with
+          fresh storytelling, level design, and modern platforming. At first
+          glance it’s a simple horror tale; look closer and you’ll find a
+          labyrinth of puzzles and branching storylines to piece together on
+          your own.
         </p>
         <div class="links">
-          <a href="#newsletter" class="button primary-button">
-            Get Development Updates
-          </a>
-          <a href="#" class="button secondary-button"> View on GitHub </a>
+          <a href="#newsletter" class="button primary-button"
+            >Get Development Updates</a
+          >
+          <a href="#" class="button secondary-button">View on GitHub</a>
         </div>
       </section>
 
       <section class="screenshots">
         <h2>Early Development Snapshots</h2>
         <div class="screenshots-grid">
-          <div class="screenshot">
+          <figure class="screenshot">
             <img
               src="/images/asylum/screenshot1.png"
-              alt="Early concept of a haunted corridor with platforming challenges"
+              alt="Early haunted corridor with platforming challenges"
+              loading="lazy"
+              decoding="async"
             />
-          </div>
-          <div class="screenshot">
+          </figure>
+          <figure class="screenshot">
             <img
               src="/images/asylum/screenshot2.png"
-              alt="Puzzle area filled with hidden secrets and eerie details"
+              alt="Puzzle area with hidden secrets and eerie details"
+              loading="lazy"
+              decoding="async"
             />
-          </div>
-          <div class="screenshot">
+          </figure>
+          <figure class="screenshot">
             <img
               src="/images/asylum/screenshot3.png"
-              alt="Concept art of a branching narrative pathway and multiple endings"
+              alt="Concept art teasing branching narrative and multiple endings"
+              loading="lazy"
+              decoding="async"
             />
-          </div>
+          </figure>
         </div>
       </section>
 
@@ -250,8 +197,8 @@
         <div class="newsletter-container">
           <h2>Stay Updated</h2>
           <p>
-            Subscribe to receive development updates, exclusive sneak peeks, and
-            behind-the-scenes content for Spook: The Asylum.
+            Subscribe for development updates, sneak peeks, and
+            behind-the-scenes notes.
           </p>
           <form class="newsletter-form" action="/subscribe" method="POST">
             <div class="form-group">
@@ -269,197 +216,85 @@
             </div>
             <div class="form-consent">
               <input type="checkbox" id="consent" name="consent" required />
-              <label for="consent">
-                I agree to receive emails about Spook: The Asylum development
-                updates. You can unsubscribe at any time.
-              </label>
+              <label for="consent"
+                >I agree to receive emails about Juni’s Asylum. You can
+                unsubscribe at any time.</label
+              >
             </div>
           </form>
         </div>
       </section>
     </main>
 
-    <!-- Main character sprite with ghostly effect -->
-    <div class="character-container">
-      <!-- Base character image -->
-      <img src="./Juni.png" alt="Main Character" class="character-sprite" />
-      <!-- Ghostly overlay image that will shift around -->
-      <img src="./Juni.png" alt="" class="ghost-sprite" />
+    <!-- Character sprite with subtle ghost effect -->
+    <div class="character-container" aria-hidden="true">
+      <img
+        src="./Juni.png"
+        alt=""
+        class="character-sprite"
+        loading="lazy"
+        decoding="async"
+      />
+      <img
+        src="./Juni.png"
+        alt=""
+        class="ghost-sprite"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
 
+    <!-- Footer component -->
+    <cyan component="footer"></cyan>
+
     <script>
-      // Ghost effect for character sprite
-      const ghostSprite = document.querySelector(".ghost-sprite");
+      // Respect reduced motion users
+      const prefersReducedMotion =
+        window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      function moveGhost() {
-        const xShift = Math.random() * 6 - 3; // Random value between -3 and +3
-        const yShift = Math.random() * 6 - 3; // Random value between -3 and +3
+      // Title flicker (candle-like)
+      if (!prefersReducedMotion) {
+        const flickeringTitle = document.querySelector(".flickering-title");
+        const titleImages = ["./title.png", "./title-dark.png"];
+        let currentImage = 0;
+        let flickerIntensity = 0.3;
 
-        ghostSprite.style.transform = `translate(${xShift}px, ${yShift}px)`;
-
-        // Schedule next movement
-        setTimeout(moveGhost, 100 + Math.random() * 200);
+        function flickerTitle() {
+          if (Math.random() < 0.1) {
+            flickerIntensity = Math.min(
+              0.7,
+              flickerIntensity + Math.random() * 0.3
+            );
+            setTimeout(() => {
+              flickerIntensity = 0.3;
+            }, 800 + Math.random() * 1200);
+          }
+          if (Math.random() < flickerIntensity) {
+            currentImage = (currentImage + 1) % titleImages.length;
+            flickeringTitle.src = titleImages[currentImage];
+            const opacityValue = 0.7 + Math.random() * 0.3;
+            flickeringTitle.style.opacity = String(opacityValue);
+            setTimeout(() => {
+              flickeringTitle.style.opacity = "1";
+            }, 20 + Math.random() * 80);
+          }
+          setTimeout(flickerTitle, 100 + Math.random() * 400);
+        }
+        flickerTitle();
       }
 
-      // Start the ghostly movement
-      moveGhost();
-    </script>
-
-    <!-- Footer -->
-    <footer>
-      <div class="footer-container">
-        <div class="footer-grid">
-          <div class="footer-section">
-            <h3>Jonnil Games</h3>
-            <p>
-              Creating inclusive and innovative gaming experiences for players
-              around the world.
-            </p>
-            <div class="footer-social">
-              <a
-                href="https://bsky.app/profile/jonnil.games"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="BlueSky"
-                class="social-icon"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path
-                    d="M12 2L1 12l11 10 11-10L12 2zm0 2.828l7.828 7.172L12 19.172 4.172 12 12 4.828z"
-                  />
-                </svg>
-              </a>
-              <a
-                href="https://discord.gg/GAmTXwqH9V"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Discord"
-                class="social-icon"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path
-                    d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"
-                  />
-                </svg>
-              </a>
-            </div>
-          </div>
-          <div class="footer-section">
-            <h3>Quick Links</h3>
-            <ul class="footer-links">
-              <li><a href="/">Home</a></li>
-              <li><a href="/games.html">Games</a></li>
-              <li><a href="/blog/index.html">Blog</a></li>
-              <li><a href="/team.html">Team</a></li>
-              <li><a href="/about.html">About</a></li>
-            </ul>
-          </div>
-          <div class="footer-section">
-            <h3>Contact</h3>
-            <address>
-              <p>With 💖 from Sweden!</p>
-              <p>
-                Email:
-                <a href="mailto:contact@jonnil.games">contact@jonnil.games</a>
-              </p>
-            </address>
-          </div>
-        </div>
-        <div class="footer-bottom">
-          <p>&copy; 2024 Jonnil Games. All rights reserved.</p>
-          <div class="footer-legal">
-            <a href="/privacy-policy">Privacy Policy</a>
-            <a href="/terms-of-service">Terms of Service</a>
-          </div>
-        </div>
-      </div>
-    </footer>
-
-    <!-- JavaScript -->
-    <script>
-      // Mobile menu functionality
-      const hamburger = document.querySelector(".hamburger");
-      const mobileMenu = document.querySelector(".mobile-menu");
-      const body = document.body;
-
-      hamburger.addEventListener("click", () => {
-        const isOpen = mobileMenu.classList.toggle("open");
-        hamburger.classList.toggle("active");
-        body.classList.toggle("no-scroll", isOpen);
-        hamburger.setAttribute("aria-expanded", isOpen);
-        mobileMenu.setAttribute("aria-hidden", !isOpen);
-      });
-
-      // Close menu when clicking outside
-      document.addEventListener("click", (e) => {
-        if (
-          !mobileMenu.contains(e.target) &&
-          !hamburger.contains(e.target) &&
-          mobileMenu.classList.contains("open")
-        ) {
-          mobileMenu.classList.remove("open");
-          hamburger.classList.remove("active");
-          body.classList.remove("no-scroll");
-          hamburger.setAttribute("aria-expanded", "false");
-          mobileMenu.setAttribute("aria-hidden", "true");
+      // Ghost sprite drift
+      if (!prefersReducedMotion) {
+        const ghostSprite = document.querySelector(".ghost-sprite");
+        function moveGhost() {
+          const xShift = Math.random() * 6 - 3;
+          const yShift = Math.random() * 6 - 3;
+          ghostSprite.style.transform = `translate(${xShift}px, ${yShift}px)`;
+          setTimeout(moveGhost, 100 + Math.random() * 200);
         }
-      });
-
-      // Title flickering effect - enhanced candle-like randomness
-      const flickeringTitle = document.querySelector(".flickering-title");
-      const titleImages = ["./title.png", "./title-dark.png"];
-      let currentImage = 0;
-      let flickerIntensity = 0.3; // Base flicker chance
-
-      function flickerTitle() {
-        // Randomly increase flicker intensity occasionally (simulating air current)
-        if (Math.random() < 0.1) {
-          flickerIntensity = Math.min(
-            0.7,
-            flickerIntensity + Math.random() * 0.3
-          );
-
-          // After a burst of flickering, return to normal
-          setTimeout(() => {
-            flickerIntensity = 0.3;
-          }, 800 + Math.random() * 1200);
-        }
-
-        // Determine if we should flicker with variable intensity
-        if (Math.random() < flickerIntensity) {
-          // Switch between images
-          currentImage = (currentImage + 1) % titleImages.length;
-          flickeringTitle.src = titleImages[currentImage];
-
-          // Variable opacity for more natural candle effect
-          const opacityValue = 0.7 + Math.random() * 0.3;
-          flickeringTitle.style.opacity = opacityValue.toString();
-
-          // Reset opacity after a brief, variable delay
-          setTimeout(() => {
-            flickeringTitle.style.opacity = "1";
-          }, 20 + Math.random() * 80);
-        }
-
-        // Schedule next flicker at more variable intervals (candle-like)
-        const nextFlickerTime = 100 + Math.random() * 400;
-        setTimeout(flickerTitle, nextFlickerTime);
+        moveGhost();
       }
-
-      // Start the flickering effect
-      flickerTitle();
     </script>
   </body>
 </html>
