@@ -109,6 +109,98 @@
     <!-- Favicon -->
     <link rel="icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Page-scoped enhancements for the timeline -->
+    <style>
+      /* (1) Respect reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        .timeline-item,
+        .timeline-item.fade-up {
+          animation: none !important;
+          transform: none !important;
+          opacity: 1 !important;
+        }
+      }
+
+      /* (2) Scroll snap on mobile for cozy reading */
+      @media (max-width: 768px) {
+        .timeline {
+          scroll-snap-type: y proximity;
+        }
+        .timeline-item {
+          scroll-snap-align: start;
+          scroll-margin-top: 5rem; /* also helps anchored jumps under fixed header */
+        }
+      }
+
+      /* (3) Sticky year headers */
+      .timeline-year {
+        position: sticky;
+        top: 4.5rem; /* header is 4rem */
+        z-index: 5;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        padding: 0.25rem 0.75rem;
+        margin: 2rem 0 1rem;
+        background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
+        color: #fff;
+        border-radius: var(--radius-full);
+        width: fit-content;
+      }
+
+      /* (4) Deep-linkable cards + highlight */
+      .timeline-item {
+        position: relative;
+        scroll-margin-top: 5rem; /* (10) guard against CLS / fixed header */
+        --stagger: 0s; /* (5) stagger default */
+      }
+      .timeline-item:target,
+      .timeline-item:focus-within {
+        outline: 3px solid rgba(37, 99, 235, 0.35);
+        outline-offset: 4px;
+        border-radius: 12px;
+      }
+      /* Optional anchor hash link shown on hover/focus */
+      .anchor-link {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        text-decoration: none;
+        font-weight: 700;
+        opacity: 0;
+        transition: opacity var(--transition-fast);
+      }
+      .timeline-item:hover .anchor-link,
+      .timeline-item:focus-within .anchor-link {
+        opacity: 1;
+      }
+
+      /* (5) Tiny stagger polish on reveal */
+      .timeline-item.fade-up {
+        animation: fadeIn 0.5s var(--stagger) both,
+          raise 0.5s var(--stagger) both;
+      }
+      @keyframes raise {
+        from {
+          transform: translateY(12px);
+        }
+        to {
+          transform: none;
+        }
+      }
+
+      /* (8) Microinteractions on the spine & date chip */
+      .timeline::before {
+        transition: opacity 0.3s ease;
+      }
+      .timeline.timeline-active::before {
+        opacity: 0.4;
+      }
+      .timeline-item:hover .timeline-date {
+        transform: translateY(-1px);
+        filter: brightness(1.1);
+      }
+    </style>
   </head>
   <body>
     <!-- Header component -->
@@ -128,9 +220,18 @@
         <h2 id="games-timeline" class="visually-hidden">Games Timeline</h2>
 
         <div class="timeline">
+          <!-- (3) Sticky group label -->
+          <div class="timeline-year" aria-hidden="true">Upcoming</div>
+
           <!-- Latest Game (In Development) -->
-          <div class="timeline-item">
+          <article class="timeline-item" id="junis-asylum" tabindex="0">
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#junis-asylum"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <span class="timeline-date">TBD</span>
               <h3>Juni's Asylum</h3>
               <p>
@@ -148,11 +249,24 @@
                 >
               </div>
             </div>
-          </div>
+          </article>
+
+          <!-- Group label -->
+          <div class="timeline-year" aria-hidden="true">2023</div>
 
           <!-- Community Milestone -->
-          <div class="timeline-item milestone">
+          <article
+            class="timeline-item milestone"
+            id="formalized-team"
+            tabindex="0"
+          >
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#formalized-team"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <span class="timeline-date">Mar 18, 2023</span>
               <h3>Formalized Team</h3>
               <p>
@@ -168,11 +282,20 @@
                 >
               </div>
             </div>
-          </div>
+          </article>
+
+          <!-- Group label -->
+          <div class="timeline-year" aria-hidden="true">2019</div>
 
           <!-- Sticky Paws -->
-          <div class="timeline-item">
+          <article class="timeline-item" id="sticky-paws" tabindex="0">
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#sticky-paws"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <span class="timeline-date">Nov 1, 2019</span>
               <h3>Sticky Paws</h3>
               <p>
@@ -198,11 +321,24 @@
                 >
               </div>
             </div>
-          </div>
+          </article>
+
+          <!-- Group label -->
+          <div class="timeline-year" aria-hidden="true">2016</div>
 
           <!-- Community Milestone -->
-          <div class="timeline-item milestone">
+          <article
+            class="timeline-item milestone"
+            id="discord-launch"
+            tabindex="0"
+          >
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#discord-launch"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <span class="timeline-date">Dec 2016</span>
               <h3>Discord Launch</h3>
               <p>
@@ -222,11 +358,21 @@
                 >
               </div>
             </div>
-          </div>
+          </article>
 
           <!-- Golden Cargo Block -->
-          <div class="timeline-item legacy">
+          <article
+            class="timeline-item legacy"
+            id="golden-cargo-block"
+            tabindex="0"
+          >
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#golden-cargo-block"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <div class="card-header">
                 <span class="timeline-date">Dec 25, 2016</span>
                 <a href="/blog/legacy-games.html" class="legacy-chip">
@@ -249,11 +395,17 @@
                 <a href="#" class="button secondary-button">Download</a>
               </div>
             </div>
-          </div>
+          </article>
 
           <!-- Vast Dungeon -->
-          <div class="timeline-item legacy">
+          <article class="timeline-item legacy" id="vast-dungeon" tabindex="0">
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#vast-dungeon"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <div class="card-header">
                 <span class="timeline-date">Aug 5, 2016</span>
                 <a href="/blog/legacy-games.html" class="legacy-chip">
@@ -275,11 +427,21 @@
                 <a href="#" class="button secondary-button">Download</a>
               </div>
             </div>
-          </div>
+          </article>
 
           <!-- Spook: The Clinic (2016) -->
-          <div class="timeline-item legacy">
+          <article
+            class="timeline-item legacy"
+            id="spook-the-clinic"
+            tabindex="0"
+          >
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#spook-the-clinic"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <div class="card-header">
                 <span class="timeline-date">May 5, 2016</span>
                 <a href="/blog/legacy-games.html" class="legacy-chip">
@@ -301,11 +463,21 @@
                 <a href="#" class="button secondary-button">Download</a>
               </div>
             </div>
-          </div>
+          </article>
 
           <!-- Love is on the bus -->
-          <div class="timeline-item legacy">
+          <article
+            class="timeline-item legacy"
+            id="love-is-on-the-bus"
+            tabindex="0"
+          >
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#love-is-on-the-bus"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <div class="card-header">
                 <span class="timeline-date">Feb 14, 2016</span>
                 <a href="/blog/legacy-games.html" class="legacy-chip">
@@ -333,11 +505,24 @@
                 >
               </div>
             </div>
-          </div>
+          </article>
+
+          <!-- Group label -->
+          <div class="timeline-year" aria-hidden="true">2014</div>
 
           <!-- Jonnil TimeTravel -->
-          <div class="timeline-item legacy">
+          <article
+            class="timeline-item legacy"
+            id="jonnil-timetravel"
+            tabindex="0"
+          >
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#jonnil-timetravel"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <div class="card-header">
                 <span class="timeline-date">Dec 13, 2014</span>
                 <a href="/blog/legacy-games.html" class="legacy-chip">
@@ -372,11 +557,17 @@
                 >
               </div>
             </div>
-          </div>
+          </article>
 
           <!-- Spook -->
-          <div class="timeline-item legacy">
+          <article class="timeline-item legacy" id="spook-2014" tabindex="0">
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#spook-2014"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <div class="card-header">
                 <span class="timeline-date">Oct 18, 2014</span>
                 <a href="/blog/legacy-games.html" class="legacy-chip">
@@ -404,11 +595,17 @@
                 >
               </div>
             </div>
-          </div>
+          </article>
 
           <!-- Toaster 2 -->
-          <div class="timeline-item legacy">
+          <article class="timeline-item legacy" id="toaster-2" tabindex="0">
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#toaster-2"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <div class="card-header">
                 <span class="timeline-date">2014</span>
                 <a href="/blog/legacy-games.html" class="legacy-chip">
@@ -443,11 +640,21 @@
                 >
               </div>
             </div>
-          </div>
+          </article>
 
           <!-- Golden Lego Block -->
-          <div class="timeline-item legacy">
+          <article
+            class="timeline-item legacy"
+            id="golden-lego-block"
+            tabindex="0"
+          >
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#golden-lego-block"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <div class="card-header">
                 <span class="timeline-date">2014</span>
                 <a href="/blog/legacy-games.html" class="legacy-chip">
@@ -482,11 +689,21 @@
                 >
               </div>
             </div>
-          </div>
+          </article>
 
           <!-- Toaster: A Nurikabe Experience -->
-          <div class="timeline-item legacy">
+          <article
+            class="timeline-item legacy"
+            id="toaster-nurikabe"
+            tabindex="0"
+          >
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#toaster-nurikabe"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <div class="card-header">
                 <span class="timeline-date">2014</span>
                 <a href="/blog/legacy-games.html" class="legacy-chip">
@@ -521,7 +738,7 @@
                 >
               </div>
             </div>
-          </div>
+          </article>
         </div>
       </section>
     </main>
@@ -529,19 +746,73 @@
     <!-- Footer component -->
     <cyan component="footer"></cyan>
 
-    <!-- Page script: timeline fade-up -->
+    <!-- Page script: fade-up with stagger, roving focus, microinteraction toggle -->
     <script>
-      const observerOptions = { threshold: 0.2, rootMargin: "50px" };
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("fade-up");
-            observer.unobserve(entry.target);
-          }
+      // (1) Respect reduced motion
+      const prefersReducedMotion =
+        window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      // Collect timeline items and set stagger variables (5)
+      const timeline = document.querySelector(".timeline");
+      const items = Array.from(document.querySelectorAll(".timeline-item"));
+
+      items.forEach((el, i) => {
+        const delay = Math.min(i * 0.04, 0.24); // cap at ~240ms
+        el.style.setProperty("--stagger", delay + "s");
+      });
+
+      // IntersectionObserver reveal (with stagger). If reduced-motion, show immediately.
+      if (prefersReducedMotion) {
+        items.forEach((el) => el.classList.add("fade-up"));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            let any = false;
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("fade-up");
+                io.unobserve(entry.target);
+                any = true;
+              }
+            });
+            if (any) timeline.classList.add("timeline-active"); // (8) bump spine opacity
+          },
+          { threshold: 0.2, rootMargin: "50px" }
+        );
+        items.forEach((el) => io.observe(el));
+      }
+
+      // (4) Add “#” copy-links to deep-linkable cards (ids already present)
+      document.querySelectorAll(".timeline-item[id]").forEach((el) => {
+        const content = el.querySelector(".timeline-content");
+        if (!content) return;
+        const existing = content.querySelector(".anchor-link");
+        if (existing) return; // already added in markup
+        const a = document.createElement("a");
+        a.href = `#${el.id}`;
+        a.className = "anchor-link";
+        a.setAttribute("aria-label", "Link to this timeline item");
+        a.textContent = "#";
+        content.prepend(a);
+      });
+
+      // (7) Roving focus with ArrowUp/ArrowDown
+      const focusable = items.filter((el) => el.hasAttribute("tabindex"));
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+        const i = focusable.indexOf(document.activeElement);
+        if (i === -1) return;
+        e.preventDefault();
+        const next =
+          e.key === "ArrowDown"
+            ? Math.min(i + 1, focusable.length - 1)
+            : Math.max(i - 1, 0);
+        focusable[next].focus({ preventScroll: false });
+        focusable[next].scrollIntoView({
+          block: "nearest",
+          behavior: "smooth",
         });
-      }, observerOptions);
-      document.querySelectorAll(".timeline-item").forEach((item) => {
-        observer.observe(item);
       });
     </script>
   </body>
