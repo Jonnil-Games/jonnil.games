@@ -24,7 +24,7 @@
       href="/blog/atom.xml"
     />
 
-    <!-- Fonts & Icons -->
+    <!-- Styles & Fonts -->
     <link rel="stylesheet" href="/styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -37,30 +37,14 @@
       href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css"
     />
 
-    <!-- Page-scoped styles for the timeline year behavior -->
+    <!-- Page-scoped tweaks for timeline behavior -->
     <style>
-      /* Respect reduced motion */
-      @media (prefers-reduced-motion: reduce) {
-        .timeline-item,
-        .timeline-item.fade-up {
-          animation: none !important;
-          transform: none !important;
-          opacity: 1 !important;
-        }
+      /* Ensure anchor jumps land below the sticky header */
+      html {
+        scroll-padding-top: 5rem;
       }
 
-      /* Scroll snap on mobile */
-      @media (max-width: 768px) {
-        .timeline {
-          scroll-snap-type: y proximity;
-        }
-        .timeline-item {
-          scroll-snap-align: start;
-          scroll-margin-top: 5rem;
-        }
-      }
-
-      /* Static year chips (always visible in the flow) */
+      /* Static in-flow year chips (always visible) */
       .timeline-year {
         display: inline-block;
         margin: 2rem 0 1rem;
@@ -72,10 +56,11 @@
         letter-spacing: 0.02em;
       }
 
-      /* Single sticky indicator that updates as you scroll */
+      /* Single sticky indicator that updates as you scroll.
+         It sits inside .timeline so it only appears once the timeline reaches the top. */
       .year-indicator {
         position: sticky;
-        top: 4.5rem; /* header ~4rem + small buffer */
+        top: 4.5rem; /* header (~4rem) + a little buffer */
         z-index: 6;
         font-weight: 700;
         letter-spacing: 0.02em;
@@ -87,11 +72,10 @@
         width: fit-content;
       }
 
-      /* Target highlight: only the card */
+      /* Target highlight: only the card, not the whole row */
       .timeline-item {
         position: relative;
-        scroll-margin-top: 5rem;
-        --stagger: 0s;
+        scroll-margin-top: 5rem; /* guard against fixed header */
       }
       .timeline-item:target .timeline-content,
       .timeline-item:focus-within .timeline-content {
@@ -100,7 +84,7 @@
         border-radius: 12px;
       }
 
-      /* Optional anchor hash link shown on hover/focus */
+      /* Tiny link to copy deep links */
       .anchor-link {
         position: absolute;
         top: 0.75rem;
@@ -127,7 +111,7 @@
         font-size: 0.95rem;
         color: var(--text-gray-700);
         display: -webkit-box;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 2; /* keep brief */
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
@@ -151,7 +135,7 @@
           box-shadow var(--transition-normal);
       }
 
-      /* Side control via classes (left/right), reset per year via JS */
+      /* Side control via classes (left/right); we assign these per year via JS */
       .timeline-item.left .timeline-content {
         margin-left: 0;
       }
@@ -170,6 +154,8 @@
         border-right-color: white;
         border-left-color: transparent;
       }
+
+      /* One-column on narrow screens */
       @media (max-width: 768px) {
         .timeline-item.left .timeline-content,
         .timeline-item.right .timeline-content {
@@ -201,10 +187,10 @@
         <h2 id="games-timeline" class="visually-hidden">Games Timeline</h2>
 
         <div class="timeline">
-          <!-- Sticky indicator lives inside the timeline so it only appears once the timeline reaches the top -->
+          <!-- Sticky indicator lives inside the timeline so it starts sticking only after timeline hits the top -->
           <div class="year-indicator">Upcoming</div>
 
-          <!-- Static in-flow year chips -->
+          <!-- Static in-flow year chips (always displayed) -->
           <div class="timeline-year">Upcoming</div>
 
           <!-- Upcoming items -->
@@ -299,8 +285,7 @@
               <span class="timeline-date">Apr 16, 2022</span>
               <h3>Sticky Paws: DX Update</h3>
               <p>
-                Definitive refresh with revamped stages, QoL upgrades, and
-                polish.
+                Definitive refresh with revamped stages, QoL upgrades, polish.
               </p>
               <div class="tags">
                 <span class="tag tag-status">Update</span>
@@ -685,7 +670,7 @@
                   >Download</a
                 >
                 <a
-                  href="https://drive.google.com/file/d/1QAI8JUuJyxeqXs-YJPgyPUl-8RAxG_QA/view?usp=sharing"
+                  href="https://drive.google.com/file/d/1QAI8JUuJyxeqXs-YJPgyPUl-8RAx_GQA/view?usp=sharing"
                   class="button secondary-button"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -748,108 +733,101 @@
     <!-- Footer component -->
     <cyan component="footer"></cyan>
 
-    <!-- Page script: reveal, per-year alternation, sticky year indicator that updates on scroll -->
+    <!-- Page script: sticky-year with sentinels + per-year left/right alternation -->
     <script>
-      // Respect reduced motion
-      const prefersReducedMotion =
-        window.matchMedia &&
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      (function () {
+        const timeline = document.querySelector(".timeline");
+        if (!timeline) return;
 
-      const timeline = document.querySelector(".timeline");
-      const items = Array.from(document.querySelectorAll(".timeline-item"));
-      const yearChips = Array.from(document.querySelectorAll(".timeline-year"));
-      let sticky = document.querySelector(".year-indicator");
-
-      // If someone removes the sticky node from the HTML, recreate it to be safe.
-      if (!sticky) {
-        sticky = document.createElement("div");
-        sticky.className = "year-indicator";
-        sticky.textContent = yearChips[0]?.textContent?.trim() || "";
-        timeline.prepend(sticky);
-      }
-
-      // Gentle reveal
-      if (!prefersReducedMotion) {
-        const io = new IntersectionObserver(
-          (entries, obs) => {
-            entries.forEach((e) => {
-              if (e.isIntersecting) {
-                e.target.classList.add("fade-up");
-                obs.unobserve(e.target);
-              }
-            });
-          },
-          { threshold: 0.2, rootMargin: "50px" }
+        // Ensure sticky label exists (default to first visible year)
+        let sticky = document.querySelector(".year-indicator");
+        const yearChips = Array.from(
+          timeline.querySelectorAll(".timeline-year")
         );
-        items.forEach((el, i) => {
-          el.style.setProperty("--stagger", Math.min(i * 0.04, 0.24) + "s");
-          io.observe(el);
+
+        if (!sticky) {
+          sticky = document.createElement("div");
+          sticky.className = "year-indicator";
+          sticky.textContent = yearChips[0]?.textContent?.trim() || "";
+          timeline.prepend(sticky);
+        }
+
+        // Create invisible sentinels just BEFORE each year chip
+        const sentinels = yearChips.map((chip) => {
+          const s = document.createElement("div");
+          s.className = "year-sentinel";
+          s.dataset.year = chip.textContent.trim();
+          s.setAttribute("aria-hidden", "true");
+          s.style.cssText = "position:relative;height:0;margin:0;padding:0;";
+          chip.parentNode.insertBefore(s, chip);
+          return s;
         });
-      } else {
-        items.forEach((el) => el.classList.add("fade-up"));
-      }
 
-      // Add “#” links to deep-linkable cards
-      document.querySelectorAll(".timeline-item[id]").forEach((el) => {
-        const content = el.querySelector(".timeline-content");
-        if (!content || content.querySelector(".anchor-link")) return;
-        const a = document.createElement("a");
-        a.href = `#${el.id}`;
-        a.className = "anchor-link";
-        a.setAttribute("aria-label", "Link to this timeline item");
-        a.textContent = "#";
-        content.prepend(a);
-      });
+        // Alternate left/right per year (first item after each year starts on left)
+        (function assignSidesPerYear() {
+          const children = Array.from(timeline.children);
+          let side = "left";
+          children.forEach((node) => {
+            if (node.classList.contains("timeline-year")) {
+              side = "left";
+            } else if (node.classList.contains("timeline-item")) {
+              node.classList.remove("left", "right");
+              node.classList.add(side);
+              side = side === "left" ? "right" : "left";
+            }
+          });
+        })();
 
-      // Alternate left/right per year (first after a year starts left)
-      (function assignSidesPerYear() {
-        const children = Array.from(timeline.children);
-        let side = "left";
-        children.forEach((node) => {
-          if (node.classList.contains("timeline-year")) {
-            side = "left";
-          } else if (node.classList.contains("timeline-item")) {
-            node.classList.remove("left", "right");
-            node.classList.add(side);
-            side = side === "left" ? "right" : "left";
+        function stickyOffset() {
+          const header = document.querySelector("header");
+          return (header?.offsetHeight || 64) + 8; // px from viewport top
+        }
+
+        // Update sticky label: choose the last sentinel whose top is <= sticky line
+        let ticking = false;
+        function updateSticky() {
+          ticking = false;
+          const y = stickyOffset();
+          let active = sentinels[0]?.dataset.year || "";
+
+          for (let i = 0; i < sentinels.length; i++) {
+            const top = sentinels[i].getBoundingClientRect().top;
+            if (top <= y) {
+              active = sentinels[i].dataset.year;
+            } else {
+              break;
+            }
           }
+          if (sticky.textContent !== active) {
+            sticky.textContent = active;
+          }
+        }
+
+        function onScroll() {
+          if (!ticking) {
+            window.requestAnimationFrame(updateSticky);
+            ticking = true;
+          }
+        }
+
+        // Add “#” links to any deep-linkable cards missing one
+        document.querySelectorAll(".timeline-item[id]").forEach((el) => {
+          const content = el.querySelector(".timeline-content");
+          if (!content || content.querySelector(".anchor-link")) return;
+          const a = document.createElement("a");
+          a.href = `#${el.id}`;
+          a.className = "anchor-link";
+          a.setAttribute("aria-label", "Link to this timeline item");
+          a.textContent = "#";
+          content.prepend(a);
         });
+
+        // init & listeners
+        updateSticky();
+        document.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", updateSticky);
+        window.addEventListener("orientationchange", updateSticky);
       })();
-
-      // Sticky year behavior:
-      // 1) Year chips remain static in the flow (visible).
-      // 2) The sticky indicator becomes fixed when it reaches the page top (via CSS position:sticky).
-      // 3) As you scroll, whichever year chip has crossed the sticky line last becomes the label.
-      function updateStickyYear() {
-        if (!yearChips.length) return;
-
-        // The "sticky line" is wherever the sticky element currently is in the viewport
-        const stickyTop = sticky.getBoundingClientRect().top;
-
-        let activeText = yearChips[0].textContent.trim();
-
-        for (let i = 0; i < yearChips.length; i++) {
-          const chipTop = yearChips[i].getBoundingClientRect().top;
-
-          // If the chip's top is at or above the sticky line, it becomes the active year.
-          if (chipTop <= stickyTop + 1) {
-            activeText = yearChips[i].textContent.trim();
-          } else {
-            // because chips are in-order, we can stop checking once we pass the sticky line
-            break;
-          }
-        }
-
-        if (sticky.textContent !== activeText) {
-          sticky.textContent = activeText;
-        }
-      }
-
-      // Initialize and bind
-      updateStickyYear();
-      document.addEventListener("scroll", updateStickyYear, { passive: true });
-      window.addEventListener("resize", updateStickyYear);
-      window.addEventListener("orientationchange", updateStickyYear);
     </script>
   </body>
 </html>
