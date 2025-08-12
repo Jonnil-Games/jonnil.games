@@ -220,6 +220,7 @@
         font-size: 0.95rem;
         color: var(--text-gray-700);
         display: -webkit-box;
+        line-clamp: 2; /* standard property for compatibility */
         -webkit-line-clamp: 2; /* clamp to ~2 lines */
         -webkit-box-orient: vertical;
         overflow: hidden;
@@ -967,13 +968,17 @@
       })();
 
       // ---- Single sticky year indicator + “dock” the matching chip ----
-      function getTopOffset() {
-        const header = document.querySelector("header");
-        return (header?.offsetHeight || 64) + 8; // header height + small buffer
+      function getStickyTopOffset() {
+        // Use the actual computed sticky 'top' from the indicator itself.
+        if (!yearIndicator) return 0;
+        const computed = window.getComputedStyle(yearIndicator);
+        const topValue = computed.top || "0px";
+        const parsed = parseFloat(topValue);
+        return Number.isFinite(parsed) ? parsed : 0;
       }
 
       function updateYearIndicator() {
-        const topOffset = getTopOffset();
+        const topOffset = getStickyTopOffset();
         let activeIndex = 0;
 
         // Determine active year: last chip whose top is above the sticky line
@@ -1016,6 +1021,13 @@
       });
       window.addEventListener("resize", updateYearIndicator);
       window.addEventListener("orientationchange", updateYearIndicator);
+
+      // Re-run when the sticky position might change due to styles/layout
+      if (window.ResizeObserver) {
+        const ro = new ResizeObserver(updateYearIndicator);
+        if (yearIndicator) ro.observe(yearIndicator);
+        if (timeline) ro.observe(timeline);
+      }
     </script>
   </body>
 </html>
