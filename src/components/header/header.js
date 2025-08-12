@@ -51,10 +51,23 @@ class HeaderComponent {
   setupEventListeners() {
     if (this.listenersAttached) return;
 
-    // Click hamburger to open/close
-    if (this.hamburger) {
-      this.hamburger.addEventListener("click", () => this.toggleMobileMenu());
-    }
+    // Delegated click handling ensures robustness even if elements are injected later
+    document.addEventListener("click", (e) => {
+      // Toggle when tapping the hamburger button
+      const hamburgerButton = e.target.closest(".hamburger");
+      if (hamburgerButton) {
+        this.cacheElements();
+        this.toggleMobileMenu();
+        return;
+      }
+
+      // Close when selecting a link inside the mobile menu
+      const menuLink = e.target.closest("#mobile-menu .mobile-nav-links a");
+      if (menuLink && this.mobileMenu?.classList.contains("open")) {
+        this.toggleMobileMenu(false);
+        return;
+      }
+    });
 
     // Close when clicking outside the menu
     document.addEventListener("click", (e) => this.handleOutsideClick(e));
