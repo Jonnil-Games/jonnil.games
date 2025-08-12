@@ -147,6 +147,25 @@
         font-weight: 700;
         letter-spacing: 0.02em;
       }
+      /* Create wide masks to the left and right so wider earlier chips
+         cannot peek out from behind the current sticky chip */
+      .timeline-year::before,
+      .timeline-year::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        background: var(--page-bg, #fff);
+        pointer-events: none;
+      }
+      .timeline-year::before {
+        right: 100%;
+        width: 100vw; /* extend far to the left */
+      }
+      .timeline-year::after {
+        left: 100%;
+        width: 100vw; /* extend far to the right */
+      }
 
       /* Target highlight: only the card, not full width */
       .timeline-item {
