@@ -968,23 +968,20 @@
       })();
 
       // ---- Single sticky year indicator + “dock” the matching chip ----
-      function getStickyTopOffset() {
-        // Use the actual computed sticky 'top' from the indicator itself.
+      function getStickyLineY() {
+        // Use the indicator's actual on-screen Y position each frame.
         if (!yearIndicator) return 0;
-        const computed = window.getComputedStyle(yearIndicator);
-        const topValue = computed.top || "0px";
-        const parsed = parseFloat(topValue);
-        return Number.isFinite(parsed) ? parsed : 0;
+        return yearIndicator.getBoundingClientRect().top;
       }
 
       function updateYearIndicator() {
-        const topOffset = getStickyTopOffset();
+        const stickyLineY = getStickyLineY();
         let activeIndex = 0;
 
         // Determine active year: last chip whose top is above the sticky line
         for (let i = 0; i < yearChips.length; i++) {
           const rect = yearChips[i].getBoundingClientRect();
-          if (rect.top <= topOffset) {
+          if (rect.top <= stickyLineY) {
             activeIndex = i;
           } else {
             break;
@@ -1006,7 +1003,8 @@
         // show all others so they remain visible in the timeline.
         yearChips.forEach((chip, i) => {
           const r = chip.getBoundingClientRect();
-          const isUnderSticky = r.top <= topOffset + 2 && r.bottom > topOffset;
+          const isUnderSticky =
+            r.top <= stickyLineY + 2 && r.bottom > stickyLineY;
           chip.classList.toggle(
             "is-docked",
             isUnderSticky && i === activeIndex
@@ -1015,12 +1013,25 @@
       }
 
       // Initialize and bind
+      let ticking = false;
+      function onScrollOrResize() {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            updateYearIndicator();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }
+
       updateYearIndicator();
-      document.addEventListener("scroll", updateYearIndicator, {
+      document.addEventListener("scroll", onScrollOrResize, {
         passive: true,
       });
-      window.addEventListener("resize", updateYearIndicator);
-      window.addEventListener("orientationchange", updateYearIndicator);
+      window.addEventListener("resize", onScrollOrResize);
+      window.addEventListener("orientationchange", onScrollOrResize);
+      document.addEventListener("DOMContentLoaded", updateYearIndicator);
+      window.addEventListener("load", updateYearIndicator);
 
       // Re-run when the sticky position might change due to styles/layout
       if (window.ResizeObserver) {
