@@ -3,21 +3,55 @@
  */
 class HeaderComponent {
   constructor() {
-    this.hamburger = document.querySelector(".hamburger");
-    this.mobileMenu = document.getElementById("mobile-menu");
+    this.hamburger = null;
+    this.mobileMenu = null;
     this.body = document.body;
     this.firstFocusable = null;
     this.prevFocus = null;
+    this.listenersAttached = false;
+    this.isObserving = false;
 
     this.init();
   }
 
   init() {
-    this.setupEventListeners();
-    this.setActiveNavLink();
+    this.cacheElements();
+    if (this.hamburger && this.mobileMenu) {
+      this.setupEventListeners();
+      this.setActiveNavLink();
+    } else {
+      this.observeForHeaderLoad();
+    }
+  }
+
+  cacheElements() {
+    this.hamburger = document.querySelector(".hamburger");
+    this.mobileMenu = document.getElementById("mobile-menu");
+  }
+
+  observeForHeaderLoad() {
+    if (this.isObserving) return;
+    this.isObserving = true;
+
+    const targetNode =
+      document.getElementById("header-container") || document.body;
+    const observer = new MutationObserver(() => {
+      this.cacheElements();
+      if (this.hamburger && this.mobileMenu && !this.listenersAttached) {
+        observer.disconnect();
+        this.setupEventListeners();
+        this.setActiveNavLink();
+        this.isObserving = false;
+      }
+    });
+
+    observer.observe(targetNode, { childList: true, subtree: true });
   }
 
   setupEventListeners() {
+    if (this.listenersAttached) return;
+
+    // Click hamburger to open/close
     if (this.hamburger) {
       this.hamburger.addEventListener("click", () => this.toggleMobileMenu());
     }
@@ -27,9 +61,13 @@ class HeaderComponent {
 
     // Close on Escape
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && this.mobileMenu.classList.contains("open")) {
+      if (
+        e.key === "Escape" &&
+        this.mobileMenu &&
+        this.mobileMenu.classList.contains("open")
+      ) {
         this.toggleMobileMenu(false);
-        this.hamburger.focus();
+        if (this.hamburger) this.hamburger.focus();
       }
     });
 
@@ -37,14 +75,30 @@ class HeaderComponent {
     window.addEventListener("resize", () => {
       if (
         window.innerWidth >= 769 &&
+        this.mobileMenu &&
         this.mobileMenu.classList.contains("open")
       ) {
         this.toggleMobileMenu(false);
       }
     });
+
+    // Close menu when a mobile nav link is clicked
+    const mobileLinks = document.querySelectorAll(".mobile-nav-links a");
+    if (mobileLinks && mobileLinks.length) {
+      mobileLinks.forEach((link) =>
+        link.addEventListener("click", () => this.toggleMobileMenu(false))
+      );
+    }
+
+    this.listenersAttached = true;
   }
 
   toggleMobileMenu(force) {
+    // Ensure elements are available (header may have loaded after init)
+    if (!this.hamburger || !this.mobileMenu) {
+      this.cacheElements();
+      if (!this.hamburger || !this.mobileMenu) return; // Still not ready
+    }
     const open =
       typeof force === "boolean"
         ? force
@@ -82,7 +136,7 @@ class HeaderComponent {
       this.mobileMenu.classList.contains("open")
     ) {
       this.toggleMobileMenu(false);
-      this.hamburger.focus();
+      if (this.hamburger) this.hamburger.focus();
     }
   }
 
@@ -128,9 +182,13 @@ class HeaderComponent {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    new HeaderComponent();
+  });
+} else {
   new HeaderComponent();
-});
+}
 
 // Export for tests if needed
 if (typeof module !== "undefined" && module.exports) {
