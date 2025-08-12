@@ -133,37 +133,19 @@
         }
       }
 
-      /* Single sticky year indicator at top */
-      .year-indicator {
-        position: sticky;
-        top: 4.5rem; /* header is ~4rem */
-        z-index: 6;
-        font-weight: 700;
-        letter-spacing: 0.02em;
-        padding: 0.25rem 0.75rem;
-        margin: 0 0 0.75rem;
-        background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
-        color: #fff;
-        border-radius: var(--radius-full);
-        width: fit-content;
-      }
-
-      /* Visible in-flow year chips (these are what you wanted back) */
+      /* Year chips that live in the flow and stick as you scroll */
       .timeline-year {
-        position: relative;
+        position: sticky;
+        top: var(--sticky-year-top, 4.5rem); /* match header height */
+        z-index: 6;
         display: inline-block;
-        margin: 2rem 0 1rem;
+        margin: 2rem 0 0.75rem;
         padding: 0.25rem 0.75rem;
         background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
         color: #fff;
         border-radius: var(--radius-full);
         font-weight: 700;
         letter-spacing: 0.02em;
-      }
-      /* When a chip is currently represented by the sticky indicator,
-         hide it to avoid the “double” look */
-      .timeline-year.is-docked {
-        visibility: hidden;
       }
 
       /* Target highlight: only the card, not full width */
@@ -311,9 +293,6 @@
         <h2 id="games-timeline" class="visually-hidden">Games Timeline</h2>
 
         <div class="timeline">
-          <!-- Single sticky indicator that updates as you scroll -->
-          <div class="year-indicator" aria-live="polite">Upcoming</div>
-
           <!-- Visible in-flow year markers used for grouping + indicator -->
           <div class="timeline-year">Upcoming</div>
 
@@ -888,8 +867,7 @@
 
       const timeline = document.querySelector(".timeline");
       const items = Array.from(document.querySelectorAll(".timeline-item"));
-      const yearIndicator = document.querySelector(".year-indicator");
-      const yearChips = Array.from(document.querySelectorAll(".timeline-year"));
+      // No separate year indicator element anymore
 
       // Gentle stagger
       items.forEach((el, i) => {
@@ -967,78 +945,7 @@
         });
       })();
 
-      // ---- Single sticky year indicator + “dock” the matching chip ----
-      function getStickyLineY() {
-        // Use the indicator's actual on-screen Y position each frame.
-        if (!yearIndicator) return 0;
-        return yearIndicator.getBoundingClientRect().top;
-      }
-
-      function updateYearIndicator() {
-        const stickyLineY = getStickyLineY();
-        let activeIndex = 0;
-
-        // Determine active year: last chip whose top is above the sticky line
-        for (let i = 0; i < yearChips.length; i++) {
-          const rect = yearChips[i].getBoundingClientRect();
-          if (rect.top <= stickyLineY) {
-            activeIndex = i;
-          } else {
-            break;
-          }
-        }
-
-        const activeText = yearChips[activeIndex]?.textContent?.trim() || "";
-
-        // Update sticky indicator text
-        if (
-          yearIndicator &&
-          activeText &&
-          yearIndicator.textContent !== activeText
-        ) {
-          yearIndicator.textContent = activeText;
-        }
-
-        // Dock logic: hide the chip that's currently under the sticky indicator,
-        // show all others so they remain visible in the timeline.
-        yearChips.forEach((chip, i) => {
-          const r = chip.getBoundingClientRect();
-          const isUnderSticky =
-            r.top <= stickyLineY + 2 && r.bottom > stickyLineY;
-          chip.classList.toggle(
-            "is-docked",
-            isUnderSticky && i === activeIndex
-          );
-        });
-      }
-
-      // Initialize and bind
-      let ticking = false;
-      function onScrollOrResize() {
-        if (!ticking) {
-          window.requestAnimationFrame(() => {
-            updateYearIndicator();
-            ticking = false;
-          });
-          ticking = true;
-        }
-      }
-
-      updateYearIndicator();
-      document.addEventListener("scroll", onScrollOrResize, {
-        passive: true,
-      });
-      window.addEventListener("resize", onScrollOrResize);
-      window.addEventListener("orientationchange", onScrollOrResize);
-      document.addEventListener("DOMContentLoaded", updateYearIndicator);
-      window.addEventListener("load", updateYearIndicator);
-
-      // Re-run when the sticky position might change due to styles/layout
-      if (window.ResizeObserver) {
-        const ro = new ResizeObserver(updateYearIndicator);
-        if (yearIndicator) ro.observe(yearIndicator);
-        if (timeline) ro.observe(timeline);
-      }
+      // No JS needed for the year chips; CSS sticky handles behavior
     </script>
   </body>
 </html>
