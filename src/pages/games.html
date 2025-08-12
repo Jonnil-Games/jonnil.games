@@ -5,11 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Games - Jonnil Games</title>
 
-    <!-- Meta -->
+    <!-- Primary Meta -->
+    <meta name="title" content="Games - Jonnil Games" />
     <meta
       name="description"
-      content="Discover our games timeline: releases, updates, and what's coming next."
+      content="Discover our collection of inclusive and innovative games. From charming platformers to haunting adventures, explore unique gaming experiences crafted with care."
     />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://jonnil.games/games.html" />
+    <meta property="og:title" content="Games - Jonnil Games" />
+    <meta
+      property="og:description"
+      content="Discover our collection of inclusive and innovative games. From charming platformers to haunting adventures, explore unique gaming experiences crafted with care."
+    />
+    <meta
+      property="og:image"
+      content="https://jonnil.games/images/og-preview.png"
+    />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Games - Jonnil Games" />
+    <meta
+      name="twitter:description"
+      content="Discover our collection of inclusive and innovative games. From charming platformers to haunting adventures, explore unique gaming experiences crafted with care."
+    />
+    <meta
+      name="twitter:image"
+      content="https://jonnil.games/images/og-preview.png"
+    />
+
+    <!-- Canonical + Feeds -->
     <link rel="canonical" href="https://jonnil.games/games.html" />
     <link
       rel="alternate"
@@ -24,6 +52,47 @@
       href="/blog/atom.xml"
     />
 
+    <!-- Schema.org: list our games -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": [
+          {
+            "@type": "VideoGame",
+            "position": 1,
+            "name": "Sticky Paws",
+            "description": "Help Sticky & friends get their stolen cake back in this charming platformer adventure!",
+            "genre": "Platformer",
+            "gamePlatform": "PC",
+            "applicationCategory": "Game",
+            "operatingSystem": "Windows",
+            "url": "https://jonnil.games/games/sticky/",
+            "image": "https://jonnil.games/images/sticky-paws.png",
+            "offers": {
+              "@type": "Offer",
+              "availability": "https://schema.org/InStock",
+              "price": "9.99",
+              "priceCurrency": "USD",
+              "url": "https://store.steampowered.com/app/1129090/Sticky_Paws/"
+            }
+          },
+          {
+            "@type": "VideoGame",
+            "position": 2,
+            "name": "Juni's Asylum",
+            "description": "A haunting horror adventure game currently in development.",
+            "genre": "Horror Adventure",
+            "gamePlatform": "PC",
+            "applicationCategory": "Game",
+            "operatingSystem": "Windows",
+            "url": "https://jonnil.games/games/asylum/",
+            "image": "https://jonnil.games/images/asylum.png"
+          }
+        ]
+      }
+    </script>
+
     <!-- Styles & Fonts -->
     <link rel="stylesheet" href="/styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -37,30 +106,37 @@
       href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css"
     />
 
-    <!-- Page-scoped tweaks for timeline behavior -->
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Page-scoped enhancements for the timeline -->
     <style>
-      /* Ensure anchor jumps land below the sticky header */
-      html {
-        scroll-padding-top: 5rem;
+      /* Respect reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        .timeline-item,
+        .timeline-item.fade-up {
+          animation: none !important;
+          transform: none !important;
+          opacity: 1 !important;
+        }
       }
 
-      /* Static in-flow year chips (always visible) */
-      .timeline-year {
-        display: inline-block;
-        margin: 2rem 0 1rem;
-        padding: 0.25rem 0.75rem;
-        background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
-        color: #fff;
-        border-radius: var(--radius-full);
-        font-weight: 700;
-        letter-spacing: 0.02em;
+      /* Scroll snap on mobile */
+      @media (max-width: 768px) {
+        .timeline {
+          scroll-snap-type: y proximity;
+        }
+        .timeline-item {
+          scroll-snap-align: start;
+          scroll-margin-top: 5rem; /* helps anchored jumps under fixed header */
+        }
       }
 
-      /* Single sticky indicator that updates as you scroll.
-         It sits inside .timeline so it only appears once the timeline reaches the top. */
+      /* Single sticky year indicator at top */
       .year-indicator {
         position: sticky;
-        top: 4.5rem; /* header (~4rem) + a little buffer */
+        top: 4.5rem; /* header is ~4rem */
         z-index: 6;
         font-weight: 700;
         letter-spacing: 0.02em;
@@ -72,10 +148,29 @@
         width: fit-content;
       }
 
-      /* Target highlight: only the card, not the whole row */
+      /* Visible in-flow year chips (these are what you wanted back) */
+      .timeline-year {
+        position: relative;
+        display: inline-block;
+        margin: 2rem 0 1rem;
+        padding: 0.25rem 0.75rem;
+        background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
+        color: #fff;
+        border-radius: var(--radius-full);
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+      /* When a chip is currently represented by the sticky indicator,
+         hide it to avoid the “double” look */
+      .timeline-year.is-docked {
+        visibility: hidden;
+      }
+
+      /* Target highlight: only the card, not full width */
       .timeline-item {
         position: relative;
         scroll-margin-top: 5rem; /* guard against fixed header */
+        --stagger: 0s; /* default */
       }
       .timeline-item:target .timeline-content,
       .timeline-item:focus-within .timeline-content {
@@ -84,7 +179,7 @@
         border-radius: 12px;
       }
 
-      /* Tiny link to copy deep links */
+      /* Optional anchor hash link shown on hover/focus */
       .anchor-link {
         position: absolute;
         top: 0.75rem;
@@ -99,6 +194,20 @@
         opacity: 1;
       }
 
+      /* Tiny stagger polish on reveal */
+      .timeline-item.fade-up {
+        animation: fadeIn 0.5s var(--stagger) both,
+          raise 0.5s var(--stagger) both;
+      }
+      @keyframes raise {
+        from {
+          transform: translateY(12px);
+        }
+        to {
+          transform: none;
+        }
+      }
+
       /* Compact half-height cards that link to Sticky Paws */
       .timeline-item.compact .timeline-content {
         padding: var(--spacing-md);
@@ -111,7 +220,7 @@
         font-size: 0.95rem;
         color: var(--text-gray-700);
         display: -webkit-box;
-        -webkit-line-clamp: 2; /* keep brief */
+        -webkit-line-clamp: 2; /* clamp to ~2 lines */
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
@@ -135,13 +244,26 @@
           box-shadow var(--transition-normal);
       }
 
-      /* Side control via classes (left/right); we assign these per year via JS */
+      /* Microinteractions on the spine & date chip */
+      .timeline::before {
+        transition: opacity 0.3s ease;
+      }
+      .timeline.timeline-active::before {
+        opacity: 0.4;
+      }
+      .timeline-item:hover .timeline-date {
+        transform: translateY(-1px);
+        filter: brightness(1.1);
+      }
+
+      /* Side control via classes (left/right), reset per year via JS */
       .timeline-item.left .timeline-content {
-        margin-left: 0;
+        margin-left: 0; /* left column */
       }
       .timeline-item.right .timeline-content {
-        margin-left: auto;
+        margin-left: auto; /* right column */
       }
+      /* Pointers */
       .timeline-item.left .timeline-content::before {
         right: calc(-1 * var(--spacing-xl));
         left: auto;
@@ -155,7 +277,7 @@
         border-left-color: transparent;
       }
 
-      /* One-column on narrow screens */
+      /* On narrow viewports, one column layout anyway */
       @media (max-width: 768px) {
         .timeline-item.left .timeline-content,
         .timeline-item.right .timeline-content {
@@ -174,6 +296,7 @@
     <!-- Header component -->
     <cyan component="header"></cyan>
 
+    <!-- Main Content -->
     <main>
       <section class="hero">
         <h1>Our Games</h1>
@@ -182,18 +305,18 @@
 
       <div class="divider large-divider"></div>
 
-      <!-- Timeline -->
+      <!-- Timeline Section -->
       <section class="timeline-section" aria-labelledby="games-timeline">
         <h2 id="games-timeline" class="visually-hidden">Games Timeline</h2>
 
         <div class="timeline">
-          <!-- Sticky indicator lives inside the timeline so it starts sticking only after timeline hits the top -->
-          <div class="year-indicator">Upcoming</div>
+          <!-- Single sticky indicator that updates as you scroll -->
+          <div class="year-indicator" aria-live="polite">Upcoming</div>
 
-          <!-- Static in-flow year chips (always displayed) -->
+          <!-- Visible in-flow year markers used for grouping + indicator -->
           <div class="timeline-year">Upcoming</div>
 
-          <!-- Upcoming items -->
+          <!-- Latest Game (In Development) -->
           <article class="timeline-item" id="junis-asylum" tabindex="0">
             <div class="timeline-content">
               <a
@@ -221,7 +344,7 @@
             </div>
           </article>
 
-          <!-- Compact link cards -->
+          <!-- Sticky Paws Switch Update (compact link card) -->
           <article class="timeline-item compact" tabindex="0">
             <div class="timeline-content">
               <a
@@ -244,6 +367,7 @@
 
           <div class="timeline-year">2023</div>
 
+          <!-- Community Milestone -->
           <article
             class="timeline-item milestone"
             id="formalized-team"
@@ -259,8 +383,8 @@
               <span class="timeline-date">Mar 18, 2023</span>
               <h3>Formalized Team</h3>
               <p>
-                We formalized our team structure to enhance collaboration and
-                project management.
+                Formalized our team structure internally to enhance
+                collaboration and project management.
               </p>
               <div class="tags">
                 <span class="tag tag-status">Community</span>
@@ -275,6 +399,7 @@
 
           <div class="timeline-year">2022</div>
 
+          <!-- Sticky Paws DX Update (compact link card) -->
           <article class="timeline-item compact" tabindex="0">
             <div class="timeline-content">
               <a
@@ -285,7 +410,7 @@
               <span class="timeline-date">Apr 16, 2022</span>
               <h3>Sticky Paws: DX Update</h3>
               <p>
-                Definitive refresh with revamped stages, QoL upgrades, polish.
+                Definitive refresh: revamped stages, QoL upgrades, broad polish.
               </p>
               <div class="tags">
                 <span class="tag tag-status">Update</span>
@@ -296,6 +421,7 @@
 
           <div class="timeline-year">2019</div>
 
+          <!-- Sticky Paws -->
           <article class="timeline-item" id="sticky-paws" tabindex="0">
             <div class="timeline-content">
               <a
@@ -333,6 +459,7 @@
 
           <div class="timeline-year">2016</div>
 
+          <!-- Community Milestone -->
           <article
             class="timeline-item milestone"
             id="discord-launch"
@@ -366,6 +493,7 @@
             </div>
           </article>
 
+          <!-- Golden Cargo Block -->
           <article
             class="timeline-item legacy"
             id="golden-cargo-block"
@@ -388,7 +516,8 @@
               <p>
                 A cooperative 2-player platformer where one player controls the
                 character while the other controls a golden cargo block to
-                create platforms.
+                create platforms. A reimagining of our earlier game Golden Lego
+                Block!
               </p>
               <div class="tags">
                 <span class="tag tag-genre">Cooperative Platformer</span>
@@ -401,6 +530,7 @@
             </div>
           </article>
 
+          <!-- Vast Dungeon -->
           <article class="timeline-item legacy" id="vast-dungeon" tabindex="0">
             <div class="timeline-content">
               <a
@@ -417,8 +547,9 @@
               </div>
               <h3>Vast Dungeon</h3>
               <p>
-                Guide a lone explorer through a vast dungeon, solving puzzles to
-                escape.
+                A top-down puzzle adventure where you guide a lone explorer
+                through a vast dungeon, seeking an escape while solving
+                challenging puzzles.
               </p>
               <div class="tags">
                 <span class="tag tag-genre">Puzzle Adventure</span>
@@ -431,6 +562,7 @@
             </div>
           </article>
 
+          <!-- Spook: The Clinic (2016) -->
           <article
             class="timeline-item legacy"
             id="spook-the-clinic"
@@ -451,8 +583,9 @@
               </div>
               <h3>Spook: The Clinic</h3>
               <p>
-                A horror platformer that laid the groundwork for our upcoming
-                major title.
+                A horror platformer following a green-haired protagonist trying
+                to escape from a terrifying clinic. This game laid the
+                groundwork for our upcoming major title.
               </p>
               <div class="tags">
                 <span class="tag tag-genre">Horror Platformer</span>
@@ -465,6 +598,7 @@
             </div>
           </article>
 
+          <!-- Love is on the bus -->
           <article
             class="timeline-item legacy"
             id="love-is-on-the-bus"
@@ -485,8 +619,9 @@
               </div>
               <h3>Love is on the bus</h3>
               <p>
-                Listen to passengers' love stories and work up the courage to
-                meet your crush.
+                A narrative adventure where you listen to various passengers'
+                love stories before gathering the courage to approach your own
+                crush on the bus. Released on Valentine's Day!
               </p>
               <div class="tags">
                 <span class="tag tag-genre">Narrative Adventure</span>
@@ -507,6 +642,7 @@
 
           <div class="timeline-year">2014</div>
 
+          <!-- Jonnil TimeTravel -->
           <article
             class="timeline-item legacy"
             id="jonnil-timetravel"
@@ -527,8 +663,9 @@
               </div>
               <h3>Jonnil TimeTravel</h3>
               <p>
-                Control multiple characters across time, combining abilities to
-                progress.
+                A unique platformer where you control multiple characters
+                traveling through time, using their combined abilities to
+                progress through the adventure.
               </p>
               <div class="tags">
                 <span class="tag tag-genre">Time-Travel Platformer</span>
@@ -554,6 +691,7 @@
             </div>
           </article>
 
+          <!-- Spook -->
           <article class="timeline-item legacy" id="spook-2014" tabindex="0">
             <div class="timeline-content">
               <a
@@ -570,8 +708,9 @@
               </div>
               <h3>Spook</h3>
               <p>
-                A tense top-down survival game where you must escape a
-                zombie-filled basement.
+                Our first horror game — a tense top-down survival experience
+                where you must escape a basement filled with zombies! The
+                beginning of our horror game series.
               </p>
               <div class="tags">
                 <span class="tag tag-genre">Horror</span>
@@ -590,6 +729,7 @@
             </div>
           </article>
 
+          <!-- Toaster 2 -->
           <article class="timeline-item legacy" id="toaster-2" tabindex="0">
             <div class="timeline-content">
               <a
@@ -606,8 +746,9 @@
               </div>
               <h3>Toaster 2</h3>
               <p>
-                The sequel to Toaster: A Nurikabe Experience—this time, no
-                kidnapping chaos.
+                The sequel to Toaster: A Nurikabe Experience. Join Toaster as he
+                investigates who was behind his girlfriend's kidnapping in the
+                previous game — don't worry, she's safe this time!
               </p>
               <div class="tags">
                 <span class="tag tag-genre">Puzzle Platformer</span>
@@ -633,6 +774,7 @@
             </div>
           </article>
 
+          <!-- Golden Lego Block -->
           <article
             class="timeline-item legacy"
             id="golden-lego-block"
@@ -654,7 +796,8 @@
               <h3>Golden Lego Block</h3>
               <p>
                 The original 2-player platformer that inspired Golden Cargo
-                Block.
+                Block. One player controls the character while the other
+                manipulates a golden Lego block to create platforms.
               </p>
               <div class="tags">
                 <span class="tag tag-genre">Cooperative Platformer</span>
@@ -670,7 +813,7 @@
                   >Download</a
                 >
                 <a
-                  href="https://drive.google.com/file/d/1QAI8JUuJyxeqXs-YJPgyPUl-8RAx_GQA/view?usp=sharing"
+                  href="https://drive.google.com/file/d/1QAI8JUuJyxeqXs-YJPgyPUl-8RAxG_QA/view?usp=sharing"
                   class="button secondary-button"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -680,6 +823,7 @@
             </div>
           </article>
 
+          <!-- Toaster: A Nurikabe Experience -->
           <article
             class="timeline-item legacy"
             id="toaster-nurikabe"
@@ -700,8 +844,9 @@
               </div>
               <h3>Toaster: A Nurikabe Experience</h3>
               <p>
-                Our very first game—Toaster sets out to rescue his kidnapped
-                girlfriend.
+                Our very first game! A platformer starring Toaster, a nurikabe
+                character who must rescue his kidnapped girlfriend. The start of
+                the Toaster series!
               </p>
               <div class="tags">
                 <span class="tag tag-genre">Puzzle Platformer</span>
@@ -733,101 +878,144 @@
     <!-- Footer component -->
     <cyan component="footer"></cyan>
 
-    <!-- Page script: sticky-year with sentinels + per-year left/right alternation -->
+    <!-- Page script: reveal, roving focus, sticky-year indicator, per-year alternation -->
     <script>
-      (function () {
-        const timeline = document.querySelector(".timeline");
-        if (!timeline) return;
+      // Respect reduced motion
+      const prefersReducedMotion =
+        window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-        // Ensure sticky label exists (default to first visible year)
-        let sticky = document.querySelector(".year-indicator");
-        const yearChips = Array.from(
-          timeline.querySelectorAll(".timeline-year")
+      const timeline = document.querySelector(".timeline");
+      const items = Array.from(document.querySelectorAll(".timeline-item"));
+      const yearIndicator = document.querySelector(".year-indicator");
+      const yearChips = Array.from(document.querySelectorAll(".timeline-year"));
+
+      // Gentle stagger
+      items.forEach((el, i) => {
+        const delay = Math.min(i * 0.04, 0.24);
+        el.style.setProperty("--stagger", delay + "s");
+      });
+
+      // Reveal-on-scroll
+      if (prefersReducedMotion) {
+        items.forEach((el) => el.classList.add("fade-up"));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            let any = false;
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("fade-up");
+                io.unobserve(entry.target);
+                any = true;
+              }
+            });
+            if (any) timeline.classList.add("timeline-active");
+          },
+          { threshold: 0.2, rootMargin: "50px" }
         );
+        items.forEach((el) => io.observe(el));
+      }
 
-        if (!sticky) {
-          sticky = document.createElement("div");
-          sticky.className = "year-indicator";
-          sticky.textContent = yearChips[0]?.textContent?.trim() || "";
-          timeline.prepend(sticky);
-        }
+      // Add “#” copy-links to deep-linkable cards
+      document.querySelectorAll(".timeline-item[id]").forEach((el) => {
+        const content = el.querySelector(".timeline-content");
+        if (!content) return;
+        const existing = content.querySelector(".anchor-link");
+        if (existing) return;
+        const a = document.createElement("a");
+        a.href = `#${el.id}`;
+        a.className = "anchor-link";
+        a.setAttribute("aria-label", "Link to this timeline item");
+        a.textContent = "#";
+        content.prepend(a);
+      });
 
-        // Create invisible sentinels just BEFORE each year chip
-        const sentinels = yearChips.map((chip) => {
-          const s = document.createElement("div");
-          s.className = "year-sentinel";
-          s.dataset.year = chip.textContent.trim();
-          s.setAttribute("aria-hidden", "true");
-          s.style.cssText = "position:relative;height:0;margin:0;padding:0;";
-          chip.parentNode.insertBefore(s, chip);
-          return s;
+      // Roving focus with ArrowUp/ArrowDown
+      const focusable = items.filter((el) => el.hasAttribute("tabindex"));
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+        const i = focusable.indexOf(document.activeElement);
+        if (i === -1) return;
+        e.preventDefault();
+        const next =
+          e.key === "ArrowDown"
+            ? Math.min(i + 1, focusable.length - 1)
+            : Math.max(i - 1, 0);
+        focusable[next].focus({ preventScroll: false });
+        focusable[next].scrollIntoView({
+          block: "nearest",
+          behavior: "smooth",
         });
+      });
 
-        // Alternate left/right per year (first item after each year starts on left)
-        (function assignSidesPerYear() {
-          const children = Array.from(timeline.children);
-          let side = "left";
-          children.forEach((node) => {
-            if (node.classList.contains("timeline-year")) {
-              side = "left";
-            } else if (node.classList.contains("timeline-item")) {
-              node.classList.remove("left", "right");
-              node.classList.add(side);
-              side = side === "left" ? "right" : "left";
-            }
-          });
-        })();
-
-        function stickyOffset() {
-          const header = document.querySelector("header");
-          return (header?.offsetHeight || 64) + 8; // px from viewport top
-        }
-
-        // Update sticky label: choose the last sentinel whose top is <= sticky line
-        let ticking = false;
-        function updateSticky() {
-          ticking = false;
-          const y = stickyOffset();
-          let active = sentinels[0]?.dataset.year || "";
-
-          for (let i = 0; i < sentinels.length; i++) {
-            const top = sentinels[i].getBoundingClientRect().top;
-            if (top <= y) {
-              active = sentinels[i].dataset.year;
-            } else {
-              break;
-            }
+      // ---- Per-year left/right alternation (reset each year) ----
+      (function assignSidesPerYear() {
+        const children = Array.from(timeline.children);
+        let side = "left"; // first item after a year starts on the left
+        children.forEach((node) => {
+          if (node.classList.contains("timeline-year")) {
+            side = "left"; // reset at each year marker
+            return;
           }
-          if (sticky.textContent !== active) {
-            sticky.textContent = active;
+          if (node.classList.contains("timeline-item")) {
+            node.classList.remove("left", "right");
+            node.classList.add(side);
+            side = side === "left" ? "right" : "left";
           }
-        }
-
-        function onScroll() {
-          if (!ticking) {
-            window.requestAnimationFrame(updateSticky);
-            ticking = true;
-          }
-        }
-
-        // Add “#” links to any deep-linkable cards missing one
-        document.querySelectorAll(".timeline-item[id]").forEach((el) => {
-          const content = el.querySelector(".timeline-content");
-          if (!content || content.querySelector(".anchor-link")) return;
-          const a = document.createElement("a");
-          a.href = `#${el.id}`;
-          a.className = "anchor-link";
-          a.setAttribute("aria-label", "Link to this timeline item");
-          a.textContent = "#";
-          content.prepend(a);
         });
-
-        // init & listeners
-        updateSticky();
-        document.addEventListener("scroll", onScroll, { passive: true });
-        window.addEventListener("resize", updateSticky);
-        window.addEventListener("orientationchange", updateSticky);
       })();
+
+      // ---- Single sticky year indicator + “dock” the matching chip ----
+      function getTopOffset() {
+        const header = document.querySelector("header");
+        return (header?.offsetHeight || 64) + 8; // header height + small buffer
+      }
+
+      function updateYearIndicator() {
+        const topOffset = getTopOffset();
+        let activeIndex = 0;
+
+        // Determine active year: last chip whose top is above the sticky line
+        for (let i = 0; i < yearChips.length; i++) {
+          const rect = yearChips[i].getBoundingClientRect();
+          if (rect.top <= topOffset) {
+            activeIndex = i;
+          } else {
+            break;
+          }
+        }
+
+        const activeText = yearChips[activeIndex]?.textContent?.trim() || "";
+
+        // Update sticky indicator text
+        if (
+          yearIndicator &&
+          activeText &&
+          yearIndicator.textContent !== activeText
+        ) {
+          yearIndicator.textContent = activeText;
+        }
+
+        // Dock logic: hide the chip that's currently under the sticky indicator,
+        // show all others so they remain visible in the timeline.
+        yearChips.forEach((chip, i) => {
+          const r = chip.getBoundingClientRect();
+          const isUnderSticky = r.top <= topOffset + 2 && r.bottom > topOffset;
+          chip.classList.toggle(
+            "is-docked",
+            isUnderSticky && i === activeIndex
+          );
+        });
+      }
+
+      // Initialize and bind
+      updateYearIndicator();
+      document.addEventListener("scroll", updateYearIndicator, {
+        passive: true,
+      });
+      window.addEventListener("resize", updateYearIndicator);
+      window.addEventListener("orientationchange", updateYearIndicator);
     </script>
   </body>
 </html>
