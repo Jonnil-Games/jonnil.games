@@ -133,7 +133,7 @@
         }
       }
 
-      /* Single sticky year indicator (the only visible year label) */
+      /* Single sticky year indicator at top */
       .year-indicator {
         position: sticky;
         top: 4.5rem; /* header is ~4rem */
@@ -148,13 +148,22 @@
         width: fit-content;
       }
 
-      /* Hide in-flow year markers visually but keep them in the flow for JS measurements */
+      /* Visible in-flow year chips (these are what you wanted back) */
       .timeline-year {
-        height: 0;
-        margin: 0;
-        padding: 0;
-        border: 0;
-        visibility: hidden; /* occupies position without drawing */
+        position: relative;
+        display: inline-block;
+        margin: 2rem 0 1rem;
+        padding: 0.25rem 0.75rem;
+        background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
+        color: #fff;
+        border-radius: var(--radius-full);
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+      /* When a chip is currently represented by the sticky indicator,
+         hide it to avoid the “double” look */
+      .timeline-year.is-docked {
+        visibility: hidden;
       }
 
       /* Target highlight: only the card, not full width */
@@ -304,7 +313,7 @@
           <!-- Single sticky indicator that updates as you scroll -->
           <div class="year-indicator" aria-live="polite">Upcoming</div>
 
-          <!-- Hidden (measurable) year markers used for grouping + indicator -->
+          <!-- Visible in-flow year markers used for grouping + indicator -->
           <div class="timeline-year">Upcoming</div>
 
           <!-- Latest Game (In Development) -->
@@ -957,26 +966,29 @@
         });
       })();
 
-      // ---- Single sticky year indicator (no duplicates) ----
+      // ---- Single sticky year indicator + “dock” the matching chip ----
       function getTopOffset() {
         const header = document.querySelector("header");
-        return (header?.offsetHeight || 64) + 8; // header height + buffer
+        return (header?.offsetHeight || 64) + 8; // header height + small buffer
       }
 
       function updateYearIndicator() {
         const topOffset = getTopOffset();
-        let activeText = yearChips[0]?.textContent?.trim() || "";
+        let activeIndex = 0;
 
-        // Choose the last chip whose top has crossed the sticky line
-        for (const chip of yearChips) {
-          const rect = chip.getBoundingClientRect();
+        // Determine active year: last chip whose top is above the sticky line
+        for (let i = 0; i < yearChips.length; i++) {
+          const rect = yearChips[i].getBoundingClientRect();
           if (rect.top <= topOffset) {
-            activeText = chip.textContent.trim();
+            activeIndex = i;
           } else {
-            break; // chips are in order; early exit
+            break;
           }
         }
 
+        const activeText = yearChips[activeIndex]?.textContent?.trim() || "";
+
+        // Update sticky indicator text
         if (
           yearIndicator &&
           activeText &&
@@ -984,6 +996,17 @@
         ) {
           yearIndicator.textContent = activeText;
         }
+
+        // Dock logic: hide the chip that's currently under the sticky indicator,
+        // show all others so they remain visible in the timeline.
+        yearChips.forEach((chip, i) => {
+          const r = chip.getBoundingClientRect();
+          const isUnderSticky = r.top <= topOffset + 2 && r.bottom > topOffset;
+          chip.classList.toggle(
+            "is-docked",
+            isUnderSticky && i === activeIndex
+          );
+        });
       }
 
       // Initialize and bind
