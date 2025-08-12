@@ -15,161 +15,66 @@
       <li><a href="/about.html">About</a></li>
     </ul>
 
-    <!-- Hamburger Button for Mobile -->
+    <!-- Mobile Menu Toggle -->
     <button
       class="hamburger"
       type="button"
-      aria-label="Open navigation menu"
-      aria-expanded="false"
+      aria-label="Toggle menu"
       aria-controls="mobile-menu"
+      aria-expanded="false"
     >
-      <span class="hamburger-bar"></span>
-      <span class="hamburger-bar"></span>
-      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar" aria-hidden="true"></span>
+      <span class="hamburger-bar" aria-hidden="true"></span>
+      <span class="hamburger-bar" aria-hidden="true"></span>
     </button>
   </nav>
 
-  <!-- Mobile Menu -->
-  <nav
+  <!-- Mobile Menu Panel -->
+  <div
     id="mobile-menu"
     class="mobile-menu"
-    aria-hidden="true"
-    aria-label="Mobile"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Mobile Navigation"
   >
-    <ul class="mobile-nav-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="/games.html">Games</a></li>
-      <li><a href="/blog/index.html">Blog</a></li>
-      <li><a href="/team.html">Team</a></li>
-      <li><a href="/about.html">About</a></li>
+    <ul class="mobile-nav-links" role="menu">
+      <li role="none"><a role="menuitem" href="/">Home</a></li>
+      <li role="none"><a role="menuitem" href="/games.html">Games</a></li>
+      <li role="none"><a role="menuitem" href="/blog/index.html">Blog</a></li>
+      <li role="none"><a role="menuitem" href="/team.html">Team</a></li>
+      <li role="none"><a role="menuitem" href="/about.html">About</a></li>
     </ul>
 
     <div class="mobile-social-links">
       <a
+        class="social-icon"
         href="https://bsky.app/profile/jonnil.games"
         target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Follow us on BlueSky"
-        class="social-icon"
+        rel="noopener"
+        aria-label="BlueSky"
+        >B</a
       >
-        <i class="ri-bluesky-fill" aria-hidden="true"></i>
-      </a>
-
       <a
-        href="https://fedi.jonnil.games/"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Follow us on Mastodon"
         class="social-icon"
-      >
-        <!-- Mastodon icon -->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127..."
-          />
-        </svg>
-      </a>
-
-      <a
-        href="https://discord.gg/GAmTXwqH9V"
+        href="https://github.com/jonnilgames"
         target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Join our Discord"
-        class="social-icon"
+        rel="noopener"
+        aria-label="GitHub"
+        >GH</a
       >
-        <!-- Discord icon -->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          aria-hidden="true"
-        >
-          <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152..." />
-        </svg>
-      </a>
     </div>
 
     <div class="mobile-footer-info">
-      <p>&copy; 2024 Jonnil Games. All rights reserved.</p>
-      <p>With 💖 from Sweden!</p>
-      <p>
-        Email: <a href="mailto:contact@jonnil.games">contact@jonnil.games</a>
-      </p>
+      <p>© <span id="current-year"></span> Jonnil Games</p>
+      <p><a href="/about.html">About</a> · <a href="/team.html">Team</a></p>
     </div>
-  </nav>
+  </div>
 
-  <!-- Inline, framework-free, accessible mobile menu controller -->
+  <!-- Inline script: active link highlighting, mobile menu toggle and accessibility -->
   <script>
     (function () {
       const root = document.currentScript.closest("header");
       if (!root) return;
-      const hamburger = root.querySelector(".hamburger");
-      const mobileMenu = root.querySelector("#mobile-menu");
-      const body = document.body;
-      if (!hamburger || !mobileMenu) return;
-
-      function setOpenState(open) {
-        mobileMenu.classList.toggle("open", open);
-        hamburger.classList.toggle("active", open);
-        hamburger.setAttribute("aria-expanded", String(open));
-        mobileMenu.setAttribute("aria-hidden", String(!open));
-        body.classList.toggle("no-scroll", open);
-      }
-
-      function toggle(open) {
-        const next =
-          typeof open === "boolean"
-            ? open
-            : !mobileMenu.classList.contains("open");
-        setOpenState(next);
-        if (next) {
-          const first = mobileMenu.querySelector(
-            'a, button, [tabindex]:not([tabindex="-1"])'
-          );
-          if (first) first.focus({ preventScroll: true });
-        } else {
-          hamburger.focus({ preventScroll: true });
-        }
-      }
-
-      // Toggle on click
-      hamburger.addEventListener("click", () => toggle());
-
-      // Close on link click inside menu
-      mobileMenu.addEventListener("click", (e) => {
-        const link = e.target.closest("a");
-        if (link) toggle(false);
-      });
-
-      // Close when clicking outside
-      document.addEventListener("click", (e) => {
-        if (!mobileMenu.classList.contains("open")) return;
-        if (root.contains(e.target)) return; // clicks inside header allowed
-        toggle(false);
-      });
-
-      // Close on Escape
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && mobileMenu.classList.contains("open"))
-          toggle(false);
-      });
-
-      // Close if resized to desktop
-      window.addEventListener("resize", () => {
-        if (window.innerWidth >= 769 && mobileMenu.classList.contains("open"))
-          toggle(false);
-      });
-
-      // Active link highlight (desktop + mobile)
       const currentPath = window.location.pathname;
       function shouldBeActive(linkPath) {
         if (
@@ -191,15 +96,83 @@
             currentPath.replace(".html", "") === linkPath)
         );
       }
-      const allLinks = root.querySelectorAll(
-        ".nav-links a, .mobile-nav-links a"
-      );
-      allLinks.forEach((a) =>
+      const desktopLinks = root.querySelectorAll(".nav-links a");
+      desktopLinks.forEach((a) =>
         a.classList.toggle(
           "active",
           shouldBeActive(a.getAttribute("href") || "")
         )
       );
+
+      const mobileLinks = root.querySelectorAll(".mobile-nav-links a");
+      mobileLinks.forEach((a) =>
+        a.classList.toggle(
+          "active",
+          shouldBeActive(a.getAttribute("href") || "")
+        )
+      );
+
+      const hamburger = root.querySelector(".hamburger");
+      const mobileMenu = root.querySelector("#mobile-menu");
+      const body = document.body;
+
+      // Ensure year is current in mobile footer
+      const yearEl = root.querySelector("#current-year");
+      if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+      if (hamburger && mobileMenu) {
+        function openMenu() {
+          mobileMenu.classList.add("open");
+          hamburger.classList.add("active");
+          hamburger.setAttribute("aria-expanded", "true");
+          body.classList.add("no-scroll");
+          // Focus first link for accessibility
+          const firstLink = mobileMenu.querySelector("a");
+          if (firstLink) firstLink.focus();
+        }
+
+        function closeMenu() {
+          mobileMenu.classList.remove("open");
+          hamburger.classList.remove("active");
+          hamburger.setAttribute("aria-expanded", "false");
+          body.classList.remove("no-scroll");
+          hamburger.focus();
+        }
+
+        function toggleMenu() {
+          if (mobileMenu.classList.contains("open")) {
+            closeMenu();
+          } else {
+            openMenu();
+          }
+        }
+
+        hamburger.addEventListener("click", toggleMenu);
+
+        // Close when a mobile nav link is clicked
+        mobileLinks.forEach((a) =>
+          a.addEventListener("click", () => {
+            closeMenu();
+          })
+        );
+
+        // Close on Escape key
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && mobileMenu.classList.contains("open")) {
+            closeMenu();
+          }
+        });
+
+        // Close the menu if transitioning to desktop
+        window.addEventListener("resize", () => {
+          if (
+            window.innerWidth >= 769 &&
+            mobileMenu.classList.contains("open")
+          ) {
+            closeMenu();
+          }
+        });
+      }
     })();
   </script>
 </header>
