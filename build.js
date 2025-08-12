@@ -166,21 +166,7 @@ function injectComponents(pagePath) {
       }
       const componentHtml = readFile(componentPath);
 
-      // Ensure component JS is included once
-      const jsPath = path.join(
-        componentsDir,
-        componentName,
-        `${componentName}.js`
-      );
-      const publicJsRef = `/components/${componentName}/${componentName}.js`;
-      if (fileExists(jsPath) && !pageContent.includes(publicJsRef)) {
-        const scriptTag = `<script src="${publicJsRef}"></script>`;
-        const bodyCloseRe = /<\/body>/i;
-        pageContent = bodyCloseRe.test(pageContent)
-          ? pageContent.replace(bodyCloseRe, `${scriptTag}\n</body>`)
-          : `${pageContent}\n${scriptTag}`;
-        console.log(`Added ${componentName}.js script to the page`);
-      }
+      // Note: header now ships with inline JS in its HTML; do not auto-inject external component scripts
 
       return componentHtml;
     }
@@ -268,13 +254,7 @@ function copyComponentScriptsToPublic() {
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
     const name = entry.name;
-    const jsPath = path.join(componentsDir, name, `${name}.js`);
-    if (fileExists(jsPath)) {
-      const outDir = path.join(destBase, name);
-      ensureDirectoryExists(outDir);
-      fs.copyFileSync(jsPath, path.join(outDir, `${name}.js`));
-      console.log(`Copied component script: ${name}.js`);
-    }
+    // No-op: external component JS is not required (inline where needed)
   }
 }
 
