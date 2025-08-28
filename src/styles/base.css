@@ -223,21 +223,39 @@ header {
   width: 100%;
   height: 100vh;
   background-color: #ffffff;
-  box-shadow: var(--shadow-lg);
-  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-xl);
+  padding: calc(env(safe-area-inset-top) + var(--spacing-xl)) var(--spacing-xl) calc(env(safe-area-inset-bottom) + var(--spacing-xl));
   z-index: 1200;
   overflow-y: auto;
-  transition: right var(--transition-normal);
+  transition: right var(--transition-normal), transform var(--transition-normal), opacity var(--transition-normal);
   display: flex;
   flex-direction: column;
   visibility: hidden;
   pointer-events: none;
+  opacity: 0;
+  transform: translateX(8%);
+  border-top-left-radius: var(--radius-lg);
+  border-bottom-left-radius: var(--radius-lg);
 }
 
 .mobile-menu.open {
   right: 0;
   visibility: visible;
   pointer-events: auto;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Subtle gradient accent at the top of the mobile panel */
+.mobile-menu::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
+  border-top-left-radius: var(--radius-lg);
 }
 
 .mobile-nav-links {
@@ -246,24 +264,39 @@ header {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-lg);
-  text-align: center;
+  text-align: left;
 }
 
 .mobile-nav-links a {
   text-decoration: none;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 500;
   color: var(--text-gray-900);
-  transition: color var(--transition-fast);
-  padding: var(--spacing-sm) var(--spacing-md);
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+  padding: var(--spacing-md) calc(var(--spacing-md) + 8px) var(--spacing-md) var(--spacing-lg);
   border-radius: var(--radius-md);
   display: block;
+  position: relative;
 }
 
 .mobile-nav-links a:hover,
 .mobile-nav-links a.active {
-  color: var(--blue-600);
-  background-color: rgba(37, 99, 235, 0.1);
+  color: var(--blue-700);
+  background-color: rgba(37, 99, 235, 0.06);
+}
+
+/* Gradient accent bar for active/hovered mobile links */
+.mobile-nav-links a:hover::before,
+.mobile-nav-links a.active::before {
+  content: "";
+  position: absolute;
+  left: var(--spacing-sm);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 60%;
+  border-radius: var(--radius-full);
+  background: linear-gradient(180deg, var(--blue-600), var(--purple-600));
 }
 
 /* Mobile menu close button */
@@ -306,24 +339,28 @@ header {
   justify-content: center;
   gap: var(--spacing-lg);
   margin-top: var(--spacing-xl);
-  padding: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-md) 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .social-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  font-size: 24px; /* Ensures consistent size for font-based icons like BlueSky and GitHub */
-  color: inherit;
-  transition: transform var(--transition-normal),
-    background-color var(--transition-normal);
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+  color: var(--text-gray-900);
+  background-color: #f9fafb;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-full);
+  transition: transform var(--transition-normal), background-color var(--transition-normal), color var(--transition-normal);
 }
 
 .social-icon:hover {
-  transform: translateY(-3px);
-  background-color: var(--blue-700);
+  transform: translateY(-2px);
+  background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
+  color: #ffffff;
 }
 
 .mobile-footer-info {
