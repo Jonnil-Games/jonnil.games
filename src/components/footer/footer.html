@@ -106,3 +106,11 @@
     </div>
   </div>
 </footer>
+<script>
+  (function () {
+    const root = document.currentScript.closest("footer");
+    if (!root) return;
+    const el = root.querySelector("#year");
+    if (el) el.textContent = String(new Date().getFullYear());
+  })();
+</script>

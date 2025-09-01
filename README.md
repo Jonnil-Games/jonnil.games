@@ -24,7 +24,6 @@ project-root/
 │ ├── components/ # Reusable UI via <cyan component="…"></cyan>
 │ │ └── header/
 │ │ ├── header.html
-│ │ ├── header.js
 │ │ └── header.css
 │ ├── styles/ # Global CSS
 │ │ ├── variables.css # Auto-injected into public/styles.css
@@ -59,9 +58,6 @@ npm run dev
 
 ```bash
 npm run build
-# or run pieces:
-npm run build:components
-npm run build:blog
 ```
 
 4. Preview build locally
@@ -87,12 +83,10 @@ publish = "public"
 `node build.js` will:
 
 - Clean `public/`
-- Process all `.html` in `src/pages/`, injecting `<cyan component="…"></cyan>` with the component’s HTML
-- Auto-append component JS: if `src/components/<name>/<name>.js` exists, a script tag is injected before `</body>` and all component files are copied to `public/components/<name>/`
-- Bundle CSS into `public/styles.css`: `variables.css` + `base.css` + per-component CSS (between markers `/* BEGIN/END COMPONENT STYLES */`)
-- Copy static assets from `src/assets/` into `public/`
-
-Note: During processing a `.backup` copy of each source page is created alongside it.
+- Process all `.html` in `src/pages/`, injecting `<cyan component="…"></cyan>` with the component’s HTML (e.g., header and footer)
+- Bundle CSS into `public/styles.css`: `variables.css` + `base.css` + per‑component CSS (between markers `/* BEGIN/END COMPONENT STYLES */`)
+- Copy static assets from `src/assets/` into `public/` (images end up under `/assets/images/...`)
+- Build the blog from Markdown using Handlebars templates under `src/blog/templates/` (these templates include the unified header/footer markup directly; they are not processed by the component injector)
 
 ⸻
 
@@ -100,7 +94,7 @@ Note: During processing a `.backup` copy of each source page is created alongsid
 
 - Write posts in `src/blog/posts/*.md` with front matter (`title`, `author`, `date`, optional `categories`, `excerpt`)
 - Templates live in `src/blog/templates/`
-- Build with `npm run build` (or `npm run build:blog`)
+- Build with `npm run build`
 - Outputs to `public/blog/`, including:
   - `index.html` (with author/category filters)
   - One HTML file per post
@@ -143,7 +137,7 @@ Add a short header to new files:
 
 - `<name>.html` (markup)
 - optional `<name>.css` (styles)
-- optional `<name>.js` (behavior)
+- optional `<name>.js` (behavior) — note: component JS is not auto‑injected; prefer inline, scoped scripts inside the component HTML when behavior is needed (see `header.html`).
 
 3. In any page template:
 
@@ -151,14 +145,14 @@ Add a short header to new files:
 <cyan component="<name>"></cyan>
 ```
 
-4. Rebuild (`npm run build`) — the component is injected; its CSS is bundled into `public/styles.css` and its JS is auto-added and copied to `public/components/<name>/`.
+4. Rebuild (`npm run build`) — the component is injected into pages in `src/pages/` and its CSS is bundled into `public/styles.css`.
 
 ⸻
 
 📄 Adding Pages & Assets
 
 - Pages: Put `.html` in `src/pages/`. Use component tags for header/footer.
-- Assets: Place images in `src/assets/images/` and reference them as `/images/...` (they’re copied to `public/`).
+- Assets: Place images in `src/assets/images/` and reference them as `/assets/images/...`.
 
 ⸻
 

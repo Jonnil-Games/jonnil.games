@@ -512,16 +512,10 @@ function buildBlog() {
 
       // Generate excerpt (prefer front-matter)
       const plainBody = body
-        .replace(/```[\s\S]*?```/g, "") // fenced code
+        .replace(/```[\s\S]*?```/g, "") // fenced code blocks
         .replace(/`[^`]*`/g, "") // inline code
-        .replace(
-          /!$begin:math:display$[^$end:math:display$]*\]$begin:math:text$[^)]+$end:math:text$/g,
-          ""
-        ) // images
-        .replace(
-          /$begin:math:display$[^$end:math:display$]*\]$begin:math:text$[^)]+$end:math:text$/g,
-          ""
-        ) // links
+        .replace(/!\[[^\]]*\]\([^\)]+\)/g, "") // markdown images
+        .replace(/\[[^\]]+\]\([^\)]+\)/g, "") // markdown links
         .replace(/[#>*_~\-]+/g, " ") // md punctuation
         .replace(/\s+/g, " ")
         .trim();

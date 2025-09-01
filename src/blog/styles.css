@@ -221,7 +221,7 @@
   font-size: 1rem;
   transition: border-color var(--transition-fast),
     box-shadow var(--transition-fast);
-  color: var (--text-gray-900);
+  color: var(--text-gray-900);
   background: white;
 }
 
@@ -250,7 +250,7 @@
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: var (--spacing-sm);
+  gap: var(--spacing-sm);
 }
 
 .filter-group label {
@@ -265,7 +265,7 @@
   border: 2px solid rgba(0, 0, 0, 0.1);
   border-radius: var(--radius-md);
   font-size: 0.9rem;
-  color: var (--text-gray-900);
+  color: var(--text-gray-900);
   background-color: white;
   cursor: pointer;
   transition: all var(--transition-fast);
