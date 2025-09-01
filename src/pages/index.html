@@ -54,6 +54,8 @@
 
     <!-- Styles & Fonts -->
     <link rel="stylesheet" href="styles.css" />
+    <!-- Reuse blog card styles for homepage post cards -->
+    <link rel="stylesheet" href="/blog/styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -69,28 +71,7 @@
     <link rel="icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <style>
-      /* Fix for blog post cards on homepage */
-      .latest-posts .post-card h3 {
-        padding: var(--spacing-xl) var(--spacing-xl) 0;
-        margin-bottom: var(--spacing-sm);
-        font-size: 1.3rem;
-      }
-      .latest-posts .post-card h3::after {
-        display: none;
-      }
-      .latest-posts .post-card p {
-        padding: 0 var(--spacing-xl);
-        flex-grow: 1;
-      }
-
-      /* Enhanced animation for both website homepage and blog */
-      .post-card {
-        will-change: transform;
-        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-          box-shadow 0.3s ease;
-      }
-    </style>
+    <style></style>
   </head>
   <body>
     <!-- Header -->
@@ -369,9 +350,9 @@
               })}</time>
                       <span class="post-category">${post.category}</span>
                   </div>
-                  <h3><a href="${post.url}" class="post-title">${
+                  <h2><a href="${post.url}" class="post-title">${
                 post.title
-              }</a></h3>
+              }</a></h2>
                   <p>${post.excerpt}</p>
                   <div class="post-footer">
                       <span class="post-author">By ${
