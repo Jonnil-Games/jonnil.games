@@ -20,6 +20,14 @@ body {
   overflow-x: hidden;
 }
 
+/* Emoji images (Mutant Standard) */
+img.emoji {
+  display: inline-block;
+  width: 1.1em;
+  height: 1.1em;
+  vertical-align: -0.15em;
+}
+
 /* Prevent background scrolling and add page overlay when menus are open */
 body::before {
   content: "";
