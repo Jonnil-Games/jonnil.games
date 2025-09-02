@@ -45,17 +45,18 @@ status = 200
 [[redirects]]
 from = "/discord/*"
 to = "https://discord.gg/GAmTXwqH9V"
-status = 200
+status = 301
 
 [[redirects]]
 from = "/Discord/*"
 to = "https://discord.gg/GAmTXwqH9V"
-status = 200
+status = 301
 
 [[redirects]]
-from = "discord.jonnil.games/*"
+from = "/*"
 to = "https://discord.gg/GAmTXwqH9V"
-status = 200
+status = 301
+conditions = {Host = ["discord.jonnil.games"]}
 
 # SPA-style fallback for the root site
 [[redirects]]
