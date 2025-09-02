@@ -51,14 +51,17 @@ status = 200
 [[redirects]]
 from = "/discord/*"
 to = "https://discord.gg/GAmTXwqH9V"
+status = 200
 
 [[redirects]]
 from = "/Discord/*"
 to = "https://discord.gg/GAmTXwqH9V"
+status = 200
 
 [[redirects]]
 from = "discord.jonnil.games/*"
 to = "https://discord.gg/GAmTXwqH9V"
+status = 200
 
 # Headers for specific paths (development-friendly cache policy)
 [[headers]]
