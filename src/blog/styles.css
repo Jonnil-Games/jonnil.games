@@ -459,40 +459,11 @@
   }
 }
 
-/* Match button feel while allowing branded backgrounds */
+/* Discussion links now use global .button styles */
 .discussion-link {
   text-decoration: none;
-  color: white;
-  font-weight: 500;
 }
 
 /* icon spacing handled in base via .action-links .button svg */
 
-.bluesky-link {
-  background-color: #0085ff;
-}
-
-.bluesky-link:hover {
-  background-color: #0072db;
-}
-
-.mastodon-link {
-  background-color: #2b90d9;
-}
-
-.mastodon-link:hover {
-  background-color: #1c85d0;
-}
-
-.discord-link {
-  background-color: #5865f2;
-}
-
-.discussion-link:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.discord-link:hover {
-  background-color: #4752c4;
-}
+/* Remove brand overrides to match Follow Updates buttons exactly */
