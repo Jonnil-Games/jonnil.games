@@ -821,6 +821,73 @@ section {
   margin-right: var(--spacing-xs);
 }
 
+/* Brand-tinted buttons (keep existing button styling, adjust colors only) */
+/* RSS */
+.button.secondary-button.btn-rss {
+  color: #ee802f;
+  border-color: #ee802f;
+  background-color: rgba(238, 128, 47, 0.10);
+}
+.button.secondary-button.btn-rss:hover {
+  color: #cc6f29;
+  border-color: #cc6f29;
+  background-color: rgba(238, 128, 47, 0.18);
+}
+.button.primary-button.btn-rss {
+  background-color: #ee802f;
+}
+.button.primary-button.btn-rss:hover {
+  background-color: #cc6f29;
+}
+
+/* Atom */
+.button.secondary-button.btn-atom {
+  color: #ff9900;
+  border-color: #ff9900;
+  background-color: rgba(255, 153, 0, 0.10);
+}
+.button.secondary-button.btn-atom:hover {
+  color: #e68a00;
+  border-color: #e68a00;
+  background-color: rgba(255, 153, 0, 0.18);
+}
+
+/* Bluesky */
+.button.secondary-button.btn-bluesky {
+  color: #0085ff;
+  border-color: #0085ff;
+  background-color: rgba(0, 133, 255, 0.10);
+}
+.button.secondary-button.btn-bluesky:hover {
+  color: #0072db;
+  border-color: #0072db;
+  background-color: rgba(0, 133, 255, 0.18);
+}
+
+/* Mastodon */
+.button.secondary-button.btn-mastodon {
+  color: #2b90d9;
+  border-color: #2b90d9;
+  background-color: rgba(43, 144, 217, 0.10);
+}
+.button.secondary-button.btn-mastodon:hover {
+  color: #1c85d0;
+  border-color: #1c85d0;
+  background-color: rgba(43, 144, 217, 0.18);
+}
+
+/* Discord */
+.button.secondary-button.btn-discord {
+  color: #5865f2;
+  border-color: #5865f2;
+  background-color: rgba(88, 101, 242, 0.10);
+}
+.button.secondary-button.btn-discord:hover {
+  color: #4752c4;
+  border-color: #4752c4;
+  background-color: rgba(88, 101, 242, 0.18);
+}
+
 .newsletter-form {
   display: flex;
   flex-direction: column;
