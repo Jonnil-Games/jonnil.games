@@ -53,10 +53,10 @@ to = "https://discord.gg/GAmTXwqH9V"
 status = 301
 
 [[redirects]]
-from = "/*"
+from = "https://discord.jonnil.games/*"
 to = "https://discord.gg/GAmTXwqH9V"
 status = 301
-conditions = {Host = ["discord.jonnil.games"]}
+force = true
 
 # SPA-style fallback for the root site
 [[redirects]]
