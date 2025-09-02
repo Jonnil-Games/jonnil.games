@@ -435,11 +435,9 @@
 /* Discussion Card Styles */
 .discussion-card {
   margin-top: 3rem;
-  padding: 1.5rem;
-  background-color: #f8f8f8;
-  border-radius: 8px;
-  border-left: 4px solid #556eed;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  /* Inherit visual shell from global .info-card (base.css). */
+  /* Only tweak the accent color on blog pages if needed. */
+  border-left-color: var(--blue-600);
 }
 
 .discussion-card h3 {
@@ -448,10 +446,8 @@
   font-size: 1.4rem;
 }
 
+/* Layout is shared via .action-links in base.css; keep spacing here */
 .discussion-links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
   margin-top: 1rem;
 }
 
@@ -462,15 +458,11 @@
   }
 }
 
+/* Match button feel while allowing branded backgrounds */
 .discussion-link {
-  display: flex;
-  align-items: center;
-  padding: 0.8rem 1.2rem;
-  border-radius: 6px;
   text-decoration: none;
   color: white;
   font-weight: 500;
-  transition: all 0.2s ease;
 }
 
 .discussion-link svg {
@@ -495,6 +487,11 @@
 
 .discord-link {
   background-color: #5865f2;
+}
+
+.discussion-link:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .discord-link:hover {

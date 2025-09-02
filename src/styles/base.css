@@ -758,6 +758,25 @@ section {
   margin-top: var(--spacing-xl);
 }
 
+/* Unified Info Card */
+.info-card {
+  background: linear-gradient(
+    135deg,
+    rgba(37, 99, 235, 0.06),
+    rgba(124, 58, 237, 0.06)
+  );
+  border-left: 4px solid var(--blue-600);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.info-card h2,
+.info-card h3 {
+  margin-top: 0;
+  margin-bottom: var(--spacing-md);
+}
+
 /* Newsletter Section */
 .newsletter-section {
   background: linear-gradient(
@@ -790,6 +809,8 @@ section {
   color: var(--text-gray-700);
 }
 
+/* Shared action links layout for cards */
+.action-links,
 .follow-links {
   display: flex;
   flex-wrap: wrap;
@@ -797,6 +818,8 @@ section {
   justify-content: center;
 }
 
+.action-links .button i,
+.action-links .button svg,
 .follow-links .button i,
 .follow-links .button svg {
   margin-right: var(--spacing-xs);
