@@ -57,7 +57,7 @@ from = "/Discord/*"
 to = "https://discord.gg/GAmTXwqH9V"
 
 [[redirects]]
-from = "https://discord.jonnil.games/*"
+from = "discord.jonnil.games/*"
 to = "https://discord.gg/GAmTXwqH9V"
 
 # Headers for specific paths (development-friendly cache policy)
