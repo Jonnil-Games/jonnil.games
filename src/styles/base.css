@@ -790,6 +790,18 @@ section {
   color: var(--text-gray-700);
 }
 
+.follow-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  justify-content: center;
+}
+
+.follow-links .button i,
+.follow-links .button svg {
+  margin-right: var(--spacing-xs);
+}
+
 .newsletter-form {
   display: flex;
   flex-direction: column;
