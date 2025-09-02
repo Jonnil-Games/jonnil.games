@@ -41,12 +41,6 @@ from = "/blog/*"
 to = "/blog/:splat"
 status = 200
 
-# SPA-style fallback for the root site
-[[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200
-
 # Discord redirects
 [[redirects]]
 from = "/discord/*"
@@ -61,6 +55,12 @@ status = 200
 [[redirects]]
 from = "discord.jonnil.games/*"
 to = "https://discord.gg/GAmTXwqH9V"
+status = 200
+
+# SPA-style fallback for the root site
+[[redirects]]
+from = "/*"
+to = "/index.html"
 status = 200
 
 # Headers for specific paths (development-friendly cache policy)
