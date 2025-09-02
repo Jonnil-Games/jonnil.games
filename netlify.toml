@@ -47,6 +47,15 @@ from = "/*"
 to = "/index.html"
 status = 200
 
+# Discord redirects
+[[redirects]]
+from = "/discord/*"
+to = "https://discord.gg/GAmTXwqH9V"
+
+[[redirects]]
+from = "/Discord/*"
+to = "https://discord.gg/GAmTXwqH9V"
+
 # Headers for specific paths (development-friendly cache policy)
 [[headers]]
 for = "/media/*"
