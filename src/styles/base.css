@@ -206,6 +206,7 @@ header {
   background-color: var(--text-gray-900);
   border-radius: var(--radius-full);
   transition: all var(--transition-normal);
+  transform-origin: center;
 }
 
 /* Hamburger to Close Animation */
@@ -216,6 +217,7 @@ header {
 
 .hamburger.active .hamburger-bar:nth-child(2) {
   opacity: 0;
+  transform: scaleX(0);
 }
 
 .hamburger.active .hamburger-bar:nth-child(3) {
@@ -226,31 +228,25 @@ header {
 /* Mobile Menu Styling */
 .mobile-menu {
   position: fixed;
-  top: 0;
-  right: -100%;
+  top: 4rem;
+  right: 0;
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 4rem);
   background-color: #ffffff;
   box-shadow: var(--shadow-xl);
-  padding: calc(env(safe-area-inset-top) + var(--spacing-xl)) var(--spacing-xl) calc(env(safe-area-inset-bottom) + var(--spacing-xl));
+  padding: var(--spacing-xl);
   z-index: 1200;
   overflow-y: auto;
-  transition: right var(--transition-normal), transform var(--transition-normal), opacity var(--transition-normal);
+  transition: transform var(--transition-normal);
   display: flex;
   flex-direction: column;
-  visibility: hidden;
   pointer-events: none;
-  opacity: 0;
-  transform: translateX(8%);
-  border-top-left-radius: var(--radius-lg);
-  border-bottom-left-radius: var(--radius-lg);
+  will-change: transform;
+  transform: translateX(100%);
 }
 
 .mobile-menu.open {
-  right: 0;
-  visibility: visible;
   pointer-events: auto;
-  opacity: 1;
   transform: translateX(0);
 }
 
@@ -263,7 +259,6 @@ header {
   right: 0;
   height: 4px;
   background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
-  border-top-left-radius: var(--radius-lg);
 }
 
 .mobile-nav-links {
@@ -305,41 +300,6 @@ header {
   height: 60%;
   border-radius: var(--radius-full);
   background: linear-gradient(180deg, var(--blue-600), var(--purple-600));
-}
-
-/* Mobile menu close button */
-.mobile-close {
-  position: absolute;
-  top: var(--spacing-md);
-  right: var(--spacing-md);
-  width: 32px;
-  height: 32px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
-
-.mobile-close .close-bar {
-  position: absolute;
-  left: 6px;
-  right: 6px;
-  top: 15px;
-  height: 2px;
-  background-color: var(--text-gray-900);
-  border-radius: var(--radius-full);
-  transition: background-color var(--transition-fast);
-}
-
-.mobile-close .close-bar:nth-child(1) {
-  transform: rotate(45deg);
-}
-
-.mobile-close .close-bar:nth-child(2) {
-  transform: rotate(-45deg);
-}
-
-.mobile-close:hover .close-bar {
-  background-color: var(--blue-600);
 }
 
 .mobile-social-links {
