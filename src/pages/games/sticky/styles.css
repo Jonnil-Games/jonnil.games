@@ -1,5 +1,5 @@
-/* Import base styles */
-@import url("/styles.css");
+/* Game-specific styles for Sticky Paws. Global styles come from /styles.css,
+   which is linked in the HTML head (no @import here for better performance). */
 
 /* Game-specific variables */
 :root {

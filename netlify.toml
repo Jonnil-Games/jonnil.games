@@ -1,78 +1,127 @@
 # Netlify configuration file
 
 [build]
-  # Command to build the blog
-  command = "npm run build"
-  # Directory to publish the main root site (home, other pages)
-  publish = "public"
+# Command to build the entire site (pages + components + blog + feeds + sitemap)
+command = "npm run build"
+# Directory to publish the site
+publish = "public"
+
+# Optional shared environment (safe defaults)
+[build.environment]
+BLOG_TITLE = "Jonnil Games Blog"
+BLOG_DESC = "Indie dev logs, updates, and brain leaks."
+BLOG_LANG = "en-us"
+BLOG_AUTHOR = "Jonnil"
+
+# In production, set the canonical site URL so feeds/sitemap/canonicals are absolute.
+# For previews/branch deploys, we omit SITE_URL so the builder falls back to Netlify's preview URL.
+[context.production.environment]
+SITE_URL = "https://jonnil.games"
+
+[context.deploy-preview.environment]
+# SITE_URL intentionally not set here; build.js will use DEPLOY_PRIME_URL
+
+[context.branch-deploy.environment]
+# SITE_URL intentionally not set here; build.js will use DEPLOY_URL
 
 [build.processing]
-  skip_processing = false
+skip_processing = false
 [build.processing.css]
-  bundle = true
-  minify = true
+bundle = true
+minify = true
 [build.processing.js]
-  bundle = true
-  minify = true
+bundle = true
+minify = true
 [build.processing.images]
-  compress = true
+compress = true
 
 # Redirect all requests under /blog to the /public/blog directory
 [[redirects]]
-  from = "/blog/*"
-  to = "/blog/:splat"
-  status = 200
+from = "/blog/*"
+to = "/blog/:splat"
+status = 200
+
+# Discord redirects
+[[redirects]]
+from = "/discord/*"
+to = "https://discord.gg/GAmTXwqH9V"
+status = 301
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+from = "/Discord/*"
+to = "https://discord.gg/GAmTXwqH9V"
+status = 301
 
-# Headers for specific paths
-[[headers]]
-  for = "/media/*"
-  [headers.values]
-    # Disable caching for development
-    Cache-Control = "no-store"
+[[redirects]]
+from = "https://discord.jonnil.games/*"
+to = "https://discord.gg/GAmTXwqH9V"
+status = 301
+force = true
 
-[[headers]]
-  for = "/css/*"
-  [headers.values]
-    # Disable caching for development
-    Cache-Control = "no-store"
+# SPA-style fallback for the root site
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
 
+# Headers for specific paths (development-friendly cache policy)
 [[headers]]
-  for = "/js/*"
-  [headers.values]
-    # Disable caching for development
-    Cache-Control = "no-store"
-
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self' https:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https: fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https: fonts.gstatic.com;"
-    Cache-Control = "no-store"
+for = "/media/*"
+[headers.values]
+Cache-Control = "no-store"
 
 [[headers]]
-  for = "/static/*"
-  [headers.values]
-    Cache-Control = "no-store"
+for = "/css/*"
+[headers.values]
+Cache-Control = "no-store"
 
 [[headers]]
-  for = "/*.css"
-  [headers.values]
-    Cache-Control = "no-store"
+for = "/js/*"
+[headers.values]
+Cache-Control = "no-store"
 
 [[headers]]
-  for = "/*.js"
-  [headers.values]
-    Cache-Control = "no-store"
+for = "/*"
+[headers.values]
+X-Frame-Options = "DENY"
+X-XSS-Protection = "1; mode=block"
+X-Content-Type-Options = "nosniff"
+Referrer-Policy = "strict-origin-when-cross-origin"
+Content-Security-Policy = "default-src 'self' https:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https: fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https: fonts.gstatic.com;"
+Cache-Control = "no-store"
 
 [[headers]]
-  for = "/images/*"
-  [headers.values]
-    Cache-Control = "no-store"
+for = "/static/*"
+[headers.values]
+Cache-Control = "no-store"
+
+[[headers]]
+for = "/*.css"
+[headers.values]
+Cache-Control = "no-store"
+
+[[headers]]
+for = "/*.js"
+[headers.values]
+Cache-Control = "no-store"
+
+[[headers]]
+for = "/images/*"
+[headers.values]
+Cache-Control = "no-store"
+
+# --- Optional: once ready for prod caching, consider targeted cache for feeds/sitemap ---
+# [[headers]]
+#   for = "/sitemap.xml"
+#   [headers.values]
+#     Cache-Control = "public, max-age=600"
+#
+# [[headers]]
+#   for = "/blog/rss.xml"
+#   [headers.values]
+#     Cache-Control = "public, max-age=300"
+#
+# [[headers]]
+#   for = "/blog/atom.xml"
+#   [headers.values]
+#     Cache-Control = "public, max-age=300"

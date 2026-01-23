@@ -1,14 +1,5 @@
-/* Fixed Navbar */
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4rem;
-  background-color: #ffffff;
-  box-shadow: var(--shadow-md);
-  z-index: 1001;
-}
+/* Header component styles are centralized in base.css to avoid drift.
+   This file intentionally stays minimal for future header-specific overrides. */
 
 /* Ensure content below the header is visible */
 main {

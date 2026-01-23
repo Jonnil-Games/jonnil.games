@@ -1,15 +1,17 @@
-/* Import base styles */
-@import url("/styles.css");
+/* Game-specific styles for Juni's Asylum (dark theme).
+   Global styles come from /styles.css, linked in the HTML head. */
 
-/* Dark theme overrides */
 :root {
+  color-scheme: dark;
+
+  /* Accents */
   --accent-light: #00ff94;
   --accent-dark: #00be6e;
   --accent-color: var(--accent-dark);
   --accent-color-hover: var(--accent-light);
 }
 
-/* Base theme overrides */
+/* Base dark surface */
 body {
   background-color: #121212;
   color: #e0e0e0;
@@ -19,6 +21,7 @@ main {
   padding-top: 6rem;
 }
 
+/* Header overrides (component markup) */
 header,
 .navbar {
   background-color: #1e1e1e;
@@ -27,12 +30,10 @@ header,
 .nav-links li a {
   color: #e0e0e0;
 }
-
 .nav-links li a:hover,
 .nav-links li a.active {
   color: var(--accent-light);
 }
-
 .nav-links li a::after {
   background-color: var(--accent-light);
 }
@@ -46,19 +47,17 @@ header,
 .hamburger-bar {
   background-color: #e0e0e0;
 }
-
 .hamburger.active .hamburger-bar {
   background-color: var(--accent-light);
 }
 
-/* Content styling */
+/* Content */
 .hero {
   text-align: center;
   max-width: 800px;
   margin: 0 auto 3rem;
 }
 
-/* Responsive logo styling */
 .responsive-logo {
   max-width: 90%;
   height: auto;
@@ -80,6 +79,7 @@ header,
   line-height: 1.6;
 }
 
+/* Feature grid */
 .game-features {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -93,6 +93,14 @@ header,
   border-radius: 12px;
   border: 1px solid #2e2e2e;
   text-align: center;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-normal),
+    box-shadow var(--transition-normal);
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
 }
 
 .feature-card h3 {
@@ -113,17 +121,19 @@ header,
   color: transparent;
 }
 
+/* Dividers pick up the theme */
 .divider {
   background: linear-gradient(90deg, var(--accent-light), var(--accent-dark));
 }
 
-/* Game info section */
+/* Info section */
 .game-info {
   background-color: #1e1e1e;
   padding: 2rem;
   border-radius: 12px;
   border: 1px solid #2e2e2e;
   margin-bottom: 3rem;
+  box-shadow: var(--shadow-md);
 }
 
 .game-info p {
@@ -131,6 +141,7 @@ header,
   line-height: 1.8;
 }
 
+/* Buttons */
 .button.primary-button {
   background: linear-gradient(90deg, var(--accent-dark), var(--accent-light));
   color: #121212;
@@ -155,7 +166,7 @@ header,
   color: var(--accent-light);
 }
 
-/* Screenshots section */
+/* Screenshots */
 .screenshots {
   margin: 3rem 0;
 }
@@ -171,11 +182,13 @@ header,
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid #2e2e2e;
-  transition: transform 0.3s;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: var(--shadow-sm);
 }
 
 .screenshot:hover {
   transform: scale(1.02);
+  box-shadow: var(--shadow-md);
 }
 
 .screenshot img {
@@ -184,27 +197,9 @@ header,
   display: block;
 }
 
-/* Newsletter section override */
-.newsletter-section {
-  background: linear-gradient(
-    135deg,
-    rgba(0, 255, 148, 0.1),
-    rgba(0, 190, 110, 0.1)
-  );
-}
+/* Follow Updates card uses global .info-card styles */
 
-.newsletter-container p {
-  color: #e0e0e0; /* Improved contrast from the previous lighter color */
-  font-weight: 400;
-  line-height: 1.8;
-}
-
-.form-group input:focus {
-  border-color: var(--accent-light);
-  box-shadow: 0 0 0 3px rgba(0, 255, 148, 0.2);
-}
-
-/* Character sprite styling */
+/* Character sprite drift */
 .character-container {
   position: relative;
   margin-top: 100vh;
@@ -220,7 +215,6 @@ header,
   width: 100%;
   opacity: 0.5;
 }
-
 .ghost-sprite {
   position: absolute;
   top: 0;
@@ -230,7 +224,7 @@ header,
   pointer-events: none;
 }
 
-/* Footer overrides */
+/* Footer theme */
 footer {
   background-color: #1e1e1e;
   border-top: 1px solid #2e2e2e;
@@ -244,7 +238,7 @@ footer {
   background: linear-gradient(135deg, var(--accent-dark), var(--accent-light));
 }
 
-/* Responsive adjustments */
+/* Responsive */
 @media (max-width: 768px) {
   .character-container {
     width: 60vw;
@@ -252,7 +246,6 @@ footer {
     display: block;
     text-align: center;
   }
-
   .responsive-logo {
     max-width: 85%;
   }

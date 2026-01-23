@@ -221,7 +221,7 @@
   font-size: 1rem;
   transition: border-color var(--transition-fast),
     box-shadow var(--transition-fast);
-  color: var (--text-gray-900);
+  color: var(--text-gray-900);
   background: white;
 }
 
@@ -250,7 +250,7 @@
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: var (--spacing-sm);
+  gap: var(--spacing-sm);
 }
 
 .filter-group label {
@@ -265,7 +265,7 @@
   border: 2px solid rgba(0, 0, 0, 0.1);
   border-radius: var(--radius-md);
   font-size: 0.9rem;
-  color: var (--text-gray-900);
+  color: var(--text-gray-900);
   background-color: white;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -435,11 +435,10 @@
 /* Discussion Card Styles */
 .discussion-card {
   margin-top: 3rem;
-  padding: 1.5rem;
-  background-color: #f8f8f8;
-  border-radius: 8px;
-  border-left: 4px solid #556eed;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  /* Inherit visual shell from global .info-card (base.css). */
+  /* Only tweak the accent color on blog pages if needed. */
+  border-left-color: var(--blue-600);
+  text-align: center;
 }
 
 .discussion-card h3 {
@@ -448,10 +447,8 @@
   font-size: 1.4rem;
 }
 
+/* Layout is shared via .action-links in base.css; keep spacing here */
 .discussion-links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
   margin-top: 1rem;
 }
 
@@ -462,41 +459,11 @@
   }
 }
 
+/* Discussion links now use global .button styles */
 .discussion-link {
-  display: flex;
-  align-items: center;
-  padding: 0.8rem 1.2rem;
-  border-radius: 6px;
   text-decoration: none;
-  color: white;
-  font-weight: 500;
-  transition: all 0.2s ease;
 }
 
-.discussion-link svg {
-  margin-right: 0.8rem;
-}
+/* icon spacing handled in base via .action-links .button svg */
 
-.bluesky-link {
-  background-color: #0085ff;
-}
-
-.bluesky-link:hover {
-  background-color: #0072db;
-}
-
-.mastodon-link {
-  background-color: #2b90d9;
-}
-
-.mastodon-link:hover {
-  background-color: #1c85d0;
-}
-
-.discord-link {
-  background-color: #5865f2;
-}
-
-.discord-link:hover {
-  background-color: #4752c4;
-}
+/* Remove brand overrides to match Follow Updates buttons exactly */

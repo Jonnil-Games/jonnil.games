@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Games - Jonnil Games</title>
 
-    <!-- Primary Meta Tags -->
+    <!-- Primary Meta -->
     <meta name="title" content="Games - Jonnil Games" />
     <meta
       name="description"
       content="Discover our collection of inclusive and innovative games. From charming platformers to haunting adventures, explore unique gaming experiences crafted with care."
     />
 
-    <!-- Open Graph / Facebook -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://jonnil.games/games/" />
+    <meta property="og:url" content="https://jonnil.games/games.html" />
     <meta property="og:title" content="Games - Jonnil Games" />
     <meta
       property="og:description"
@@ -37,7 +37,22 @@
       content="https://jonnil.games/images/og-preview.png"
     />
 
-    <!-- Game Collection Schema.org Markup -->
+    <!-- Canonical + Feeds -->
+    <link rel="canonical" href="https://jonnil.games/games.html" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="RSS"
+      href="/blog/rss.xml"
+    />
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="Atom"
+      href="/blog/atom.xml"
+    />
+
+    <!-- Schema.org: list our games -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -52,7 +67,7 @@
             "gamePlatform": "PC",
             "applicationCategory": "Game",
             "operatingSystem": "Windows",
-            "url": "https://jonnil.games/games/sticky-paws",
+            "url": "https://jonnil.games/games/sticky/",
             "image": "https://jonnil.games/images/sticky-paws.png",
             "offers": {
               "@type": "Offer",
@@ -71,14 +86,15 @@
             "gamePlatform": "PC",
             "applicationCategory": "Game",
             "operatingSystem": "Windows",
-            "url": "https://jonnil.games/games/asylum",
+            "url": "https://jonnil.games/games/asylum/",
             "image": "https://jonnil.games/images/asylum.png"
           }
         ]
       }
     </script>
 
-    <link rel="stylesheet" href="styles.css" />
+    <!-- Styles & Fonts -->
+    <link rel="stylesheet" href="/styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -89,110 +105,179 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css"
     />
-    <meta
-      name="description"
-      content="Discover our latest games and upcoming projects at Jonnil Games"
-    />
+
     <!-- Favicon -->
     <link rel="icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Page-scoped enhancements for the timeline -->
+    <style>
+      /* Respect reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        .timeline-item,
+        .timeline-item.fade-up {
+          animation: none !important;
+          transform: none !important;
+          opacity: 1 !important;
+        }
+      }
+
+      /* Scroll snap on mobile */
+      @media (max-width: 768px) {
+        .timeline {
+          scroll-snap-type: y proximity;
+        }
+        .timeline-item {
+          scroll-snap-align: start;
+          scroll-margin-top: 5rem; /* helps anchored jumps under fixed header */
+        }
+      }
+
+      /* Year chips that live in the flow and stick as you scroll */
+      .timeline-year {
+        position: sticky;
+        top: var(--sticky-year-top, 4.5rem); /* match header height */
+        z-index: 6;
+        display: inline-block;
+        margin: 2rem 0 0.75rem;
+        padding: 0.25rem 0.75rem;
+        background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
+        color: #fff;
+        border-radius: var(--radius-full);
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      /* Target highlight: only the card, not full width */
+      .timeline-item {
+        position: relative;
+        scroll-margin-top: 5rem; /* guard against fixed header */
+        --stagger: 0s; /* default */
+      }
+      .timeline-item:target .timeline-content,
+      .timeline-item:focus-within .timeline-content {
+        outline: 3px solid rgba(37, 99, 235, 0.35);
+        outline-offset: 4px;
+        border-radius: 12px;
+      }
+
+      /* Optional anchor hash link shown on hover/focus */
+      .anchor-link {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        text-decoration: none;
+        font-weight: 700;
+        opacity: 0;
+        transition: opacity var(--transition-fast);
+      }
+      .timeline-item:hover .anchor-link,
+      .timeline-item:focus-within .anchor-link {
+        opacity: 1;
+      }
+
+      /* Tiny stagger polish on reveal */
+      .timeline-item.fade-up {
+        animation: fadeIn 0.5s var(--stagger) both,
+          raise 0.5s var(--stagger) both;
+      }
+      @keyframes raise {
+        from {
+          transform: translateY(12px);
+        }
+        to {
+          transform: none;
+        }
+      }
+
+      /* Compact half-height cards that link to Sticky Paws */
+      .timeline-item.compact .timeline-content {
+        padding: var(--spacing-md);
+      }
+      .timeline-item.compact h3 {
+        font-size: 1.05rem;
+        margin-bottom: var(--spacing-xs);
+      }
+      .timeline-item.compact p {
+        font-size: 0.95rem;
+        color: var(--text-gray-700);
+        display: -webkit-box;
+        line-clamp: 2; /* standard property for compatibility */
+        -webkit-line-clamp: 2; /* clamp to ~2 lines */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .timeline-item.compact .tags {
+        margin-bottom: 0;
+      }
+      .timeline-item .timeline-content {
+        position: relative;
+      }
+      .timeline-item.compact .link-mask {
+        position: absolute;
+        inset: 0;
+        border-radius: var(--radius-lg);
+        text-indent: -9999px;
+        overflow: hidden;
+      }
+      .timeline-item.compact .timeline-content:hover {
+        box-shadow: var(--shadow-xl);
+        transform: translateY(-3px);
+        transition: transform var(--transition-normal),
+          box-shadow var(--transition-normal);
+      }
+
+      /* Microinteractions on the spine & date chip */
+      .timeline::before {
+        transition: opacity 0.3s ease;
+      }
+      .timeline.timeline-active::before {
+        opacity: 0.4;
+      }
+      .timeline-item:hover .timeline-date {
+        transform: translateY(-1px);
+        filter: brightness(1.1);
+      }
+
+      /* Side control via classes (left/right), reset per year via JS */
+      .timeline-item.left .timeline-content {
+        margin-left: 0; /* left column */
+      }
+      .timeline-item.right .timeline-content {
+        margin-left: auto; /* right column */
+      }
+      /* Pointers */
+      .timeline-item.left .timeline-content::before {
+        right: calc(-1 * var(--spacing-xl));
+        left: auto;
+        border-left-color: white;
+        border-right-color: transparent;
+      }
+      .timeline-item.right .timeline-content::before {
+        left: calc(-1 * var(--spacing-xl));
+        right: auto;
+        border-right-color: white;
+        border-left-color: transparent;
+      }
+
+      /* On narrow viewports, one column layout anyway */
+      @media (max-width: 768px) {
+        .timeline-item.left .timeline-content,
+        .timeline-item.right .timeline-content {
+          margin-left: 0;
+        }
+        .timeline-item .timeline-content::before {
+          right: auto;
+          left: var(--spacing-md);
+          border-right-color: white;
+          border-left-color: transparent;
+        }
+      }
+    </style>
   </head>
   <body>
-    <!-- Fixed Navbar -->
-    <header>
-      <nav class="navbar">
-        <div class="logo">
-          <a href="/" aria-label="Jonnil Games Home">
-            <span class="logo-text">Jonnil Games</span>
-          </a>
-        </div>
-        <!-- Desktop Navigation Links -->
-        <ul class="nav-links">
-          <li><a href="/">Home</a></li>
-          <li><a href="/games.html" class="active">Games</a></li>
-          <li><a href="/blog/index.html">Blog</a></li>
-          <li><a href="/team.html">Team</a></li>
-          <li><a href="/about.html">About</a></li>
-        </ul>
-        <!-- Hamburger Button for Mobile -->
-        <button
-          class="hamburger"
-          aria-label="Open navigation menu"
-          aria-expanded="false"
-        >
-          <span class="hamburger-bar"></span>
-          <span class="hamburger-bar"></span>
-          <span class="hamburger-bar"></span>
-        </button>
-      </nav>
-    </header>
-
-    <!-- Mobile Menu -->
-    <div class="mobile-menu" aria-hidden="true">
-      <ul class="mobile-nav-links">
-        <li><a href="/">Home</a></li>
-        <li><a href="/games.html" class="active">Games</a></li>
-        <li><a href="/blog/index.html">Blog</a></li>
-        <li><a href="/team.html">Team</a></li>
-        <li><a href="/about.html">About</a></li>
-      </ul>
-      <div class="mobile-social-links">
-        <a
-          href="https://bsky.app/profile/jonnil.games"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Follow us on BlueSky"
-          class="social-icon"
-        >
-          <i class="ri-bluesky-fill"></i>
-        </a>
-        <a
-          href="https://fedi.jonnil.games/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Follow us on Mastodon"
-          class="social-icon"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path
-              d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"
-            />
-          </svg>
-        </a>
-        <a
-          href="https://discord.gg/GAmTXwqH9V"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Join our Discord"
-          class="social-icon"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path
-              d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"
-            />
-          </svg>
-        </a>
-      </div>
-      <div class="mobile-footer-info">
-        <p>&copy; 2024 Jonnil Games. All rights reserved.</p>
-        <p>With 💖 from Sweden!</p>
-        <p>
-          Email: <a href="mailto:contact@jonnil.games">contact@jonnil.games</a>
-        </p>
-      </div>
-    </div>
+    <!-- Header component -->
+    <cyan component="header"></cyan>
 
     <!-- Main Content -->
     <main>
@@ -204,11 +289,22 @@
       <div class="divider large-divider"></div>
 
       <!-- Timeline Section -->
-      <section class="timeline-section">
+      <section class="timeline-section" aria-labelledby="games-timeline">
+        <h2 id="games-timeline" class="visually-hidden">Games Timeline</h2>
+
         <div class="timeline">
+          <!-- Visible in-flow year markers used for grouping + indicator -->
+          <div class="timeline-year">Upcoming</div>
+
           <!-- Latest Game (In Development) -->
-          <div class="timeline-item">
+          <article class="timeline-item" id="junis-asylum" tabindex="0">
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#junis-asylum"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <span class="timeline-date">TBD</span>
               <h3>Juni's Asylum</h3>
               <p>
@@ -221,16 +317,49 @@
                 <span class="tag tag-status">In Development</span>
               </div>
               <div class="game-links">
-                <a href="/games/asylum" class="button primary-button"
+                <a href="/games/asylum/" class="button primary-button"
                   >Learn More</a
                 >
               </div>
             </div>
-          </div>
+          </article>
+
+          <!-- Sticky Paws Switch Update (compact link card) -->
+          <article class="timeline-item compact" tabindex="0">
+            <div class="timeline-content">
+              <a
+                href="#sticky-paws"
+                class="link-mask"
+                aria-label="Go to Sticky Paws"
+              ></a>
+              <span class="timeline-date">TBD</span>
+              <h3>Sticky Paws: Switch Update</h3>
+              <p>
+                Switch version with online sharing for custom characters and
+                levels.
+              </p>
+              <div class="tags">
+                <span class="tag tag-status">Update</span>
+                <span class="tag tag-platform">Switch</span>
+              </div>
+            </div>
+          </article>
+
+          <div class="timeline-year">2023</div>
 
           <!-- Community Milestone -->
-          <div class="timeline-item milestone">
+          <article
+            class="timeline-item milestone"
+            id="formalized-team"
+            tabindex="0"
+          >
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#formalized-team"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <span class="timeline-date">Mar 18, 2023</span>
               <h3>Formalized Team</h3>
               <p>
@@ -241,18 +370,46 @@
                 <span class="tag tag-status">Community</span>
               </div>
               <div class="game-links">
-                <a
-                  href="https://jonnil.games/team"
-                  class="button primary-button"
+                <a href="/team.html" class="button primary-button"
                   >Meet the Team!</a
                 >
               </div>
             </div>
-          </div>
+          </article>
+
+          <div class="timeline-year">2022</div>
+
+          <!-- Sticky Paws DX Update (compact link card) -->
+          <article class="timeline-item compact" tabindex="0">
+            <div class="timeline-content">
+              <a
+                href="#sticky-paws"
+                class="link-mask"
+                aria-label="Go to Sticky Paws"
+              ></a>
+              <span class="timeline-date">Apr 16, 2022</span>
+              <h3>Sticky Paws: DX Update</h3>
+              <p>
+                Definitive refresh: revamped stages, QoL upgrades, broad polish.
+              </p>
+              <div class="tags">
+                <span class="tag tag-status">Update</span>
+                <span class="tag tag-platform">Steam</span>
+              </div>
+            </div>
+          </article>
+
+          <div class="timeline-year">2019</div>
 
           <!-- Sticky Paws -->
-          <div class="timeline-item">
+          <article class="timeline-item" id="sticky-paws" tabindex="0">
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#sticky-paws"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <span class="timeline-date">Nov 1, 2019</span>
               <h3>Sticky Paws</h3>
               <p>
@@ -266,23 +423,35 @@
                 <span class="tag tag-status">Released</span>
               </div>
               <div class="game-links">
-                <a
-                  href="https://jonnil.gay/games/sticky-paws"
-                  class="button primary-button"
+                <a href="/games/sticky/" class="button primary-button"
                   >Learn More</a
                 >
                 <a
                   href="https://store.steampowered.com/app/1129090/Sticky_Paws/"
                   class="button secondary-button"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Steam</a
                 >
               </div>
             </div>
-          </div>
+          </article>
+
+          <div class="timeline-year">2016</div>
 
           <!-- Community Milestone -->
-          <div class="timeline-item milestone">
+          <article
+            class="timeline-item milestone"
+            id="discord-launch"
+            tabindex="0"
+          >
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#discord-launch"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <span class="timeline-date">Dec 2016</span>
               <h3>Discord Launch</h3>
               <p>
@@ -296,18 +465,30 @@
                 <a
                   href="https://discord.gg/GAmTXwqH9V"
                   class="button primary-button"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Join Discord</a
                 >
               </div>
             </div>
-          </div>
+          </article>
 
           <!-- Golden Cargo Block -->
-          <div class="timeline-item legacy">
+          <article
+            class="timeline-item legacy"
+            id="golden-cargo-block"
+            tabindex="0"
+          >
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#golden-cargo-block"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <div class="card-header">
                 <span class="timeline-date">Dec 25, 2016</span>
-                <a href="./blog/legacy-games" class="legacy-chip">
+                <a href="/blog/legacy-games.html" class="legacy-chip">
                   <i class="ri-information-2-line"></i> Legacy
                 </a>
               </div>
@@ -327,14 +508,20 @@
                 <a href="#" class="button secondary-button">Download</a>
               </div>
             </div>
-          </div>
+          </article>
 
           <!-- Vast Dungeon -->
-          <div class="timeline-item legacy">
+          <article class="timeline-item legacy" id="vast-dungeon" tabindex="0">
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#vast-dungeon"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <div class="card-header">
                 <span class="timeline-date">Aug 5, 2016</span>
-                <a href="./blog/legacy-games" class="legacy-chip">
+                <a href="/blog/legacy-games.html" class="legacy-chip">
                   <i class="ri-information-2-line"></i> Legacy
                 </a>
               </div>
@@ -353,14 +540,24 @@
                 <a href="#" class="button secondary-button">Download</a>
               </div>
             </div>
-          </div>
+          </article>
 
           <!-- Spook: The Clinic (2016) -->
-          <div class="timeline-item legacy">
+          <article
+            class="timeline-item legacy"
+            id="spook-the-clinic"
+            tabindex="0"
+          >
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#spook-the-clinic"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <div class="card-header">
                 <span class="timeline-date">May 5, 2016</span>
-                <a href="./blog/legacy-games" class="legacy-chip">
+                <a href="/blog/legacy-games.html" class="legacy-chip">
                   <i class="ri-information-2-line"></i> Legacy
                 </a>
               </div>
@@ -379,14 +576,24 @@
                 <a href="#" class="button secondary-button">Download</a>
               </div>
             </div>
-          </div>
+          </article>
 
           <!-- Love is on the bus -->
-          <div class="timeline-item legacy">
+          <article
+            class="timeline-item legacy"
+            id="love-is-on-the-bus"
+            tabindex="0"
+          >
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#love-is-on-the-bus"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <div class="card-header">
                 <span class="timeline-date">Feb 14, 2016</span>
-                <a href="./blog/legacy-games" class="legacy-chip">
+                <a href="/blog/legacy-games.html" class="legacy-chip">
                   <i class="ri-information-2-line"></i> Legacy
                 </a>
               </div>
@@ -405,18 +612,32 @@
                 <a
                   href="https://www.newgrounds.com/portal/view/670593"
                   class="button secondary-button"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Newgrounds</a
                 >
               </div>
             </div>
-          </div>
+          </article>
 
-          <!-- Jonnil Time Travel -->
-          <div class="timeline-item legacy">
+          <div class="timeline-year">2014</div>
+
+          <!-- Jonnil TimeTravel -->
+          <article
+            class="timeline-item legacy"
+            id="jonnil-timetravel"
+            tabindex="0"
+          >
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#jonnil-timetravel"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <div class="card-header">
                 <span class="timeline-date">Dec 13, 2014</span>
-                <a href="./blog/legacy-games" class="legacy-chip">
+                <a href="/blog/legacy-games.html" class="legacy-chip">
                   <i class="ri-information-2-line"></i> Legacy
                 </a>
               </div>
@@ -435,29 +656,39 @@
                 <a
                   href="https://gamejolt.com/games/jonnil-timetravel/41719"
                   class="button secondary-button"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >GameJolt</a
                 >
                 <a
                   href="https://www.newgrounds.com/portal/view/650167"
                   class="button secondary-button"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Newgrounds</a
                 >
               </div>
             </div>
-          </div>
+          </article>
 
           <!-- Spook -->
-          <div class="timeline-item legacy">
+          <article class="timeline-item legacy" id="spook-2014" tabindex="0">
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#spook-2014"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <div class="card-header">
                 <span class="timeline-date">Oct 18, 2014</span>
-                <a href="./blog/legacy-games" class="legacy-chip">
+                <a href="/blog/legacy-games.html" class="legacy-chip">
                   <i class="ri-information-2-line"></i> Legacy
                 </a>
               </div>
               <h3>Spook</h3>
               <p>
-                Our first horror game - a tense top-down survival experience
+                Our first horror game — a tense top-down survival experience
                 where you must escape a basement filled with zombies! The
                 beginning of our horror game series.
               </p>
@@ -470,18 +701,26 @@
                 <a
                   href="https://www.newgrounds.com/portal/view/647447"
                   class="button secondary-button"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Newgrounds</a
                 >
               </div>
             </div>
-          </div>
+          </article>
 
           <!-- Toaster 2 -->
-          <div class="timeline-item legacy">
+          <article class="timeline-item legacy" id="toaster-2" tabindex="0">
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#toaster-2"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <div class="card-header">
                 <span class="timeline-date">2014</span>
-                <a href="./blog/legacy-games" class="legacy-chip">
+                <a href="/blog/legacy-games.html" class="legacy-chip">
                   <i class="ri-information-2-line"></i> Legacy
                 </a>
               </div>
@@ -489,7 +728,7 @@
               <p>
                 The sequel to Toaster: A Nurikabe Experience. Join Toaster as he
                 investigates who was behind his girlfriend's kidnapping in the
-                previous game - don't worry, she's safe this time!
+                previous game — don't worry, she's safe this time!
               </p>
               <div class="tags">
                 <span class="tag tag-genre">Puzzle Platformer</span>
@@ -500,23 +739,37 @@
                 <a
                   href="https://drive.google.com/file/d/1h53F67R7aGxsMkr4YnNkqSArXIbvYyJ0/view?usp=sharing"
                   class="button secondary-button"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Download</a
                 >
                 <a
                   href="https://drive.google.com/file/d/13PCm0elNtTFdum0u8P4BpM4I3cGITQmg/view?usp=sharing"
                   class="button secondary-button"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Source</a
                 >
               </div>
             </div>
-          </div>
+          </article>
 
           <!-- Golden Lego Block -->
-          <div class="timeline-item legacy">
+          <article
+            class="timeline-item legacy"
+            id="golden-lego-block"
+            tabindex="0"
+          >
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#golden-lego-block"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <div class="card-header">
                 <span class="timeline-date">2014</span>
-                <a href="./blog/legacy-games" class="legacy-chip">
+                <a href="/blog/legacy-games.html" class="legacy-chip">
                   <i class="ri-information-2-line"></i> Legacy
                 </a>
               </div>
@@ -535,23 +788,37 @@
                 <a
                   href="https://drive.google.com/file/d/1lrjPCIpJlC_ZxJiIaoi5wFsWIEy9CT4N/view?usp=sharing"
                   class="button secondary-button"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Download</a
                 >
                 <a
                   href="https://drive.google.com/file/d/1QAI8JUuJyxeqXs-YJPgyPUl-8RAxG_QA/view?usp=sharing"
                   class="button secondary-button"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Source</a
                 >
               </div>
             </div>
-          </div>
+          </article>
 
           <!-- Toaster: A Nurikabe Experience -->
-          <div class="timeline-item legacy">
+          <article
+            class="timeline-item legacy"
+            id="toaster-nurikabe"
+            tabindex="0"
+          >
             <div class="timeline-content">
+              <a
+                class="anchor-link"
+                href="#toaster-nurikabe"
+                aria-label="Link to this timeline item"
+                >#</a
+              >
               <div class="card-header">
                 <span class="timeline-date">2014</span>
-                <a href="./blog/legacy-games" class="legacy-chip">
+                <a href="/blog/legacy-games.html" class="legacy-chip">
                   <i class="ri-information-2-line"></i> Legacy
                 </a>
               </div>
@@ -570,168 +837,143 @@
                 <a
                   href="https://drive.google.com/file/d/1hlf5QY4DG6PWcZA8vHfXiq7Xlwrnyizc/view?usp=sharing"
                   class="button secondary-button"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Download</a
                 >
                 <a
                   href="https://drive.google.com/file/d/1UOMmcR7M1FWByNyEloxIvaCKxZM7K4bP/view?usp=sharing"
                   class="button secondary-button"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   >Source</a
                 >
               </div>
             </div>
-          </div>
+          </article>
         </div>
       </section>
     </main>
 
-    <!-- Footer -->
-    <footer>
-      <div class="footer-container">
-        <div class="footer-grid">
-          <div class="footer-section">
-            <h3>Jonnil Games</h3>
-            <p>
-              Creating inclusive and innovative gaming experiences for players
-              around the world.
-            </p>
-            <div class="footer-social">
-              <a
-                href="https://bsky.app/profile/jonnil.games"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="BlueSky"
-                class="social-icon"
-              >
-                <i class="ri-bluesky-fill"></i>
-              </a>
-              <a
-                href="https://github.com/Jonnil-Games"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub"
-                class="social-icon"
-              >
-                <i class="ri-github-fill"></i>
-              </a>
-              <a
-                href="https://fedi.jonnil.games/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Mastodon"
-                class="social-icon"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path
-                    d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"
-                  />
-                </svg>
-              </a>
-              <a
-                href="https://discord.gg/GAmTXwqH9V"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Discord"
-                class="social-icon"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path
-                    d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"
-                  />
-                </svg>
-              </a>
-            </div>
-          </div>
-          <div class="footer-section">
-            <h3>Quick Links</h3>
-            <ul class="footer-links">
-              <li><a href="/">Home</a></li>
-              <li><a href="/games.html">Games</a></li>
-              <li><a href="/blog/index.html">Blog</a></li>
-              <li><a href="/team.html">Team</a></li>
-              <li><a href="/about.html">About</a></li>
-            </ul>
-          </div>
-          <div class="footer-section">
-            <h3>Contact</h3>
-            <address>
-              <p>With 💖 from Sweden!</p>
-              <p>
-                Email:
-                <a href="mailto:contact@jonnil.games">contact@jonnil.games</a>
-              </p>
-            </address>
-          </div>
-        </div>
-        <div class="footer-bottom">
-          <p>&copy; 2024 Jonnil Games. All rights reserved.</p>
-          <div class="footer-legal">
-            <a href="/privacy-policy">Privacy Policy</a>
-            <a href="/terms-of-service">Terms of Service</a>
-          </div>
-        </div>
-      </div>
-    </footer>
+    <!-- Footer component -->
+    <cyan component="footer"></cyan>
 
-    <!-- JavaScript -->
+    <!-- Page script: reveal, roving focus, sticky-year indicator, per-year alternation -->
     <script>
-      const hamburger = document.querySelector(".hamburger");
-      const mobileMenu = document.querySelector(".mobile-menu");
-      const body = document.body;
+      // Respect reduced motion
+      const prefersReducedMotion =
+        window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      hamburger.addEventListener("click", () => {
-        const isOpen = mobileMenu.classList.toggle("open");
-        hamburger.classList.toggle("active");
-        body.classList.toggle("no-scroll", isOpen);
-        hamburger.setAttribute("aria-expanded", isOpen);
-        mobileMenu.setAttribute("aria-hidden", !isOpen);
+      const timeline = document.querySelector(".timeline");
+      const items = Array.from(document.querySelectorAll(".timeline-item"));
+      // No separate year indicator element anymore
+
+      // Gentle stagger
+      items.forEach((el, i) => {
+        const delay = Math.min(i * 0.04, 0.24);
+        el.style.setProperty("--stagger", delay + "s");
       });
 
-      // Close menu when clicking outside
-      document.addEventListener("click", (e) => {
-        if (
-          !mobileMenu.contains(e.target) &&
-          !hamburger.contains(e.target) &&
-          mobileMenu.classList.contains("open")
-        ) {
-          mobileMenu.classList.remove("open");
-          hamburger.classList.remove("active");
-          body.classList.remove("no-scroll");
-          hamburger.setAttribute("aria-expanded", "false");
-          mobileMenu.setAttribute("aria-hidden", "true");
-        }
+      // Reveal-on-scroll
+      if (prefersReducedMotion) {
+        items.forEach((el) => el.classList.add("fade-up"));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            let any = false;
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("fade-up");
+                io.unobserve(entry.target);
+                any = true;
+              }
+            });
+            if (any) timeline.classList.add("timeline-active");
+          },
+          { threshold: 0.2, rootMargin: "50px" }
+        );
+        items.forEach((el) => io.observe(el));
+      }
+
+      // Add “#” copy-links to deep-linkable cards
+      document.querySelectorAll(".timeline-item[id]").forEach((el) => {
+        const content = el.querySelector(".timeline-content");
+        if (!content) return;
+        const existing = content.querySelector(".anchor-link");
+        if (existing) return;
+        const a = document.createElement("a");
+        a.href = `#${el.id}`;
+        a.className = "anchor-link";
+        a.setAttribute("aria-label", "Link to this timeline item");
+        a.textContent = "#";
+        content.prepend(a);
       });
 
-      /* Timeline Fade-Up Animation */
-      const observerOptions = {
-        threshold: 0.2,
-        rootMargin: "50px",
-      };
+      // Roving focus with ArrowUp/ArrowDown
+      const focusable = items.filter((el) => el.hasAttribute("tabindex"));
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+        const i = focusable.indexOf(document.activeElement);
+        if (i === -1) return;
+        e.preventDefault();
+        const next =
+          e.key === "ArrowDown"
+            ? Math.min(i + 1, focusable.length - 1)
+            : Math.max(i - 1, 0);
+        focusable[next].focus({ preventScroll: false });
+        focusable[next].scrollIntoView({
+          block: "nearest",
+          behavior: "smooth",
+        });
+      });
 
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("fade-up");
-            observer.unobserve(entry.target);
+      // ---- Per-year left/right alternation (reset each year) ----
+      (function assignSidesPerYear() {
+        const children = Array.from(timeline.children);
+        let side = "left"; // first item after a year starts on the left
+        children.forEach((node) => {
+          if (node.classList.contains("timeline-year")) {
+            side = "left"; // reset at each year marker
+            return;
+          }
+          if (node.classList.contains("timeline-item")) {
+            node.classList.remove("left", "right");
+            node.classList.add(side);
+            side = side === "left" ? "right" : "left";
           }
         });
-      }, observerOptions);
+      })();
 
-      // Observe all timeline items
-      document.querySelectorAll(".timeline-item").forEach((item) => {
-        observer.observe(item);
+      // Hide timeline-year chips that are fully covered by a later sticky chip
+      const yearChips = Array.from(document.querySelectorAll(".timeline-year"));
+
+      function updateCoveredYears() {
+        if (yearChips.length === 0) return;
+        // Determine which chip is the active sticky one: the last whose top
+        // is at or above the sticky line
+        // We approximate the sticky line by using the top of the first chip
+        // (they all share the same sticky top).
+        const stickyLineY = yearChips[0].getBoundingClientRect().top;
+        let active = -1;
+        for (let i = 0; i < yearChips.length; i++) {
+          const r = yearChips[i].getBoundingClientRect();
+          if (r.top <= stickyLineY + 0.5) active = i;
+          else break;
+        }
+        // Hide all previous chips; show the rest
+        yearChips.forEach((chip, i) => {
+          chip.style.visibility = i < active ? "hidden" : "visible";
+        });
+      }
+
+      // Init + listeners
+      updateCoveredYears();
+      document.addEventListener("scroll", updateCoveredYears, {
+        passive: true,
       });
+      window.addEventListener("resize", updateCoveredYears);
+      window.addEventListener("orientationchange", updateCoveredYears);
     </script>
   </body>
 </html>
