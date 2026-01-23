@@ -58,6 +58,23 @@ to = "https://discord.gg/GAmTXwqH9V"
 status = 301
 force = true
 
+# Bluesky redirects
+[[redirects]]
+from = "/bsky/*"
+to = "https://bsky.app/profile/jonnil.games"
+status = 301
+
+[[redirects]]
+from = "/Bsky/*"
+to = "https://bsky.app/profile/jonnil.games"
+status = 301
+
+[[redirects]]
+from = "https://bsky.jonnil.games/*"
+to = "https://bsky.app/profile/jonnil.games"
+status = 301
+force = true
+
 # SPA-style fallback for the root site
 [[redirects]]
 from = "/*"
