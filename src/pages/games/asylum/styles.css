@@ -42,6 +42,8 @@ header,
   background: linear-gradient(90deg, var(--accent-light), var(--accent-dark));
   -webkit-background-clip: text;
   background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
 
 .hamburger-bar {
