@@ -1,6 +1,224 @@
 /* Header component styles are centralized in base.css to avoid drift.
    This file intentionally stays minimal for future header-specific overrides. */
 
-/* Example: if you want a deeper drop shadow just for the mobile menu, uncomment:
-.mobile-menu { box-shadow: var(--shadow-xl); }
-*/
+/* Ensure content below the header is visible */
+main {
+  margin-top: 4rem; /* Same as header height */
+}
+
+/* Navbar Container */
+.navbar {
+  max-width: 1200px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 var(--spacing-xl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo Styling */
+.logo a {
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--blue-600);
+  display: flex;
+  align-items: center;
+  transition: transform var(--transition-fast);
+}
+
+.logo a:hover {
+  transform: scale(1.05);
+}
+
+.logo-text {
+  background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Desktop Navigation Links */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: var(--spacing-xl);
+}
+
+.nav-links li a {
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-gray-700);
+  transition: color var(--transition-fast);
+  position: relative;
+  padding: var(--spacing-xs) 0;
+}
+
+.nav-links li a::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--blue-600);
+  transition: width var(--transition-normal);
+}
+
+.nav-links li a:hover,
+.nav-links li a.active {
+  color: var(--blue-600);
+}
+
+.nav-links li a:hover::after,
+.nav-links li a.active::after {
+  width: 100%;
+}
+
+/* Hamburger Button Styling */
+.hamburger {
+  display: none; /* Hidden on desktop */
+  flex-direction: column;
+  justify-content: space-between;
+  width: 25px;
+  height: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: transform var(--transition-normal);
+  z-index: 1002;
+}
+
+.hamburger-bar {
+  width: 100%;
+  height: 3px;
+  background-color: var(--text-gray-900);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-normal);
+}
+
+/* Hamburger to Close Animation */
+.hamburger.active .hamburger-bar:nth-child(1) {
+  transform: translateY(7.5px) rotate(45deg);
+  background-color: var(--blue-600);
+}
+
+.hamburger.active .hamburger-bar:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active .hamburger-bar:nth-child(3) {
+  transform: translateY(-7.5px) rotate(-45deg);
+  background-color: var(--blue-600);
+}
+
+/* Ensure main content starts below the fixed header */
+main {
+  max-width: 1200px;
+  margin: 4rem auto 0 auto; /* Top margin to account for fixed navbar */
+  padding: var(--spacing-xl);
+}
+
+/* Mobile Menu Styles */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 85%;
+  max-width: 400px;
+  height: 100%;
+  background-color: var(--white);
+  box-shadow: var(--shadow-xl);
+  padding: var(--spacing-xl);
+  z-index: 1000;
+  overflow-y: auto;
+  transition: right var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.mobile-menu.open {
+  right: 0;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.mobile-nav-links {
+  list-style: none;
+  margin-top: calc(var(--spacing-xl) * 2);
+  margin-bottom: var(--spacing-xl);
+}
+
+.mobile-nav-links li {
+  margin-bottom: var(--spacing-lg);
+}
+
+.mobile-nav-links li a {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-gray-900);
+  text-decoration: none;
+  display: block;
+  padding: var(--spacing-sm) 0;
+  transition: color var(--transition-normal);
+}
+
+.mobile-nav-links li a:hover,
+.mobile-nav-links li a.active {
+  color: var(--blue-600);
+}
+
+.mobile-social-links {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-top: auto;
+  margin-bottom: var(--spacing-lg);
+}
+
+.mobile-social-links .social-icon {
+  color: var(--text-gray-700);
+  font-size: 1.5rem;
+  transition: color var(--transition-normal);
+}
+
+.mobile-social-links .social-icon:hover {
+  color: var(--blue-600);
+}
+
+.mobile-footer-info {
+  font-size: 0.875rem;
+  color: var(--text-gray-600);
+  margin-top: var(--spacing-md);
+}
+
+.mobile-footer-info a {
+  color: var(--blue-600);
+  text-decoration: none;
+}
+
+.mobile-footer-info p {
+  margin-bottom: var(--spacing-sm);
+}
+
+/* No scroll class for body when mobile menu is open */
+body.no-scroll {
+  overflow: hidden;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  /* Hide desktop nav links on mobile */
+  .nav-links {
+    display: none;
+  }
+
+  /* Show hamburger on mobile */
+  .hamburger {
+    display: flex;
+  }
+}
