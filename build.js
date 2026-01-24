@@ -145,16 +145,16 @@ function copyDirectory(src, dest) {
 // -----------------------------
 // Site: component injection & styles
 // -----------------------------
-function injectComponents(pagePath) {
-  console.log(`Injecting components into: ${pagePath}`);
-  if (!fileExists(pagePath)) {
-    console.error(`Page not found: ${pagePath}`);
-    return null;
-  }
-  let pageContent = readFile(pagePath);
-  pageContent = pageContent.replace(
+function injectComponentsInContent(content) {
+  const usedComponents = [];
+  const seen = new Set();
+  const updatedContent = content.replace(
     /<cyan\s+component="([^"]+)"[^>]*><\/cyan>/g,
     (_full, componentName) => {
+      if (!seen.has(componentName)) {
+        seen.add(componentName);
+        usedComponents.push(componentName);
+      }
       const componentPath = path.join(
         componentsDir,
         componentName,
@@ -171,7 +171,32 @@ function injectComponents(pagePath) {
       return componentHtml;
     }
   );
-  return pageContent;
+  const scriptTags = usedComponents
+    .map((componentName) => {
+      const componentScriptPath = path.join(
+        componentsDir,
+        componentName,
+        `${componentName}.js`
+      );
+      if (!fileExists(componentScriptPath)) return "";
+      return `<script src="/components/${componentName}/${componentName}.js"></script>`;
+    })
+    .filter(Boolean);
+  if (scriptTags.length === 0) return updatedContent;
+  const injection = `\n${scriptTags.join("\n")}\n`;
+  if (/<\/body>/i.test(updatedContent)) {
+    return updatedContent.replace(/<\/body>/i, `${injection}</body>`);
+  }
+  return `${updatedContent}${injection}`;
+}
+function injectComponents(pagePath) {
+  console.log(`Injecting components into: ${pagePath}`);
+  if (!fileExists(pagePath)) {
+    console.error(`Page not found: ${pagePath}`);
+    return null;
+  }
+  const pageContent = readFile(pagePath);
+  return injectComponentsInContent(pageContent);
 }
 function getCSSVariables() {
   const variablesPath = path.join(stylesDir, "variables.css");
@@ -254,7 +279,15 @@ function copyComponentScriptsToPublic() {
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
     const name = entry.name;
-    // No-op: external component JS is not required (inline where needed)
+    const componentScriptPath = path.join(
+      componentsDir,
+      name,
+      `${name}.js`
+    );
+    if (!fileExists(componentScriptPath)) continue;
+    const destDir = path.join(destBase, name);
+    ensureDirectoryExists(destDir);
+    fs.copyFileSync(componentScriptPath, path.join(destDir, `${name}.js`));
   }
 }
 
@@ -456,11 +489,11 @@ function buildBlog() {
   copyBlogStaticAssets();
 
   console.log("Loading and compiling templates...");
-  const postTemplateSource = readTemplateOrExit(
-    path.join(templateDir, "post-template.html")
+  const postTemplateSource = injectComponentsInContent(
+    readTemplateOrExit(path.join(templateDir, "post-template.html"))
   );
-  const indexTemplateSource = readTemplateOrExit(
-    path.join(templateDir, "index-template.html")
+  const indexTemplateSource = injectComponentsInContent(
+    readTemplateOrExit(path.join(templateDir, "index-template.html"))
   );
   const postTemplate = Handlebars.compile(postTemplateSource);
   const indexTemplate = Handlebars.compile(indexTemplateSource);

@@ -77,6 +77,30 @@
   <body>
     <!-- Header component -->
     <cyan component="header"></cyan>
+    <script>
+      (function () {
+        const root = document.documentElement;
+        function randomAccent() {
+          return Math.random() < 0.5
+            ? "var(--accent-pink)"
+            : "var(--accent-blue)";
+        }
+        function applyRandomAccent() {
+          root.style.setProperty("--sticky-link-accent", randomAccent());
+        }
+        function bindRandomHover(selector) {
+          document.querySelectorAll(selector).forEach((link) => {
+            link.addEventListener("mouseenter", applyRandomAccent);
+            link.addEventListener("focus", applyRandomAccent);
+            link.addEventListener("touchstart", applyRandomAccent, {
+              passive: true,
+            });
+          });
+        }
+        bindRandomHover(".nav-links a");
+        bindRandomHover(".mobile-nav-links a");
+      })();
+    </script>
 
     <main>
       <section class="hero">
