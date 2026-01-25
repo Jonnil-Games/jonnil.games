@@ -78,8 +78,8 @@ force = true
 # SPA-style fallback for the root site
 [[redirects]]
 from = "/*"
-to = "/index.html"
-status = 200
+to = "/404.html"
+status = 404
 
 # Headers for specific paths (development-friendly cache policy)
 [[headers]]
