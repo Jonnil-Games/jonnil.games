@@ -364,6 +364,11 @@ main {
   padding: var(--spacing-xl);
 }
 
+main.legal-page {
+  max-width: 800px;
+  padding: var(--spacing-2xl) var(--spacing-xl);
+}
+
 /* Hero Section */
 .hero {
   text-align: center;

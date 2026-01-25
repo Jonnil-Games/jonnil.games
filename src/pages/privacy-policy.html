@@ -22,10 +22,11 @@
     <cyan component="header"></cyan>
 
     <!-- Main Content -->
-    <main class="container" style="padding: 4rem 2rem; max-width: 800px; margin: 0 auto;">
+    <main class="legal-page">
         <h1>Privacy Policy</h1>
-        <p>Last updated:
-            <script>document.write(new Date().toLocaleDateString())</script>
+        <p>
+            Last updated:
+            <span data-date="2026-01-24" class="js-local-date">January 24, 2026</span>
         </p>
 
         <section style="margin-bottom: 2rem;">
@@ -66,6 +67,24 @@
             </p>
         </section>
     </main>
+
+    <script>
+        document.querySelectorAll(".js-local-date").forEach((el) => {
+            const isoDate = el.getAttribute("data-date");
+            if (!isoDate) {
+                return;
+            }
+            const parsedDate = new Date(`${isoDate}T00:00:00`);
+            if (Number.isNaN(parsedDate.getTime())) {
+                return;
+            }
+            el.textContent = parsedDate.toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+            });
+        });
+    </script>
 
     <!-- Footer -->
     <cyan component="footer"></cyan>
