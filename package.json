@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "build": "node build.js",
-    "dev": "sh -c 'nodemon -w src -e html,css,js,md --exec \"node build.js\" & live-server public'"
+    "dev": "sh -c 'nodemon -w src -e html,css,js,md --exec \"node build.js\" & live-server public'",
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "front-matter": "^4.0.2",
