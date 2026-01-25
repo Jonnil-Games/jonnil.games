@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Terms of Service | Jonnil Games</title>
+
+    <!-- Styles & Fonts -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" />
+</head>
+
+<body>
+    <!-- Header -->
+    <cyan component="header"></cyan>
+
+    <!-- Main Content -->
+    <main class="legal-page">
+        <h1>Terms of Service</h1>
+        <p>
+            Last updated:
+            <span data-date="2026-01-24" class="js-local-date">January 24, 2026</span>
+        </p>
+
+        <section style="margin-bottom: 2rem;">
+            <h2>1. Acceptance of Terms</h2>
+            <p>
+                By accessing and using this website, you accept and agree to be bound by the terms and provision of this
+                agreement.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2>2. Intellectual Property</h2>
+            <p>
+                All content on this site, including text, graphics, logos, and images, is the property of Jonnil Games
+                and protected by copyright laws.
+                You may not use any content from this site without our express written permission.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2>3. Disclaimer</h2>
+            <p>
+                The materials on Jonnil Games' website are provided on an 'as is' basis. Jonnil Games makes no
+                warranties, expressed or implied,
+                and hereby disclaims and negates all other warranties including, without limitation, implied warranties
+                or conditions of merchantability,
+                fitness for a particular purpose, or non-infringement of intellectual property or other violation of
+                rights.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2>4. Contact</h2>
+            <p>
+                If you have any questions about these Terms, please contact us at:
+                <a href="mailto:contact@jonnil.games">contact@jonnil.games</a>.
+            </p>
+        </section>
+    </main>
+
+    <script>
+        document.querySelectorAll(".js-local-date").forEach((el) => {
+            const isoDate = el.getAttribute("data-date");
+            if (!isoDate) {
+                return;
+            }
+            const parsedDate = new Date(`${isoDate}T00:00:00`);
+            if (Number.isNaN(parsedDate.getTime())) {
+                return;
+            }
+            el.textContent = parsedDate.toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+            });
+        });
+    </script>
+
+    <!-- Footer -->
+    <cyan component="footer"></cyan>
+</body>
+
+</html>
