@@ -85,13 +85,23 @@
       <section class="hero">
         <!-- Game Title Image with flickering effect -->
         <h1>
-          <img
-            src="./title.png"
-            alt="Juni's Asylum"
-            class="game-title responsive-logo flickering-title"
-            fetchpriority="high"
-            decoding="async"
-          />
+          <span class="title-flicker">
+            <img
+              src="./title-dark.png"
+              alt="Juni's Asylum"
+              class="game-title responsive-logo"
+              fetchpriority="high"
+              decoding="async"
+            />
+            <img
+              src="./title.png"
+              alt=""
+              class="game-title responsive-logo flicker-layer"
+              aria-hidden="true"
+              decoding="async"
+            />
+            <span class="spark-layer" aria-hidden="true"></span>
+          </span>
         </h1>
       </section>
 
@@ -109,7 +119,9 @@
 
       <div class="game-features">
         <div class="feature-card">
-          <div class="feature-icon">🕯️</div>
+          <span class="feature-icon" role="img" aria-label="Immersive horror">
+            👻
+          </span>
           <h3>Immersive Horror</h3>
           <p>
             Every shadow and sound builds a chilling atmosphere—classic indie
@@ -117,7 +129,13 @@
           </p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">🕹️</div>
+          <span
+            class="feature-icon"
+            role="img"
+            aria-label="Challenging platforming"
+          >
+            🎮
+          </span>
           <h3>Challenging Platforming</h3>
           <p>
             Jump, dash, and thread through treacherous spaces that test reflex
@@ -125,7 +143,9 @@
           </p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">🧩</div>
+          <span class="feature-icon" role="img" aria-label="Puzzles and secrets">
+            🔎
+          </span>
           <h3>Puzzles & Secrets</h3>
           <p>
             Hidden clues, layered puzzles, and easter eggs reveal the asylum’s
@@ -133,7 +153,9 @@
           </p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">📜</div>
+          <span class="feature-icon" role="img" aria-label="Branching narratives">
+            💬
+          </span>
           <h3>Branching Narratives</h3>
           <p>
             Your choices matter—multiple endings and paths invite replays and
@@ -144,88 +166,23 @@
 
       <div class="divider large-divider"></div>
 
-      <section class="game-info">
-        <h2>Current Development Status</h2>
-        <p>
-          Juni's Asylum is currently in very early development stages. Mostly
-          prototyping and concept work is being done at this time. It will probably
-          be a while before the game is ready for final release, but we are excited to
-          share our progress along the way! I want to make sure there will be plenty of
-          demo builds to try out as developments continues, and able to gather feedback
-          from players to help shape the experience. We are still going to be following
-          what we want to achieve with the game, but some details may change as we
-          progress further into development.
-        </p>
-        <div class="links">
-          <a href="#newsletter" class="button primary-button"
-            >Get Development Updates</a
-          >
-          <a href="#" class="button secondary-button">View on GitHub</a>
-        </div>
-      </section>
+      <div class="info-duo">
+        <section class="game-info">
+          <h2>Current Development Status</h2>
+          <p>
+            Juni's Asylum is currently in very early development stages. Mostly
+            prototyping and concept work is being done at this time. It will probably
+            be a while before the game is ready for final release, but we are excited to
+            share our progress along the way! I want to make sure there will be plenty of
+            demo builds to try out as developments continues, and able to gather feedback
+            from players to help shape the experience. We are still going to be following
+            what we want to achieve with the game, but some details may change as we
+            progress further into development.
+          </p>
+        </section>
 
-      <section class="screenshots">
-        <h2>Early Development Snapshots</h2>
-        <div class="screenshots-grid">
-          <figure class="screenshot">
-            <img
-              src="/images/asylum/screenshot1.png"
-              alt="Early haunted corridor with platforming challenges"
-              loading="lazy"
-              decoding="async"
-            />
-          </figure>
-          <figure class="screenshot">
-            <img
-              src="/images/asylum/screenshot2.png"
-              alt="Puzzle area with hidden secrets and eerie details"
-              loading="lazy"
-              decoding="async"
-            />
-          </figure>
-          <figure class="screenshot">
-            <img
-              src="/images/asylum/screenshot3.png"
-              alt="Concept art teasing branching narrative and multiple endings"
-              loading="lazy"
-              decoding="async"
-            />
-          </figure>
-        </div>
-      </section>
-
-      <div class="divider small-divider"></div>
-
-      <section id="newsletter" class="newsletter-section">
-        <div class="newsletter-container info-card">
-          <h2>Follow Updates</h2>
-          <p>Choose how you'd like to follow our updates.</p>
-          <div class="follow-links action-links">
-            <a class="button secondary-button btn-rss" href="/blog/rss.xml">
-              <i class="ri-rss-fill" aria-hidden="true"></i>
-              RSS
-            </a>
-            <a
-              class="button secondary-button btn-bluesky"
-              href="https://bsky.jonnil.games/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i class="ri-bluesky-fill" aria-hidden="true"></i>
-              Bluesky
-            </a>
-            <a
-              class="button secondary-button btn-discord"
-              href="https://discord.jonnil.games/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i class="ri-discord-fill" aria-hidden="true"></i>
-              Discord
-            </a>
-          </div>
-        </div>
-      </section>
+        <cyan component="follow-updates"></cyan>
+      </div>
     </main>
 
     <!-- Character sprite with subtle ghost effect -->
@@ -256,34 +213,159 @@
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       // Title flicker (candle-like)
-      if (!prefersReducedMotion) {
-        const flickeringTitle = document.querySelector(".flickering-title");
-        const titleImages = ["./title.png", "./title-dark.png"];
-        let currentImage = 0;
-        let flickerIntensity = 0.3;
+      {
+        const flickerLayer = document.querySelector(".flicker-layer");
+        const flickerWrap = document.querySelector(".title-flicker");
+        const sparkLayer = document.querySelector(".spark-layer");
+        let audioContext;
+        let humOscillator;
+        let humGain;
+        let experienceStarted = false;
 
-        function flickerTitle() {
-          if (Math.random() < 0.1) {
-            flickerIntensity = Math.min(
-              0.7,
-              flickerIntensity + Math.random() * 0.3
-            );
-            setTimeout(() => {
-              flickerIntensity = 0.3;
-            }, 800 + Math.random() * 1200);
-          }
-          if (Math.random() < flickerIntensity) {
-            currentImage = (currentImage + 1) % titleImages.length;
-            flickeringTitle.src = titleImages[currentImage];
-            const opacityValue = 0.7 + Math.random() * 0.3;
-            flickeringTitle.style.opacity = String(opacityValue);
-            setTimeout(() => {
-              flickeringTitle.style.opacity = "1";
-            }, 20 + Math.random() * 80);
-          }
-          setTimeout(flickerTitle, 100 + Math.random() * 400);
+        function initAudio() {
+          if (audioContext) return;
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          audioContext = new AudioCtx();
+          humOscillator = audioContext.createOscillator();
+          const humOscillator2 = audioContext.createOscillator();
+          humGain = audioContext.createGain();
+          const humFilter = audioContext.createBiquadFilter();
+          humOscillator.type = "sine";
+          humOscillator.frequency.value = 140;
+          humOscillator2.type = "sine";
+          humOscillator2.frequency.value = 280;
+          humGain.gain.value = 0.01;
+          humFilter.type = "lowpass";
+          humFilter.frequency.value = 800;
+          humOscillator.connect(humGain);
+          humOscillator2.connect(humGain);
+          humGain.connect(humFilter).connect(audioContext.destination);
+          humOscillator.start();
+          humOscillator2.start();
         }
-        flickerTitle();
+
+        function setHumLevel(level) {
+          if (!humGain || !audioContext) return;
+          const target = 0.01 + level * 0.02;
+          humGain.gain.setTargetAtTime(target, audioContext.currentTime, 0.06);
+        }
+
+        function triggerSparks(intensity) {
+          if (!sparkLayer || !flickerWrap) return;
+          const rect = flickerWrap.getBoundingClientRect();
+          if (rect.width < 10 || rect.height < 10) return;
+          const clamped = Math.max(0.15, Math.min(1, intensity));
+          const count = Math.max(2, Math.round(clamped * 8));
+          const region = {
+            xStart: rect.width * 0.32,
+            xEnd: rect.width * 0.74,
+            yStart: rect.height * 0.72,
+            yEnd: rect.height * 0.94,
+          };
+
+          for (let i = 0; i < count; i += 1) {
+            const spark = document.createElement("span");
+            spark.className = "spark";
+
+            const x =
+              region.xStart + Math.random() * (region.xEnd - region.xStart);
+            const y =
+              region.yStart + Math.random() * (region.yEnd - region.yStart);
+            const drift = (Math.random() * 40 - 20).toFixed(1);
+            const fall = (18 + Math.random() * 26).toFixed(1);
+            const size = (2 + Math.random() * 3).toFixed(1);
+            const dur = (280 + Math.random() * 420).toFixed(0);
+
+            spark.style.left = `${x}px`;
+            spark.style.top = `${y}px`;
+            spark.style.setProperty("--spark-dx", `${drift}px`);
+            spark.style.setProperty("--spark-dy", `${fall}px`);
+            spark.style.setProperty("--spark-size", `${size}px`);
+            spark.style.animationDuration = `${dur}ms`;
+            spark.style.opacity = String(0.35 + clamped * 0.6);
+
+            spark.addEventListener("animationend", () => {
+              spark.remove();
+            });
+            sparkLayer.appendChild(spark);
+          }
+        }
+
+        function setLightLevel(level) {
+          if (!flickerLayer) return;
+          const clamped = Math.max(0, Math.min(1, level));
+          flickerLayer.style.opacity = String(clamped);
+          setHumLevel(clamped);
+        }
+
+        function pulseFlicker() {
+          if (!flickerLayer) return;
+          const hold = Math.random() < 0.08;
+          if (hold) {
+            const holdOpacity = 0.3 + Math.random() * 0.4;
+            const holdDuration = 1800 + Math.random() * 3200;
+            let holdActive = true;
+            setLightLevel(holdOpacity);
+
+            function microFlicker() {
+              if (!holdActive) return;
+              const micro = holdOpacity + (Math.random() * 0.12 - 0.06);
+              setLightLevel(micro);
+              triggerSparks(micro);
+              setTimeout(microFlicker, 90 + Math.random() * 220);
+            }
+
+            microFlicker();
+            setTimeout(() => {
+              holdActive = false;
+              setLightLevel(0);
+              setTimeout(pulseFlicker, 400 + Math.random() * 1200);
+            }, holdDuration);
+            return;
+          }
+          const burst = Math.random() < 0.12;
+          const steps = burst ? 2 + Math.floor(Math.random() * 3) : 1;
+          const burstMin = 0.2 + Math.random() * 0.2;
+          const burstMax = burstMin + 0.3 + Math.random() * 0.2;
+          let step = 0;
+
+          function doStep() {
+            const opacity =
+              burstMin + Math.random() * Math.max(0.05, burstMax - burstMin);
+            setLightLevel(opacity);
+            triggerSparks(opacity);
+            setTimeout(() => {
+              setLightLevel(0);
+              step += 1;
+              if (step < steps) {
+                setTimeout(doStep, 40 + Math.random() * 120);
+              }
+            }, 60 + Math.random() * 160);
+          }
+
+          doStep();
+          setTimeout(pulseFlicker, 260 + Math.random() * 1400);
+        }
+
+        function startExperience() {
+          if (experienceStarted) return;
+          experienceStarted = true;
+          initAudio();
+          if (audioContext && audioContext.state === "suspended") {
+            audioContext.resume();
+          }
+          if (!prefersReducedMotion) {
+            pulseFlicker();
+          }
+        }
+
+        ["pointerdown", "keydown", "touchstart", "wheel"].forEach((eventName) => {
+          window.addEventListener(eventName, startExperience, {
+            once: true,
+            passive: true,
+          });
+        });
       }
 
       // Ghost sprite drift

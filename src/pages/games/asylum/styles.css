@@ -116,11 +116,14 @@ header,
 
 .feature-icon {
   font-size: 2.5rem;
-  margin-bottom: 1rem;
+  display: block;
+  margin-bottom: 0;
+  padding-bottom: 1.5rem;
   background: linear-gradient(135deg, var(--accent-light), var(--accent-dark));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  line-height: 1;
 }
 
 /* Dividers pick up the theme */
@@ -129,12 +132,27 @@ header,
 }
 
 /* Info section */
+.info-duo {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: start;
+  margin-bottom: 3rem;
+}
+
+.info-duo .newsletter-section {
+  margin: 0;
+}
+
+.info-duo .newsletter-container {
+  margin: 0;
+}
+
 .game-info {
   background-color: #1e1e1e;
   padding: 2rem;
   border-radius: 12px;
   border: 1px solid #2e2e2e;
-  margin-bottom: 3rem;
   box-shadow: var(--shadow-md);
 }
 
@@ -166,6 +184,12 @@ header,
   background-color: rgba(0, 255, 148, 0.1);
   border-color: var(--accent-light);
   color: var(--accent-light);
+}
+
+@media (min-width: 900px) {
+  .info-duo {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.9fr);
+  }
 }
 
 /* Screenshots */
@@ -200,6 +224,9 @@ header,
 }
 
 /* Follow Updates card uses global .info-card styles */
+.newsletter-section .newsletter-container p {
+  color: #d6d6d6;
+}
 
 /* Character sprite drift */
 .character-container {
@@ -244,7 +271,7 @@ footer {
 @media (max-width: 768px) {
   .character-container {
     width: 60vw;
-    margin: 2rem auto;
+    margin: 100vh auto 2rem;
     display: block;
     text-align: center;
   }
@@ -260,6 +287,53 @@ footer {
 }
 
 /* Title Flickering Effect */
-.flickering-title {
-  transition: opacity 0.05s ease;
+.title-flicker {
+  position: relative;
+  display: inline-block;
+}
+
+.title-flicker .game-title {
+  display: block;
+}
+
+.spark-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.spark {
+  position: absolute;
+  width: var(--spark-size, 3px);
+  height: var(--spark-size, 3px);
+  border-radius: 999px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 244, 214, 0.95) 0%,
+    rgba(255, 210, 150, 0.55) 60%,
+    transparent 100%
+  );
+  filter: blur(0.4px);
+  animation-name: spark-fall;
+  animation-timing-function: ease-out;
+}
+
+@keyframes spark-fall {
+  0% {
+    transform: translate(0, 0) scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--spark-dx, 0px), var(--spark-dy, 24px))
+      scale(0.6);
+  }
+}
+
+.flicker-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  pointer-events: none;
 }

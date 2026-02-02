@@ -432,38 +432,4 @@
   }
 }
 
-/* Discussion Card Styles */
-.discussion-card {
-  margin-top: 3rem;
-  /* Inherit visual shell from global .info-card (base.css). */
-  /* Only tweak the accent color on blog pages if needed. */
-  border-left-color: var(--blue-600);
-  text-align: center;
-}
-
-.discussion-card h3 {
-  margin-top: 0;
-  color: #333;
-  font-size: 1.4rem;
-}
-
-/* Layout is shared via .action-links in base.css; keep spacing here */
-.discussion-links {
-  margin-top: 1rem;
-}
-
-@media (min-width: 768px) {
-  .discussion-links {
-    flex-direction: row;
-    gap: 1.2rem;
-  }
-}
-
-/* Discussion links now use global .button styles */
-.discussion-link {
-  text-decoration: none;
-}
-
-/* icon spacing handled in base via .action-links .button svg */
-
-/* Remove brand overrides to match Follow Updates buttons exactly */
+/* Continue Discussion card now uses the shared Follow Updates styling */
