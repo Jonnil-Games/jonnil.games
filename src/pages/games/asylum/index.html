@@ -103,6 +103,9 @@
             <span class="spark-layer" aria-hidden="true"></span>
           </span>
         </h1>
+        <button class="sound-toggle" type="button" aria-label="Mute ambient sound">
+          <i class="ri-volume-up-line" aria-hidden="true"></i>
+        </button>
       </section>
 
       <div class="divider large-divider"></div>
@@ -217,9 +220,12 @@
         const flickerLayer = document.querySelector(".flicker-layer");
         const flickerWrap = document.querySelector(".title-flicker");
         const sparkLayer = document.querySelector(".spark-layer");
+        const soundToggle = document.querySelector(".sound-toggle");
         let audioContext;
         let humOscillator;
         let humGain;
+        let isMuted = false;
+        let lastLevel = 0;
         let experienceStarted = false;
 
         function initAudio() {
@@ -235,7 +241,7 @@
           humOscillator.frequency.value = 140;
           humOscillator2.type = "sine";
           humOscillator2.frequency.value = 280;
-          humGain.gain.value = 0.01;
+          humGain.gain.value = 0.006;
           humFilter.type = "lowpass";
           humFilter.frequency.value = 800;
           humOscillator.connect(humGain);
@@ -247,7 +253,9 @@
 
         function setHumLevel(level) {
           if (!humGain || !audioContext) return;
-          const target = 0.01 + level * 0.02;
+          lastLevel = Math.max(0, Math.min(1, level));
+          if (isMuted) return;
+          const target = 0.006 + lastLevel * 0.012;
           humGain.gain.setTargetAtTime(target, audioContext.currentTime, 0.06);
         }
 
@@ -355,6 +363,9 @@
           if (audioContext && audioContext.state === "suspended") {
             audioContext.resume();
           }
+          if (soundToggle) {
+            soundToggle.classList.add("is-active");
+          }
           if (!prefersReducedMotion) {
             pulseFlicker();
           }
@@ -366,6 +377,24 @@
             passive: true,
           });
         });
+
+        if (soundToggle) {
+          soundToggle.addEventListener("click", () => {
+            isMuted = !isMuted;
+            if (!humGain || !audioContext) return;
+            const icon = soundToggle.querySelector("i");
+            if (isMuted) {
+              humGain.gain.setTargetAtTime(0, audioContext.currentTime, 0.08);
+              if (icon) icon.className = "ri-volume-mute-line";
+              soundToggle.setAttribute("aria-label", "Unmute ambient sound");
+            } else {
+              const target = 0.006 + lastLevel * 0.012;
+              humGain.gain.setTargetAtTime(target, audioContext.currentTime, 0.08);
+              if (icon) icon.className = "ri-volume-up-line";
+              soundToggle.setAttribute("aria-label", "Mute ambient sound");
+            }
+          });
+        }
       }
 
       // Ghost sprite drift
