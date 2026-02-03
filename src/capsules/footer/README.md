@@ -1,11 +1,11 @@
-# Footer Component
+# Footer Capsule
 
-A responsive site-wide footer component that includes social links, navigation, contact information, and legal links.
+A responsive site-wide footer capsule that includes social links, navigation, contact information, and legal links.
 
 ## Usage
 
 ```html
-<cyan component="footer"></cyan>
+<drop capsule="footer"></drop>
 ```
 
 ## Dependencies

@@ -1,12 +1,12 @@
-# Continue Discussion Component
+# Continue Discussion Capsule
 
 A reusable "Continue the Discussion" card for blog posts, styled to match the
-Follow Updates component.
+Follow Updates capsule.
 
 ## Usage
 
 ```html
-<cyan component="continue-discussion"></cyan>
+<drop capsule="continue-discussion"></drop>
 ```
 
 ## Structure

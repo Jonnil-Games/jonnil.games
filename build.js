@@ -54,7 +54,7 @@ Handlebars.registerHelper("truncate", function (str, len) {
 const rootDir = __dirname;
 const srcDir = path.join(rootDir, "src");
 const publicDir = path.join(rootDir, "public");
-const componentsDir = path.join(srcDir, "components");
+const capsulesDir = path.join(srcDir, "capsules");
 const stylesDir = path.join(srcDir, "styles");
 const pagesDir = path.join(srcDir, "pages");
 const assetsDir = path.join(srcDir, "assets");
@@ -143,43 +143,43 @@ function copyDirectory(src, dest) {
 }
 
 // -----------------------------
-// Site: component injection & styles
+// Site: capsule injection & styles
 // -----------------------------
-function injectComponentsInContent(content) {
-  const usedComponents = [];
+function injectCapsulesInContent(content) {
+  const usedCapsules = [];
   const seen = new Set();
   const updatedContent = content.replace(
-    /<cyan\s+component="([^"]+)"[^>]*><\/cyan>/g,
-    (_full, componentName) => {
-      if (!seen.has(componentName)) {
-        seen.add(componentName);
-        usedComponents.push(componentName);
+    /<drop\s+capsule="([^"]+)"[^>]*><\/drop>/g,
+    (_full, capsuleName) => {
+      if (!seen.has(capsuleName)) {
+        seen.add(capsuleName);
+        usedCapsules.push(capsuleName);
       }
-      const componentPath = path.join(
-        componentsDir,
-        componentName,
-        `${componentName}.html`
+      const capsulePath = path.join(
+        capsulesDir,
+        capsuleName,
+        `${capsuleName}.html`
       );
-      if (!fileExists(componentPath)) {
-        console.error(`Component not found: ${componentPath}`);
-        return `<!-- missing component: ${componentName} -->`;
+      if (!fileExists(capsulePath)) {
+        console.error(`Capsule not found: ${capsulePath}`);
+        return `<!-- missing capsule: ${capsuleName} -->`;
       }
-      const componentHtml = readFile(componentPath);
+      const capsuleHtml = readFile(capsulePath);
 
-      // Note: header now ships with inline JS in its HTML; do not auto-inject external component scripts
+      // Note: header now ships with inline JS in its HTML; do not auto-inject external capsule scripts
 
-      return componentHtml;
+      return capsuleHtml;
     }
   );
-  const scriptTags = usedComponents
-    .map((componentName) => {
-      const componentScriptPath = path.join(
-        componentsDir,
-        componentName,
-        `${componentName}.js`
+  const scriptTags = usedCapsules
+    .map((capsuleName) => {
+      const capsuleScriptPath = path.join(
+        capsulesDir,
+        capsuleName,
+        `${capsuleName}.js`
       );
-      if (!fileExists(componentScriptPath)) return "";
-      return `<script src="/components/${componentName}/${componentName}.js"></script>`;
+      if (!fileExists(capsuleScriptPath)) return "";
+      return `<script src="/capsules/${capsuleName}/${capsuleName}.js"></script>`;
     })
     .filter(Boolean);
   if (scriptTags.length === 0) return updatedContent;
@@ -189,14 +189,14 @@ function injectComponentsInContent(content) {
   }
   return `${updatedContent}${injection}`;
 }
-function injectComponents(pagePath) {
-  console.log(`Injecting components into: ${pagePath}`);
+function injectCapsules(pagePath) {
+  console.log(`Injecting capsules into: ${pagePath}`);
   if (!fileExists(pagePath)) {
     console.error(`Page not found: ${pagePath}`);
     return null;
   }
   const pageContent = readFile(pagePath);
-  return injectComponentsInContent(pageContent);
+  return injectCapsulesInContent(pageContent);
 }
 function getCSSVariables() {
   const variablesPath = path.join(stylesDir, "variables.css");
@@ -208,30 +208,30 @@ function getCSSVariables() {
   console.error(`CSS variables file not found: ${variablesPath}`);
   return "";
 }
-function getComponentStyles() {
-  console.log("Collecting component styles...");
-  if (!fs.existsSync(componentsDir)) return "";
-  let componentStyles = "";
-  const componentDirs = fs
-    .readdirSync(componentsDir)
+function getCapsuleStyles() {
+  console.log("Collecting capsule styles...");
+  if (!fs.existsSync(capsulesDir)) return "";
+  let capsuleStyles = "";
+  const capsuleDirs = fs
+    .readdirSync(capsulesDir)
     .filter((name) => {
-      const p = path.join(componentsDir, name);
+      const p = path.join(capsulesDir, name);
       return fs.statSync(p).isDirectory();
     })
     .sort((a, b) => a.localeCompare(b));
-  for (const componentName of componentDirs) {
-    const componentStylePath = path.join(
-      componentsDir,
-      componentName,
-      `${componentName}.css`
+  for (const capsuleName of capsuleDirs) {
+    const capsuleStylePath = path.join(
+      capsulesDir,
+      capsuleName,
+      `${capsuleName}.css`
     );
-    if (fileExists(componentStylePath)) {
-      console.log(`Adding styles from: ${componentStylePath}`);
-      const componentCss = readFile(componentStylePath);
-      componentStyles += `/* ${componentName} Component Styles */\n${componentCss}\n\n`;
+    if (fileExists(capsuleStylePath)) {
+      console.log(`Adding styles from: ${capsuleStylePath}`);
+      const capsuleCss = readFile(capsuleStylePath);
+      capsuleStyles += `/* ${capsuleName} Capsule Styles */\n${capsuleCss}\n\n`;
     }
   }
-  return componentStyles;
+  return capsuleStyles;
 }
 function updateStyles() {
   const stylesPath = path.join(publicDir, "styles.css");
@@ -243,9 +243,9 @@ function updateStyles() {
     cssVariables,
     base,
     "",
-    "/* BEGIN COMPONENT STYLES */",
-    getComponentStyles(),
-    "/* END COMPONENT STYLES */",
+    "/* BEGIN CAPSULE STYLES */",
+    getCapsuleStyles(),
+    "/* END CAPSULE STYLES */",
     "",
   ].join("\n");
   writeFile(stylesPath, updatedStyles);
@@ -261,7 +261,7 @@ function processDirectory(srcPath, destPath) {
       if (entry.isDirectory()) {
         processDirectory(srcFull, destFull);
       } else if (entry.name.endsWith(".html")) {
-        const updatedContent = injectComponents(srcFull);
+        const updatedContent = injectCapsules(srcFull);
         if (updatedContent) writeFile(destFull, updatedContent);
       } else {
         fs.copyFileSync(srcFull, destFull);
@@ -271,23 +271,23 @@ function processDirectory(srcPath, destPath) {
     console.error(`Error processing directory ${srcPath}:`, error);
   }
 }
-function copyComponentScriptsToPublic() {
-  if (!fs.existsSync(componentsDir)) return;
-  const destBase = path.join(publicDir, "components");
+function copyCapsuleScriptsToPublic() {
+  if (!fs.existsSync(capsulesDir)) return;
+  const destBase = path.join(publicDir, "capsules");
   ensureDirectoryExists(destBase);
-  const entries = fs.readdirSync(componentsDir, { withFileTypes: true });
+  const entries = fs.readdirSync(capsulesDir, { withFileTypes: true });
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
     const name = entry.name;
-    const componentScriptPath = path.join(
-      componentsDir,
+    const capsuleScriptPath = path.join(
+      capsulesDir,
       name,
       `${name}.js`
     );
-    if (!fileExists(componentScriptPath)) continue;
+    if (!fileExists(capsuleScriptPath)) continue;
     const destDir = path.join(destBase, name);
     ensureDirectoryExists(destDir);
-    fs.copyFileSync(componentScriptPath, path.join(destDir, `${name}.js`));
+    fs.copyFileSync(capsuleScriptPath, path.join(destDir, `${name}.js`));
   }
 }
 
@@ -489,10 +489,10 @@ function buildBlog() {
   copyBlogStaticAssets();
 
   console.log("Loading and compiling templates...");
-  const postTemplateSource = injectComponentsInContent(
+  const postTemplateSource = injectCapsulesInContent(
     readTemplateOrExit(path.join(templateDir, "post-template.html"))
   );
-  const indexTemplateSource = injectComponentsInContent(
+  const indexTemplateSource = injectCapsulesInContent(
     readTemplateOrExit(path.join(templateDir, "index-template.html"))
   );
   const postTemplate = Handlebars.compile(postTemplateSource);
@@ -642,14 +642,14 @@ function build() {
   // Clean public directory
   cleanDirectory(publicDir);
 
-  // Pages -> public (component injection)
+  // Pages -> public (capsule injection)
   processDirectory(pagesDir, publicDir);
 
   // Static assets
   copyDirectory(assetsDir, publicDir);
 
-  // Component scripts (JS only)
-  copyComponentScriptsToPublic();
+  // Capsule scripts (JS only)
+  copyCapsuleScriptsToPublic();
 
   // Styles bundle
   updateStyles();

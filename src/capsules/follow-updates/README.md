@@ -1,13 +1,13 @@
-# Follow Updates Component
+# Follow Updates Capsule
 
 A reusable "Follow Updates" card used to link to RSS, Bluesky, and Discord.
 
 ## Usage
 
-Add the component tag where the card should appear:
+Add the capsule tag where the card should appear:
 
 ```html
-<cyan component="follow-updates"></cyan>
+<drop capsule="follow-updates"></drop>
 ```
 
 ## Structure

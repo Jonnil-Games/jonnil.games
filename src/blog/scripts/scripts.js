@@ -99,5 +99,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Header/mobile menu behavior is provided by the header component inline script
+  // Header/mobile menu behavior is provided by the header capsule inline script
 });

@@ -21,7 +21,7 @@ main {
   padding-top: 6rem;
 }
 
-/* Header overrides (component markup) */
+/* Header overrides (capsule markup) */
 header,
 .navbar {
   background-color: #1e1e1e;

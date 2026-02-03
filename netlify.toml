@@ -1,7 +1,7 @@
 # Netlify configuration file
 
 [build]
-# Command to build the entire site (pages + components + blog + feeds + sitemap)
+# Command to build the entire site (pages + capsules + blog + feeds + sitemap)
 command = "npm run build"
 # Directory to publish the site
 publish = "public"

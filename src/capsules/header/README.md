@@ -1,6 +1,6 @@
-# Header Component
+# Header Capsule
 
-A responsive navigation header component for the Jonnil Games website with mobile menu support.
+A responsive navigation header capsule for the Jonnil Games website with mobile menu support.
 
 ## Features
 
@@ -13,20 +13,20 @@ A responsive navigation header component for the Jonnil Games website with mobil
 
 ## Usage
 
-### 1. Include the Component Files
+### 1. Include the Capsule Files
 
 Add the following to the `<head>` of your HTML file:
 
 ```html
-<!-- Header Component -->
-<link rel="stylesheet" href="/src/components/header/header.css" />
+<!-- Header Capsule -->
+<link rel="stylesheet" href="/src/capsules/header/header.css" />
 ```
 
 Add the following just before the closing `</body>` tag:
 
 ```html
-<!-- Header Component Script -->
-<script src="/src/components/header/header.js"></script>
+<!-- Header Capsule Script -->
+<script src="/src/capsules/header/header.js"></script>
 ```
 
 ### 2. Insert the Header HTML
@@ -34,10 +34,10 @@ Add the following just before the closing `</body>` tag:
 Place the following code at the beginning of your `<body>` section:
 
 ```html
-<!-- Include the header component -->
+<!-- Include the header capsule -->
 <div id="header-container"></div>
 <script>
-  fetch("/src/components/header/header.html")
+  fetch("/src/capsules/header/header.html")
     .then((response) => response.text())
     .then((html) => {
       document.getElementById("header-container").innerHTML = html;
@@ -73,14 +73,14 @@ Update the social media links in the mobile menu section of `header.html`.
 
 ## Structure
 
-- `header.html` - The HTML structure of the header component
-- `header.css` - Styles for the header component
-- `header.js` - JavaScript functionality for the header component
-- `README.md` - Documentation for the header component
+- `header.html` - The HTML structure of the header capsule
+- `header.css` - Styles for the header capsule
+- `header.js` - JavaScript functionality for the header capsule
+- `README.md` - Documentation for the header capsule
 
 ## Accessibility
 
-This header component includes the following accessibility features:
+This header capsule includes the following accessibility features:
 
 - ARIA attributes for the mobile menu toggle
 - Proper focus management
@@ -89,4 +89,4 @@ This header component includes the following accessibility features:
 
 ## Browser Support
 
-This component is compatible with all modern browsers. Internet Explorer is not supported.
+This capsule is compatible with all modern browsers. Internet Explorer is not supported.

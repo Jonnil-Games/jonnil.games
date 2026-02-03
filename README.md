@@ -8,7 +8,7 @@ Welcome to the `jonnil.games` website repository. This powers our static site (h
 
 We follow these principles:
 
-- Modular: Reusable components (partials) instead of copy/paste
+- Modular: Reusable capsules (partials) instead of copy/paste
 - DRY: Single source of truth for header, footer, layout
 - Readable: Intuitive structure, consistent naming, clear headers
 - Vanilla-first: Plain HTML/CSS/JS; no heavy frameworks
@@ -22,7 +22,7 @@ We follow these principles:
 project-root/
 ├── src/
 │ ├── pages/ # Page templates (e.g., index.html, about.html, games/*)
-│ ├── components/ # Reusable UI via <cyan component="…"></cyan>
+│ ├── capsules/ # Reusable UI via <drop capsule="…"></drop>
 │ │ ├── header/
 │ │ │ ├── header.html
 │ │ │ └── header.css
@@ -87,11 +87,11 @@ publish = "public"
 `node build.js` will:
 
 - Clean `public/`
-- Process all `.html` under `src/pages/` (including subfolders), injecting `<cyan component="…"></cyan>` with the component’s HTML
-- Inject components into blog templates (`src/blog/templates/`), so you can use the same `<cyan component="…"></cyan>` tags there too
-- Bundle CSS into `public/styles.css`: `variables.css` + `base.css` + per-component CSS (between markers `/* BEGIN/END COMPONENT STYLES */`)
+- Process all `.html` under `src/pages/` (including subfolders), injecting `<drop capsule="…"></drop>` with the capsule’s HTML
+- Inject capsules into blog templates (`src/blog/templates/`), so you can use the same `<drop capsule="…"></drop>` tags there too
+- Bundle CSS into `public/styles.css`: `variables.css` + `base.css` + per-capsule CSS (between markers `/* BEGIN/END CAPSULE STYLES */`)
 - Copy static assets from `src/assets/` into `public/` root (e.g., `src/assets/images/foo.png` → `/images/foo.png`)
-- Copy component scripts (if present) into `public/components/<name>/<name>.js` and auto-inject `<script>` tags for any components used on a page
+- Copy capsule scripts (if present) into `public/capsules/<name>/<name>.js` and auto-inject `<script>` tags for any capsules used on a page
 - Build the blog from Markdown using Handlebars templates under `src/blog/templates/`
 - Generate blog feeds (`/blog/rss.xml`, `/blog/atom.xml`), a `recent-posts.json`, and `public/sitemap.xml`
 
@@ -100,7 +100,7 @@ publish = "public"
 📰 Blog
 
 - Write posts in `src/blog/posts/*.md` with front matter (`title`, `author`, `date`, optional `categories`, `excerpt`, `draft`)
-- Templates live in `src/blog/templates/` and can use `<cyan component="…"></cyan>`
+- Templates live in `src/blog/templates/` and can use `<drop capsule="…"></drop>`
 - Build with `npm run build`
 - Outputs to `public/blog/`, including:
   - `index.html` (with author/category filters + search UI)
@@ -146,28 +146,28 @@ Add a short header to new files:
 
 ⸻
 
-🔄 Using Components
+🔄 Using Capsules
 
-1. Create `src/components/<name>/`
+1. Create `src/capsules/<name>/`
 2. Add:
 
 - `<name>.html` (markup)
 - optional `<name>.css` (styles)
-- optional `<name>.js` (behavior) — component JS is copied to `public/components/<name>/<name>.js` and auto-injected on pages where the component appears.
+- optional `<name>.js` (behavior) — capsule JS is copied to `public/capsules/<name>/<name>.js` and auto-injected on pages where the capsule appears.
 
 3. In any page template:
 
 ```html
-<cyan component="<name>"></cyan>
+<drop capsule="<name>"></drop>
 ```
 
-4. Rebuild (`npm run build`) — the component is injected into pages in `src/pages/` and its CSS is bundled into `public/styles.css`.
+4. Rebuild (`npm run build`) — the capsule is injected into pages in `src/pages/` and its CSS is bundled into `public/styles.css`.
 
 ⸻
 
 📄 Adding Pages & Assets
 
-- Pages: Put `.html` in `src/pages/` (including subfolders). Use component tags for header/footer.
+- Pages: Put `.html` in `src/pages/` (including subfolders). Use capsule tags for header/footer.
 - Assets: Place images in `src/assets/images/` and reference them as `/images/...`.
 
 ⸻
@@ -184,9 +184,9 @@ Add a short header to new files:
 🤝 Contributing
 
 1. Create/update pages in `src/pages/`
-2. Extract repeated UI into `src/components/`
+2. Extract repeated UI into `src/capsules/`
 3. Update global styles in `src/styles/` if needed
 4. Run `npm run build` and verify `public/`
 5. Commit with a clear message, open a PR, celebrate 🎉
 
-If you’re copy‑pasting, stop and make a component. That’s how we keep this site DRY, maintainable, and joyful to work on. 🐾
+If you’re copy‑pasting, stop and make a capsule. That’s how we keep this site DRY, maintainable, and joyful to work on. 🐾
