@@ -1,7 +1,8 @@
 # Continue Discussion Capsule
 
-A reusable "Continue the Discussion" card for blog posts, styled to match the
-Follow Updates capsule.
+A reusable CTA card for blog posts that invites readers to continue the
+conversation on Bluesky or Discord. It is styled to match the Follow Updates
+capsule via shared base styles.
 
 ## Usage
 
@@ -9,6 +10,15 @@ Follow Updates capsule.
 <drop capsule="continue-discussion"></drop>
 ```
 
-## Structure
+The build pipeline injects the capsule HTML automatically. There is no capsule
+JS for this one.
 
-- `continue-discussion.html` - The HTML structure of the discussion card
+## Behavior
+
+- Static content only (no script).
+- Uses shared classes from `src/styles/base.css` such as
+  `newsletter-section`, `info-card`, `action-links`, and button styles.
+
+## Files
+
+- `continue-discussion.html` - Markup for the CTA card

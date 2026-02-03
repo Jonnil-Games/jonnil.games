@@ -1,6 +1,7 @@
 # Footer Capsule
 
-A responsive site-wide footer capsule that includes social links, navigation, contact information, and legal links.
+A site-wide footer capsule that includes social links, navigation, contact
+information, and legal links.
 
 ## Usage
 
@@ -8,21 +9,25 @@ A responsive site-wide footer capsule that includes social links, navigation, co
 <drop capsule="footer"></drop>
 ```
 
-## Dependencies
+The build pipeline injects the capsule HTML and auto-injects the capsule script
+if present.
 
-- Requires `variables.css` for styling variables
-- Uses Remixicon for social media icons (`ri-*` classes)
+## Behavior
 
-## Structure
+- `footer.js` keeps the copyright year current.
+- Styling is driven by shared base styles in `src/styles/base.css`.
+- Remixicon classes (`ri-*`) are used for social icons and the copyright icon.
 
-- Social media links section
-- Quick navigation links
-- Contact information
-- Copyright and legal links
+## Files
+
+- `footer.html` - Markup for the footer
+- `footer.css` - Reserved for small overrides (base styles live in `base.css`)
+- `footer.js` - Sets the current year
 
 ## Customization
 
-The footer uses CSS variables from `variables.css` for colors, spacing, and transitions. To modify the appearance, adjust these variables in your project's CSS:
+Most styling is controlled by CSS variables in `src/styles/variables.css`, such
+as:
 
 - `--container-width`
 - `--spacing-*` (sm, md, lg, xl)

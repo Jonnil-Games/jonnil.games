@@ -1,49 +1,25 @@
 # Header Capsule
 
-A responsive navigation header capsule for the Jonnil Games website with mobile menu support.
+A responsive navigation header capsule for the Jonnil Games website with mobile
+menu support, active link highlighting, and emoji replacement.
 
 ## Features
 
-- Responsive design with both desktop and mobile layouts
-- Mobile hamburger menu with animation
-- Automatic active link highlighting based on current page
-- Social links in mobile menu
-- Accessibility support with ARIA attributes
-- Smooth animations and transitions
+- Responsive desktop and mobile layouts
+- Mobile hamburger menu with accessible toggling
+- Automatic active link highlighting based on current URL
+- Social links in the mobile menu
+- Accessibility support with ARIA attributes and focus management
+- Emoji replacement (Mutant Standard SVGs) for consistent cross-platform glyphs
 
 ## Usage
 
-### 1. Include the Capsule Files
-
-Add the following to the `<head>` of your HTML file:
-
 ```html
-<!-- Header Capsule -->
-<link rel="stylesheet" href="/src/capsules/header/header.css" />
+<drop capsule="header"></drop>
 ```
 
-Add the following just before the closing `</body>` tag:
-
-```html
-<!-- Header Capsule Script -->
-<script src="/src/capsules/header/header.js"></script>
-```
-
-### 2. Insert the Header HTML
-
-Place the following code at the beginning of your `<body>` section:
-
-```html
-<!-- Include the header capsule -->
-<div id="header-container"></div>
-<script>
-  fetch("/src/capsules/header/header.html")
-    .then((response) => response.text())
-    .then((html) => {
-      document.getElementById("header-container").innerHTML = html;
-    });
-</script>
-```
+The build pipeline injects the capsule HTML and auto-injects the capsule script
+when this capsule is used on a page.
 
 ## Customization
 
@@ -71,22 +47,26 @@ To change the navigation links, update both the desktop and mobile navigation se
 
 Update the social media links in the mobile menu section of `header.html`.
 
-## Structure
+## Behavior
 
-- `header.html` - The HTML structure of the header capsule
-- `header.css` - Styles for the header capsule
-- `header.js` - JavaScript functionality for the header capsule
-- `README.md` - Documentation for the header capsule
+- `header.js`:
+  - Highlights active nav links (desktop and mobile).
+  - Handles opening/closing the mobile menu, including Escape key and resize.
+  - Keeps the mobile footer year current.
+  - Replaces emoji characters with Mutant Standard SVGs via a MutationObserver.
+
+## Files
+
+- `header.html` - Markup for the header and mobile menu
+- `header.css` - Reserved for small overrides (base styles live in `base.css`)
+- `header.js` - Header behavior and emoji replacement
 
 ## Accessibility
 
-This header capsule includes the following accessibility features:
-
-- ARIA attributes for the mobile menu toggle
-- Proper focus management
-- Semantic HTML structure
-- Keyboard navigation support
+- ARIA attributes for the menu toggle and dialog
+- Focus management when opening/closing the mobile menu
+- Semantic nav structure with clear link targets
 
 ## Browser Support
 
-This capsule is compatible with all modern browsers. Internet Explorer is not supported.
+Modern browsers only. Internet Explorer is not supported.
