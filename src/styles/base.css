@@ -386,6 +386,7 @@ header {
   gap: var(--spacing-sm);
   justify-content: center;
   width: 100%;
+  position: relative;
 }
 
 .mobile-lang-switcher .lang-toggle {
@@ -398,9 +399,13 @@ header {
 }
 
 .mobile-lang-switcher .lang-menu {
-  position: static;
-  width: 100%;
-  margin-top: var(--spacing-sm);
+  position: absolute;
+  top: calc(100% + var(--spacing-sm));
+  left: 0;
+  right: 0;
+  width: min(240px, 100%);
+  margin: 0 auto;
+  z-index: 5;
   transform-origin: top center;
 }
 
