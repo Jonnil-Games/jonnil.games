@@ -18,7 +18,7 @@ JS for this one.
 - Static content only (no script).
 - Uses shared classes from `src/styles/base.css` such as
   `newsletter-section`, `info-card`, `action-links`, and button styles.
-- Includes Remixicon icons (`ri-*` classes) for RSS/Bluesky/Discord.
+- Includes shared `.icon` mask icons for RSS/Bluesky/Discord.
 
 ## Files
 

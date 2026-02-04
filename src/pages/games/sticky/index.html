@@ -3,22 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Sticky Paws - Jonnil Games</title>
+    <title data-i18n="sticky.meta.title">Sticky Paws - Jonnil Games</title>
 
     <!-- Primary Meta Tags -->
-    <meta name="title" content="Sticky Paws - Jonnil Games" />
+    <meta name="title" content="Sticky Paws - Jonnil Games" data-i18n-attr="content:sticky.meta.title" />
     <meta
       name="description"
       content="Embark on a sticky adventure in this charming physics-based platformer. Use your sticky paws to climb, swing, and bounce through colorful levels filled with challenges and fun!"
+      data-i18n-attr="content:sticky.meta.description"
     />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://jonnil.games/games/sticky/" />
-    <meta property="og:title" content="Sticky Paws - Jonnil Games" />
+    <meta property="og:title" content="Sticky Paws - Jonnil Games" data-i18n-attr="content:sticky.meta.title" />
     <meta
       property="og:description"
       content="Embark on a sticky adventure in this charming physics-based platformer. Use your sticky paws to climb, swing, and bounce through colorful levels filled with challenges and fun!"
+      data-i18n-attr="content:sticky.meta.description"
     />
     <meta
       property="og:image"
@@ -27,10 +29,11 @@
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Sticky Paws - Jonnil Games" />
+    <meta name="twitter:title" content="Sticky Paws - Jonnil Games" data-i18n-attr="content:sticky.meta.title" />
     <meta
       name="twitter:description"
       content="Embark on a sticky adventure in this charming physics-based platformer. Use your sticky paws to climb, swing, and bounce through colorful levels filled with challenges and fun!"
+      data-i18n-attr="content:sticky.meta.description"
     />
     <meta
       name="twitter:image"
@@ -38,9 +41,9 @@
     />
 
     <!-- Game-specific Meta -->
-    <meta property="og:game:status" content="Released" />
+    <meta property="og:game:status" content="Released" data-i18n-attr="content:sticky.meta.status" />
     <meta property="og:game:release_date" content="2023" />
-    <meta property="og:game:genre" content="Physics Platformer" />
+    <meta property="og:game:genre" content="Physics Platformer" data-i18n-attr="content:sticky.meta.genre" />
 
     <!-- Canonical + Feeds -->
     <link rel="canonical" href="https://jonnil.games/games/sticky/" />
@@ -62,16 +65,16 @@
     <link rel="stylesheet" href="styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css"
-    />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
 
-    <!-- Favicon -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" media="print" onload="this.media='all'" />
+
+    <noscript>
+
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
+
+    </noscript>
+<!-- Favicon -->
     <link rel="icon" href="/favicon.ico" />
   </head>
   <body>
@@ -108,8 +111,12 @@
           <img
             src="/images/sticky-paws.png"
             alt="Sticky Paws"
+            data-i18n-attr="alt:sticky.hero.titleAlt"
             class="game-title responsive-logo"
             fetchpriority="high"
+            width="1920"
+            height="1080"
+            decoding="async"
           />
         </h1>
       </section>
@@ -117,7 +124,7 @@
       <div class="divider large-divider"></div>
 
       <div class="sub-hero">
-        <p>
+        <p data-i18n="sticky.subhero.body">
           Join Sticky the Cat on a delightful adventure to reclaim a stolen cake
           from mischievous mice! Navigate through 10 charming levels filled with
           challenges and fun, where you can climb walls, pounce through
@@ -127,10 +134,17 @@
       </div>
 
       <section class="steam-embed" aria-labelledby="steam-widget">
-        <h2 id="steam-widget" class="visually-hidden">Steam Widget</h2>
+        <h2
+          id="steam-widget"
+          class="visually-hidden"
+          data-i18n="sticky.steam.title"
+        >
+          Steam Widget
+        </h2>
         <iframe
           src="https://store.steampowered.com/widget/1129090/"
           title="Sticky Paws on Steam"
+          data-i18n-attr="title:sticky.steam.iframeTitle"
           loading="lazy"
           frameborder="0"
           width="600"
@@ -139,12 +153,13 @@
       </section>
 
       <section class="video-showcase">
-        <h2>Gameplay Videos</h2>
+        <h2 data-i18n="sticky.videos.title">Gameplay Videos</h2>
         <div class="video-grid">
           <div class="video-container">
             <iframe
               src="https://www.youtube.com/embed/PPYN8mHpwqk"
               title="Sticky Paws Gameplay Video"
+              data-i18n-attr="title:sticky.videos.iframeTitle"
               loading="lazy"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen
@@ -155,6 +170,7 @@
             <iframe
               src="https://www.youtube.com/embed/QdVdIrQNyPM"
               title="Sticky Paws Gameplay Video"
+              data-i18n-attr="title:sticky.videos.iframeTitle"
               loading="lazy"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen
@@ -166,43 +182,69 @@
 
       <div class="game-features">
         <div class="feature-card">
-          <span class="feature-icon" role="img" aria-label="Multiplayer">
+          <span
+            class="feature-icon"
+            role="img"
+            aria-label="Multiplayer"
+            data-i18n-attr="aria-label:sticky.features.multiplayer.aria"
+          >
             👥
           </span>
-          <h3>Multiplayer Fun</h3>
-          <p>
+          <h3 data-i18n="sticky.features.multiplayer.title">Multiplayer Fun</h3>
+          <p data-i18n="sticky.features.multiplayer.body">
             Play with up to 4 players locally or online using Steam's Remote
             Play Together! Only one player needs to own the game to invite
             friends for multiplayer fun.
           </p>
         </div>
         <div class="feature-card">
-          <span class="feature-icon" role="img" aria-label="Playable characters">
+          <span
+            class="feature-icon"
+            role="img"
+            aria-label="Playable characters"
+            data-i18n-attr="aria-label:sticky.features.characters.aria"
+          >
             🐾
           </span>
-          <h3>Playable Characters</h3>
-          <p>
+          <h3 data-i18n="sticky.features.characters.title">
+            Playable Characters
+          </h3>
+          <p data-i18n="sticky.features.characters.body">
             Choose between Sticky and Catlyn, each with their unique charm! The
             game supports custom character additions for even more variety.
           </p>
         </div>
         <div class="feature-card">
-          <span class="feature-icon" role="img" aria-label="Level editor">
+          <span
+            class="feature-icon"
+            role="img"
+            aria-label="Level editor"
+            data-i18n-attr="aria-label:sticky.features.editor.aria"
+          >
             🎮
           </span>
-          <h3>Creative Level Editor</h3>
-          <p>
+          <h3 data-i18n="sticky.features.editor.title">
+            Creative Level Editor
+          </h3>
+          <p data-i18n="sticky.features.editor.body">
             Design and share your own levels! Create challenging courses, export
             them, and share with friends. Import levels from others for endless
             gameplay possibilities.
           </p>
         </div>
         <div class="feature-card">
-          <span class="feature-icon" role="img" aria-label="Competitive features">
+          <span
+            class="feature-icon"
+            role="img"
+            aria-label="Competitive features"
+            data-i18n-attr="aria-label:sticky.features.competitive.aria"
+          >
             🏁
           </span>
-          <h3>Competitive Features</h3>
-          <p>
+          <h3 data-i18n="sticky.features.competitive.title">
+            Competitive Features
+          </h3>
+          <p data-i18n="sticky.features.competitive.body">
             Challenge friends with high scores and speedruns! Each level tracks
             your best performance, letting you compete for the fastest times and
             highest scores.
@@ -213,14 +255,14 @@
       <div class="divider large-divider"></div>
 
       <section class="game-info">
-        <h2>Available Now on Steam!</h2>
-        <p>
+        <h2 data-i18n="sticky.info.title">Available Now on Steam!</h2>
+        <p data-i18n="sticky.info.body1">
           Experience the joy of Sticky's adventures, either solo or with friends! Sticky
           Paws is mainly a precision platformer,
           letting you climb walls, pounce through obstacles, and navigate
           challenges however you like at your own pace.
         </p>
-        <p>
+        <p data-i18n="sticky.info.body2">
           With the included level editor, your creativity knows no bounds.
           Create your own challenges, share them with friends, and discover new
           levels made by the community. Whether you're competing for the best
@@ -234,7 +276,7 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-            Get it on Steam
+            <span data-i18n="sticky.info.ctaSteam">Get it on Steam</span>
           </a>
           <a
             href="https://discord.jonnil.games"
@@ -242,18 +284,19 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-            Join our Discord
+            <span data-i18n="sticky.info.ctaDiscord">Join our Discord</span>
           </a>
         </div>
       </section>
 
       <section class="screenshots">
-        <h2>Game Screenshots</h2>
+        <h2 data-i18n="sticky.screenshots.title">Game Screenshots</h2>
         <div class="screenshots-grid">
           <figure class="screenshot">
             <img
               src="/images/sticky/screenshot1.png"
               alt="Multiplayer gameplay showing cooperative platforming"
+              data-i18n-attr="alt:sticky.screenshots.alt1"
               loading="lazy"
               decoding="async"
             />
@@ -262,6 +305,7 @@
             <img
               src="/images/sticky/screenshot2.png"
               alt="Level editor interface with custom level creation"
+              data-i18n-attr="alt:sticky.screenshots.alt2"
               loading="lazy"
               decoding="async"
             />
@@ -270,6 +314,7 @@
             <img
               src="/images/sticky/screenshot3.png"
               alt="Competitive mode showing high scores and speedrun times"
+              data-i18n-attr="alt:sticky.screenshots.alt3"
               loading="lazy"
               decoding="async"
             />

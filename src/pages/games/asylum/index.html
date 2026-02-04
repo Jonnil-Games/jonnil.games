@@ -3,22 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Juni's Asylum - Jonnil Games</title>
+    <title data-i18n="asylum.meta.title">Juni's Asylum - Jonnil Games</title>
 
     <!-- Primary Meta -->
-    <meta name="title" content="Juni's Asylum - Jonnil Games" />
+    <meta name="title" content="Juni's Asylum - Jonnil Games" data-i18n-attr="content:asylum.meta.title" />
     <meta
       name="description"
       content="Enter Juni's Asylum, a haunting horror adventure. A spiritual successor reimagined with years of experience and a larger team."
+      data-i18n-attr="content:asylum.meta.description"
     />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://jonnil.games/games/asylum/" />
-    <meta property="og:title" content="Juni's Asylum - Jonnil Games" />
+    <meta property="og:title" content="Juni's Asylum - Jonnil Games" data-i18n-attr="content:asylum.meta.title" />
     <meta
       property="og:description"
       content="Enter Juni's Asylum, a haunting horror adventure. A spiritual successor reimagined with years of experience and a larger team."
+      data-i18n-attr="content:asylum.meta.description"
     />
     <meta
       property="og:image"
@@ -27,10 +29,11 @@
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Juni's Asylum - Jonnil Games" />
+    <meta name="twitter:title" content="Juni's Asylum - Jonnil Games" data-i18n-attr="content:asylum.meta.title" />
     <meta
       name="twitter:description"
       content="Enter Juni's Asylum, a haunting horror adventure. A spiritual successor reimagined with years of experience and a larger team."
+      data-i18n-attr="content:asylum.meta.description"
     />
     <meta
       name="twitter:image"
@@ -38,9 +41,9 @@
     />
 
     <!-- Game-specific Meta -->
-    <meta property="og:game:status" content="In Development" />
+    <meta property="og:game:status" content="In Development" data-i18n-attr="content:asylum.meta.status" />
     <meta property="og:game:release_date" content="TBA" />
-    <meta property="og:game:genre" content="Horror Adventure" />
+    <meta property="og:game:genre" content="Horror Adventure" data-i18n-attr="content:asylum.meta.genre" />
 
     <!-- Canonical + Feeds -->
     <link rel="canonical" href="https://jonnil.games/games/asylum/" />
@@ -62,16 +65,16 @@
     <link rel="stylesheet" href="styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css"
-    />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
 
-    <!-- Preload alt title for flicker -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" media="print" onload="this.media='all'" />
+
+    <noscript>
+
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
+
+    </noscript>
+<!-- Preload alt title for flicker -->
     <link rel="preload" as="image" href="./title-dark.png" />
 
     <!-- Favicon -->
@@ -89,9 +92,12 @@
             <img
               src="./title-dark.png"
               alt="Juni's Asylum"
+              data-i18n-attr="alt:asylum.hero.titleAlt"
               class="game-title responsive-logo"
               fetchpriority="high"
               decoding="async"
+              width="632"
+              height="313"
             />
             <img
               src="./title.png"
@@ -99,19 +105,26 @@
               class="game-title responsive-logo flicker-layer"
               aria-hidden="true"
               decoding="async"
+              width="632"
+              height="313"
             />
             <span class="spark-layer" aria-hidden="true"></span>
           </span>
         </h1>
-        <button class="sound-toggle" type="button" aria-label="Mute ambient sound">
-          <i class="ri-volume-up-line" aria-hidden="true"></i>
+        <button
+          class="sound-toggle"
+          type="button"
+          aria-label="Mute ambient sound"
+          data-i18n-attr="aria-label:asylum.hero.mute"
+        >
+          <span class="icon" data-icon="volume-up" aria-hidden="true"></span>
         </button>
       </section>
 
       <div class="divider large-divider"></div>
 
       <div class="sub-hero">
-        <p>
+        <p data-i18n="asylum.subhero.body">
           Juni's Asylum is a planned horror adventure game, a spiritual successor to
           a older Jonnil Games title called "Spook: The Clinic". This new
           game is planned to reimagine the original concept and character.
@@ -122,11 +135,16 @@
 
       <div class="game-features">
         <div class="feature-card">
-          <span class="feature-icon" role="img" aria-label="Immersive horror">
+          <span
+            class="feature-icon"
+            role="img"
+            aria-label="Immersive horror"
+            data-i18n-attr="aria-label:asylum.features.horror.aria"
+          >
             👻
           </span>
-          <h3>Immersive Horror</h3>
-          <p>
+          <h3 data-i18n="asylum.features.horror.title">Immersive Horror</h3>
+          <p data-i18n="asylum.features.horror.body">
             Every shadow and sound builds a chilling atmosphere—classic indie
             horror, refined.
           </p>
@@ -136,31 +154,46 @@
             class="feature-icon"
             role="img"
             aria-label="Challenging platforming"
+            data-i18n-attr="aria-label:asylum.features.platforming.aria"
           >
             🎮
           </span>
-          <h3>Challenging Platforming</h3>
-          <p>
+          <h3 data-i18n="asylum.features.platforming.title">
+            Challenging Platforming
+          </h3>
+          <p data-i18n="asylum.features.platforming.body">
             Jump, dash, and thread through treacherous spaces that test reflex
             and nerve.
           </p>
         </div>
         <div class="feature-card">
-          <span class="feature-icon" role="img" aria-label="Puzzles and secrets">
+          <span
+            class="feature-icon"
+            role="img"
+            aria-label="Puzzles and secrets"
+            data-i18n-attr="aria-label:asylum.features.puzzles.aria"
+          >
             🔎
           </span>
-          <h3>Puzzles & Secrets</h3>
-          <p>
+          <h3 data-i18n="asylum.features.puzzles.title">Puzzles & Secrets</h3>
+          <p data-i18n="asylum.features.puzzles.body">
             Hidden clues, layered puzzles, and easter eggs reveal the asylum’s
             deeper truth.
           </p>
         </div>
         <div class="feature-card">
-          <span class="feature-icon" role="img" aria-label="Branching narratives">
+          <span
+            class="feature-icon"
+            role="img"
+            aria-label="Branching narratives"
+            data-i18n-attr="aria-label:asylum.features.narrative.aria"
+          >
             💬
           </span>
-          <h3>Branching Narratives</h3>
-          <p>
+          <h3 data-i18n="asylum.features.narrative.title">
+            Branching Narratives
+          </h3>
+          <p data-i18n="asylum.features.narrative.body">
             Your choices matter—multiple endings and paths invite replays and
             theorycrafting.
           </p>
@@ -171,8 +204,8 @@
 
       <div class="info-duo">
         <section class="game-info">
-          <h2>Current Development Status</h2>
-          <p>
+          <h2 data-i18n="asylum.status.title">Current Development Status</h2>
+          <p data-i18n="asylum.status.body">
             Juni's Asylum is currently in very early development stages. Mostly
             prototyping and concept work is being done at this time. It will probably
             be a while before the game is ready for final release, but we are excited to
@@ -196,6 +229,8 @@
         class="character-sprite"
         loading="lazy"
         decoding="async"
+        width="1080"
+        height="1080"
       />
       <img
         src="./Juni.png"
@@ -203,6 +238,8 @@
         class="ghost-sprite"
         loading="lazy"
         decoding="async"
+        width="1080"
+        height="1080"
       />
     </div>
 
@@ -227,6 +264,17 @@
         let isMuted = false;
         let lastLevel = 0;
         let experienceStarted = false;
+        function getLabel(key, fallback) {
+          return window.JG_I18N ? window.JG_I18N.t(key, fallback) : fallback;
+        }
+
+        function updateSoundLabel() {
+          if (!soundToggle) return;
+          const label = isMuted
+            ? getLabel("asylum.hero.unmute", "Unmute ambient sound")
+            : getLabel("asylum.hero.mute", "Mute ambient sound");
+          soundToggle.setAttribute("aria-label", label);
+        }
 
         function initAudio() {
           if (audioContext) return;
@@ -365,6 +413,7 @@
           }
           if (soundToggle) {
             soundToggle.classList.add("is-active");
+            updateSoundLabel();
           }
           if (!prefersReducedMotion) {
             pulseFlicker();
@@ -382,19 +431,20 @@
           soundToggle.addEventListener("click", () => {
             isMuted = !isMuted;
             if (!humGain || !audioContext) return;
-            const icon = soundToggle.querySelector("i");
+            const icon = soundToggle.querySelector(".icon");
             if (isMuted) {
               humGain.gain.setTargetAtTime(0, audioContext.currentTime, 0.08);
-              if (icon) icon.className = "ri-volume-mute-line";
-              soundToggle.setAttribute("aria-label", "Unmute ambient sound");
+              if (icon) icon.setAttribute("data-icon", "volume-mute");
             } else {
               const target = 0.006 + lastLevel * 0.012;
               humGain.gain.setTargetAtTime(target, audioContext.currentTime, 0.08);
-              if (icon) icon.className = "ri-volume-up-line";
-              soundToggle.setAttribute("aria-label", "Mute ambient sound");
+              if (icon) icon.setAttribute("data-icon", "volume-up");
             }
+            updateSoundLabel();
           });
         }
+
+        document.addEventListener("jg-i18n-ready", updateSoundLabel);
       }
 
       // Ghost sprite drift

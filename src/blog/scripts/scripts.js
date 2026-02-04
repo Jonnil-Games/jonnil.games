@@ -1,4 +1,19 @@
 document.addEventListener("DOMContentLoaded", function () {
+  function formatDates() {
+    const locale = window.JG_I18N ? window.JG_I18N.getState().locale : undefined;
+    document.querySelectorAll("time[datetime]").forEach((el) => {
+      const raw = el.getAttribute("datetime");
+      if (!raw) return;
+      const date = new Date(`${raw}T12:00:00Z`);
+      if (Number.isNaN(date.getTime())) return;
+      el.textContent = date.toLocaleDateString(locale, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    });
+  }
+
   // Blog filtering functionality
   const blogSearch = document.getElementById("blog-search");
   const authorFilter = document.getElementById("author-filter");
@@ -56,11 +71,13 @@ document.addEventListener("DOMContentLoaded", function () {
         requestAnimationFrame(() => post.classList.remove("fade-out"));
       } else {
         post.classList.add("fade-out");
-        setTimeout(() => {
+        const onFade = (event) => {
+          if (event.propertyName !== "opacity") return;
           if (post.classList.contains("fade-out")) {
             post.classList.add("hidden");
           }
-        }, 300);
+        };
+        post.addEventListener("transitionend", onFade, { once: true });
       }
     });
   }
@@ -100,4 +117,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Header/mobile menu behavior is provided by the header capsule inline script
+
+  formatDates();
+  document.addEventListener("jg-i18n-ready", formatDates);
 });

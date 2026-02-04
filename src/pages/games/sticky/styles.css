@@ -10,37 +10,39 @@
   --accent-color: var(--accent-dark);
   --accent-color-hover: var(--accent-pink);
   --sticky-link-accent: var(--accent-pink);
-  --sticky-surface: #f7f9ff;
-  --sticky-surface-strong: #ffffff;
+  --sticky-surface: var(--md-surface);
+  --sticky-surface-strong: var(--md-surface-container-high);
   --sticky-border: rgba(17, 24, 39, 0.08);
 }
 
 /* Light theme base */
 html {
-  background-color: var(--sticky-surface);
+  background-color: var(--bg);
   color-scheme: light;
 }
 
 body {
-  background-color: var(--sticky-surface);
-  background-image:
-    radial-gradient(
-      1200px 600px at 10% -10%,
-      rgba(255, 111, 177, 0.12),
-      transparent 60%
-    ),
-    radial-gradient(
-      900px 500px at 110% 0%,
-      rgba(74, 163, 255, 0.12),
-      transparent 55%
-    );
+  background-color: var(--bg);
   color: var(--text-gray-900);
   transition: color 0.3s;
+  --header-bg: var(--sticky-surface-strong);
+  --header-border: rgba(0, 0, 0, 0.08);
+  --surface: var(--md-surface);
+  --md-primary: var(--accent-blue);
+  --md-on-primary: #ffffff;
+  --md-primary-container: rgba(74, 163, 255, 0.18);
+  --md-on-primary-container: #0b1b3a;
+  --md-secondary: var(--accent-pink);
+  --md-on-secondary: #ffffff;
+  --md-secondary-container: rgba(255, 111, 177, 0.18);
+  --md-on-secondary-container: #4a0b2b;
+  --md-outline-variant: rgba(0, 0, 0, 0.08);
+  --md-outline: rgba(0, 0, 0, 0.14);
 }
 
 header,
 .navbar {
-  background-color: var(--sticky-surface-strong);
+  background: var(--sticky-surface-strong);
 }
 
 .nav-links li a {
@@ -48,7 +50,16 @@ header,
 }
 .nav-links li a:hover,
 .nav-links li a.active {
-  color: var(--sticky-link-accent);
+  color: var(--md-on-primary);
+}
+
+.nav-links li a:hover:not(.active) {
+  color: var(--md-primary);
+  background-color: var(--md-primary-container);
+}
+
+.nav-links li a.active {
+  background-color: var(--md-primary);
 }
 .nav-links li a::after {
   background-color: var(--sticky-link-accent);
@@ -56,7 +67,16 @@ header,
 
 .mobile-nav-links a:hover,
 .mobile-nav-links a.active {
-  color: var(--sticky-link-accent);
+  color: var(--md-on-primary);
+}
+
+.mobile-nav-links a:hover:not(.active) {
+  color: var(--md-primary);
+  background-color: var(--md-primary-container);
+}
+
+.mobile-nav-links a.active {
+  background-color: var(--md-primary);
 }
 
 .logo-word {
@@ -188,8 +208,8 @@ header,
   color: #0b1220;
   font-weight: bold;
   transition:
-    transform 0.3s,
-    filter 0.3s;
+    transform var(--motion-duration-short) var(--motion-ease-standard),
+    filter var(--motion-duration-short) var(--motion-ease-standard);
 }
 
 .button.primary-button:hover {
@@ -229,7 +249,7 @@ header,
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid var(--sticky-border);
-  transition: transform 0.3s;
+  transition: transform var(--motion-duration-medium) var(--motion-ease-standard);
   box-shadow: var(--shadow-md);
 }
 
@@ -274,7 +294,7 @@ header,
   border-radius: 12px;
   box-shadow: var(--shadow-md);
   transition:
-    transform var(--transition-normal),
+    transform var(--motion-duration-medium) var(--motion-ease-standard),
     box-shadow var(--transition-normal);
 }
 

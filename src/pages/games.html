@@ -3,22 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Games - Jonnil Games</title>
+    <title data-i18n="games.meta.title">Games - Jonnil Games</title>
 
     <!-- Primary Meta -->
-    <meta name="title" content="Games - Jonnil Games" />
+    <meta name="title" content="Games - Jonnil Games" data-i18n-attr="content:games.meta.title" />
     <meta
       name="description"
       content="Discover our collection of inclusive and innovative games. From charming platformers to haunting adventures, explore unique gaming experiences crafted with care."
+      data-i18n-attr="content:games.meta.description"
     />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://jonnil.games/games.html" />
-    <meta property="og:title" content="Games - Jonnil Games" />
+    <meta property="og:title" content="Games - Jonnil Games" data-i18n-attr="content:games.meta.title" />
     <meta
       property="og:description"
       content="Discover our collection of inclusive and innovative games. From charming platformers to haunting adventures, explore unique gaming experiences crafted with care."
+      data-i18n-attr="content:games.meta.description"
     />
     <meta
       property="og:image"
@@ -27,10 +29,11 @@
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Games - Jonnil Games" />
+    <meta name="twitter:title" content="Games - Jonnil Games" data-i18n-attr="content:games.meta.title" />
     <meta
       name="twitter:description"
       content="Discover our collection of inclusive and innovative games. From charming platformers to haunting adventures, explore unique gaming experiences crafted with care."
+      data-i18n-attr="content:games.meta.description"
     />
     <meta
       name="twitter:image"
@@ -97,16 +100,16 @@
     <link rel="stylesheet" href="/styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css"
-    />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
 
-    <!-- Favicon -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" media="print" onload="this.media='all'" />
+
+    <noscript>
+
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
+
+    </noscript>
+<!-- Favicon -->
     <link rel="icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
@@ -178,8 +181,8 @@
 
       /* Tiny stagger polish on reveal */
       .timeline-item.fade-up {
-        animation: fadeIn 0.5s var(--stagger) both,
-          raise 0.5s var(--stagger) both;
+        animation: fadeIn var(--motion-duration-long) var(--motion-ease-decelerate) var(--stagger) both,
+          raise var(--motion-duration-long) var(--motion-ease-decelerate) var(--stagger) both;
       }
       @keyframes raise {
         from {
@@ -282,19 +285,29 @@
     <!-- Main Content -->
     <main>
       <section class="hero">
-        <h1>Our Games</h1>
-        <p>Discover our latest creations and upcoming projects.</p>
+        <h1 data-i18n="games.hero.title">Our Games</h1>
+        <p data-i18n="games.hero.body">
+          Discover our latest creations and upcoming projects.
+        </p>
       </section>
 
       <div class="divider large-divider"></div>
 
       <!-- Timeline Section -->
       <section class="timeline-section" aria-labelledby="games-timeline">
-        <h2 id="games-timeline" class="visually-hidden">Games Timeline</h2>
+        <h2
+          id="games-timeline"
+          class="visually-hidden"
+          data-i18n="games.timeline.title"
+        >
+          Games Timeline
+        </h2>
 
         <div class="timeline">
           <!-- Visible in-flow year markers used for grouping + indicator -->
-          <div class="timeline-year">Upcoming</div>
+          <div class="timeline-year" data-i18n="games.timeline.upcoming">
+            Upcoming
+          </div>
 
           <!-- Latest Game (In Development) -->
           <article class="timeline-item" id="junis-asylum" tabindex="0">
@@ -303,21 +316,27 @@
                 class="anchor-link"
                 href="#junis-asylum"
                 aria-label="Link to this timeline item"
+                data-i18n-attr="aria-label:games.timeline.linkLabel"
                 >#</a
               >
               <span class="timeline-date">TBD</span>
-              <h3>Juni's Asylum</h3>
-              <p>
+              <h3 data-i18n="games.timeline.junis.title">Juni's Asylum</h3>
+              <p data-i18n-html="games.timeline.junis.body">
                 Our upcoming second major game, a spiritual successor to the
                 <i>Spook</i> games. Reimagined with years of experience and a
                 larger team.
               </p>
               <div class="tags">
-                <span class="tag tag-genre">Horror Adventure</span>
-                <span class="tag tag-status">In Development</span>
+                <span class="tag tag-genre" data-i18n="games.timeline.junis.tag1"
+                  >Horror Adventure</span
+                >
+                <span class="tag tag-status" data-i18n="games.timeline.junis.tag2"
+                  >In Development</span
+                >
               </div>
               <div class="game-links">
                 <a href="/games/asylum/" class="button primary-button"
+                  data-i18n="games.timeline.junis.cta"
                   >Learn More</a
                 >
               </div>
@@ -331,16 +350,23 @@
                 href="#sticky-paws"
                 class="link-mask"
                 aria-label="Go to Sticky Paws"
+                data-i18n-attr="aria-label:games.timeline.stickySwitch.aria"
               ></a>
               <span class="timeline-date">TBD</span>
-              <h3>Sticky Paws: Switch Update</h3>
-              <p>
+              <h3 data-i18n="games.timeline.stickySwitch.title">
+                Sticky Paws: Switch Update
+              </h3>
+              <p data-i18n="games.timeline.stickySwitch.body">
                 Switch version with online sharing for custom characters and
                 levels.
               </p>
               <div class="tags">
-                <span class="tag tag-status">Update</span>
-                <span class="tag tag-platform">Switch</span>
+                <span class="tag tag-status" data-i18n="games.timeline.stickySwitch.tag1"
+                  >Update</span
+                >
+                <span class="tag tag-platform" data-i18n="games.timeline.stickySwitch.tag2"
+                  >Switch</span
+                >
               </div>
             </div>
           </article>
@@ -358,19 +384,23 @@
                 class="anchor-link"
                 href="#formalized-team"
                 aria-label="Link to this timeline item"
+                data-i18n-attr="aria-label:games.timeline.linkLabel"
                 >#</a
               >
               <span class="timeline-date">Mar 18, 2023</span>
-              <h3>Formalized Team</h3>
-              <p>
+              <h3 data-i18n="games.timeline.formalized.title">Formalized Team</h3>
+              <p data-i18n="games.timeline.formalized.body">
                 Formalized our team structure internally to enhance
                 collaboration and project management.
               </p>
               <div class="tags">
-                <span class="tag tag-status">Community</span>
+                <span class="tag tag-status" data-i18n="games.timeline.formalized.tag1"
+                  >Community</span
+                >
               </div>
               <div class="game-links">
                 <a href="/team.html" class="button primary-button"
+                  data-i18n="games.timeline.formalized.cta"
                   >Meet the Team!</a
                 >
               </div>
@@ -386,15 +416,22 @@
                 href="#sticky-paws"
                 class="link-mask"
                 aria-label="Go to Sticky Paws"
+                data-i18n-attr="aria-label:games.timeline.stickyDx.aria"
               ></a>
               <span class="timeline-date">Apr 16, 2022</span>
-              <h3>Sticky Paws: DX Update</h3>
-              <p>
+              <h3 data-i18n="games.timeline.stickyDx.title">
+                Sticky Paws: DX Update
+              </h3>
+              <p data-i18n="games.timeline.stickyDx.body">
                 Definitive refresh: revamped stages, QoL upgrades, broad polish.
               </p>
               <div class="tags">
-                <span class="tag tag-status">Update</span>
-                <span class="tag tag-platform">Steam</span>
+                <span class="tag tag-status" data-i18n="games.timeline.stickyDx.tag1"
+                  >Update</span
+                >
+                <span class="tag tag-platform" data-i18n="games.timeline.stickyDx.tag2"
+                  >Steam</span
+                >
               </div>
             </div>
           </article>
@@ -408,22 +445,30 @@
                 class="anchor-link"
                 href="#sticky-paws"
                 aria-label="Link to this timeline item"
+                data-i18n-attr="aria-label:games.timeline.linkLabel"
                 >#</a
               >
               <span class="timeline-date">Nov 1, 2019</span>
-              <h3>Sticky Paws</h3>
-              <p>
+              <h3 data-i18n="games.timeline.sticky.title">Sticky Paws</h3>
+              <p data-i18n="games.timeline.sticky.body">
                 Our first major game release! A charming platformer where you
                 play as cats trying to retrieve their stolen cake from a
                 mischievous rat.
               </p>
               <div class="tags">
-                <span class="tag tag-genre">Platformer</span>
-                <span class="tag tag-platform">Steam</span>
-                <span class="tag tag-status">Released</span>
+                <span class="tag tag-genre" data-i18n="games.timeline.sticky.tag1"
+                  >Platformer</span
+                >
+                <span class="tag tag-platform" data-i18n="games.timeline.sticky.tag2"
+                  >Steam</span
+                >
+                <span class="tag tag-status" data-i18n="games.timeline.sticky.tag3"
+                  >Released</span
+                >
               </div>
               <div class="game-links">
                 <a href="/games/sticky/" class="button primary-button"
+                  data-i18n="games.timeline.sticky.ctaPrimary"
                   >Learn More</a
                 >
                 <a
@@ -431,6 +476,7 @@
                   class="button secondary-button"
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-i18n="games.timeline.sticky.ctaSecondary"
                   >Steam</a
                 >
               </div>
@@ -450,16 +496,19 @@
                 class="anchor-link"
                 href="#discord-launch"
                 aria-label="Link to this timeline item"
+                data-i18n-attr="aria-label:games.timeline.linkLabel"
                 >#</a
               >
               <span class="timeline-date">Dec 2016</span>
-              <h3>Discord Launch</h3>
-              <p>
+              <h3 data-i18n="games.timeline.discord.title">Discord Launch</h3>
+              <p data-i18n="games.timeline.discord.body">
                 Launched our official Discord community to better connect with
                 our players.
               </p>
               <div class="tags">
-                <span class="tag tag-status">Community</span>
+                <span class="tag tag-status" data-i18n="games.timeline.discord.tag1"
+                  >Community</span
+                >
               </div>
               <div class="game-links">
                 <a
@@ -467,6 +516,7 @@
                   class="button primary-button"
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-i18n="games.timeline.discord.cta"
                   >Join Discord</a
                 >
               </div>
@@ -484,28 +534,49 @@
                 class="anchor-link"
                 href="#golden-cargo-block"
                 aria-label="Link to this timeline item"
+                data-i18n-attr="aria-label:games.timeline.linkLabel"
                 >#</a
               >
               <div class="card-header">
                 <span class="timeline-date">Dec 25, 2016</span>
                 <a href="/blog/legacy-games.html" class="legacy-chip">
-                  <i class="ri-information-2-line"></i> Legacy
+                  <span class="icon" data-icon="info" aria-hidden="true"></span>
+                  <span data-i18n="games.timeline.legacyLabel">Legacy</span>
                 </a>
               </div>
-              <h3>Golden Cargo Block</h3>
-              <p>
+              <h3 data-i18n="games.timeline.goldenCargo.title">
+                Golden Cargo Block
+              </h3>
+              <p data-i18n="games.timeline.goldenCargo.body">
                 A cooperative 2-player platformer where one player controls the
                 character while the other controls a golden cargo block to
                 create platforms. A reimagining of our earlier game Golden Lego
                 Block!
               </p>
               <div class="tags">
-                <span class="tag tag-genre">Cooperative Platformer</span>
-                <span class="tag tag-platform">PC</span>
-                <span class="tag tag-status">Released</span>
+                <span
+                  class="tag tag-genre"
+                  data-i18n="games.timeline.goldenCargo.tag1"
+                  >Cooperative Platformer</span
+                >
+                <span
+                  class="tag tag-platform"
+                  data-i18n="games.timeline.goldenCargo.tag2"
+                  >PC</span
+                >
+                <span
+                  class="tag tag-status"
+                  data-i18n="games.timeline.goldenCargo.tag3"
+                  >Released</span
+                >
               </div>
               <div class="game-links">
-                <a href="#" class="button secondary-button">Download</a>
+                <a
+                  href="#"
+                  class="button secondary-button"
+                  data-i18n="games.timeline.goldenCargo.cta"
+                  >Download</a
+                >
               </div>
             </div>
           </article>
@@ -517,27 +588,46 @@
                 class="anchor-link"
                 href="#vast-dungeon"
                 aria-label="Link to this timeline item"
+                data-i18n-attr="aria-label:games.timeline.linkLabel"
                 >#</a
               >
               <div class="card-header">
                 <span class="timeline-date">Aug 5, 2016</span>
                 <a href="/blog/legacy-games.html" class="legacy-chip">
-                  <i class="ri-information-2-line"></i> Legacy
+                  <span class="icon" data-icon="info" aria-hidden="true"></span>
+                  <span data-i18n="games.timeline.legacyLabel">Legacy</span>
                 </a>
               </div>
-              <h3>Vast Dungeon</h3>
-              <p>
+              <h3 data-i18n="games.timeline.vastDungeon.title">Vast Dungeon</h3>
+              <p data-i18n="games.timeline.vastDungeon.body">
                 A top-down puzzle adventure where you guide a lone explorer
                 through a vast dungeon, seeking an escape while solving
                 challenging puzzles.
               </p>
               <div class="tags">
-                <span class="tag tag-genre">Puzzle Adventure</span>
-                <span class="tag tag-platform">PC</span>
-                <span class="tag tag-status">Released</span>
+                <span
+                  class="tag tag-genre"
+                  data-i18n="games.timeline.vastDungeon.tag1"
+                  >Puzzle Adventure</span
+                >
+                <span
+                  class="tag tag-platform"
+                  data-i18n="games.timeline.vastDungeon.tag2"
+                  >PC</span
+                >
+                <span
+                  class="tag tag-status"
+                  data-i18n="games.timeline.vastDungeon.tag3"
+                  >Released</span
+                >
               </div>
               <div class="game-links">
-                <a href="#" class="button secondary-button">Download</a>
+                <a
+                  href="#"
+                  class="button secondary-button"
+                  data-i18n="games.timeline.vastDungeon.cta"
+                  >Download</a
+                >
               </div>
             </div>
           </article>
@@ -553,27 +643,48 @@
                 class="anchor-link"
                 href="#spook-the-clinic"
                 aria-label="Link to this timeline item"
+                data-i18n-attr="aria-label:games.timeline.linkLabel"
                 >#</a
               >
               <div class="card-header">
                 <span class="timeline-date">May 5, 2016</span>
                 <a href="/blog/legacy-games.html" class="legacy-chip">
-                  <i class="ri-information-2-line"></i> Legacy
+                  <span class="icon" data-icon="info" aria-hidden="true"></span>
+                  <span data-i18n="games.timeline.legacyLabel">Legacy</span>
                 </a>
               </div>
-              <h3>Spook: The Clinic</h3>
-              <p>
+              <h3 data-i18n="games.timeline.spookClinic.title">
+                Spook: The Clinic
+              </h3>
+              <p data-i18n="games.timeline.spookClinic.body">
                 A horror platformer following a green-haired protagonist trying
                 to escape from a terrifying clinic. This game laid the
                 groundwork for our upcoming major title.
               </p>
               <div class="tags">
-                <span class="tag tag-genre">Horror Platformer</span>
-                <span class="tag tag-platform">PC</span>
-                <span class="tag tag-status">Released</span>
+                <span
+                  class="tag tag-genre"
+                  data-i18n="games.timeline.spookClinic.tag1"
+                  >Horror Platformer</span
+                >
+                <span
+                  class="tag tag-platform"
+                  data-i18n="games.timeline.spookClinic.tag2"
+                  >PC</span
+                >
+                <span
+                  class="tag tag-status"
+                  data-i18n="games.timeline.spookClinic.tag3"
+                  >Released</span
+                >
               </div>
               <div class="game-links">
-                <a href="#" class="button secondary-button">Download</a>
+                <a
+                  href="#"
+                  class="button secondary-button"
+                  data-i18n="games.timeline.spookClinic.cta"
+                  >Download</a
+                >
               </div>
             </div>
           </article>
@@ -589,24 +700,38 @@
                 class="anchor-link"
                 href="#love-is-on-the-bus"
                 aria-label="Link to this timeline item"
+                data-i18n-attr="aria-label:games.timeline.linkLabel"
                 >#</a
               >
               <div class="card-header">
                 <span class="timeline-date">Feb 14, 2016</span>
                 <a href="/blog/legacy-games.html" class="legacy-chip">
-                  <i class="ri-information-2-line"></i> Legacy
+                  <span class="icon" data-icon="info" aria-hidden="true"></span>
+                  <span data-i18n="games.timeline.legacyLabel">Legacy</span>
                 </a>
               </div>
-              <h3>Love is on the bus</h3>
-              <p>
+              <h3 data-i18n="games.timeline.loveBus.title">Love is on the bus</h3>
+              <p data-i18n="games.timeline.loveBus.body">
                 A narrative adventure where you listen to various passengers'
                 love stories before gathering the courage to approach your own
                 crush on the bus. Released on Valentine's Day!
               </p>
               <div class="tags">
-                <span class="tag tag-genre">Narrative Adventure</span>
-                <span class="tag tag-platform">PC</span>
-                <span class="tag tag-status">Released</span>
+                <span
+                  class="tag tag-genre"
+                  data-i18n="games.timeline.loveBus.tag1"
+                  >Narrative Adventure</span
+                >
+                <span
+                  class="tag tag-platform"
+                  data-i18n="games.timeline.loveBus.tag2"
+                  >PC</span
+                >
+                <span
+                  class="tag tag-status"
+                  data-i18n="games.timeline.loveBus.tag3"
+                  >Released</span
+                >
               </div>
               <div class="game-links">
                 <a
@@ -614,6 +739,7 @@
                   class="button secondary-button"
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-i18n="games.timeline.loveBus.cta"
                   >Newgrounds</a
                 >
               </div>
@@ -633,24 +759,40 @@
                 class="anchor-link"
                 href="#jonnil-timetravel"
                 aria-label="Link to this timeline item"
+                data-i18n-attr="aria-label:games.timeline.linkLabel"
                 >#</a
               >
               <div class="card-header">
                 <span class="timeline-date">Dec 13, 2014</span>
                 <a href="/blog/legacy-games.html" class="legacy-chip">
-                  <i class="ri-information-2-line"></i> Legacy
+                  <span class="icon" data-icon="info" aria-hidden="true"></span>
+                  <span data-i18n="games.timeline.legacyLabel">Legacy</span>
                 </a>
               </div>
-              <h3>Jonnil TimeTravel</h3>
-              <p>
+              <h3 data-i18n="games.timeline.timeTravel.title">
+                Jonnil TimeTravel
+              </h3>
+              <p data-i18n="games.timeline.timeTravel.body">
                 A unique platformer where you control multiple characters
                 traveling through time, using their combined abilities to
                 progress through the adventure.
               </p>
               <div class="tags">
-                <span class="tag tag-genre">Time-Travel Platformer</span>
-                <span class="tag tag-platform">PC</span>
-                <span class="tag tag-status">Released</span>
+                <span
+                  class="tag tag-genre"
+                  data-i18n="games.timeline.timeTravel.tag1"
+                  >Time-Travel Platformer</span
+                >
+                <span
+                  class="tag tag-platform"
+                  data-i18n="games.timeline.timeTravel.tag2"
+                  >PC</span
+                >
+                <span
+                  class="tag tag-status"
+                  data-i18n="games.timeline.timeTravel.tag3"
+                  >Released</span
+                >
               </div>
               <div class="game-links">
                 <a
@@ -658,6 +800,7 @@
                   class="button secondary-button"
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-i18n="games.timeline.timeTravel.cta1"
                   >GameJolt</a
                 >
                 <a
@@ -665,6 +808,7 @@
                   class="button secondary-button"
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-i18n="games.timeline.timeTravel.cta2"
                   >Newgrounds</a
                 >
               </div>
@@ -678,24 +822,32 @@
                 class="anchor-link"
                 href="#spook-2014"
                 aria-label="Link to this timeline item"
+                data-i18n-attr="aria-label:games.timeline.linkLabel"
                 >#</a
               >
               <div class="card-header">
                 <span class="timeline-date">Oct 18, 2014</span>
                 <a href="/blog/legacy-games.html" class="legacy-chip">
-                  <i class="ri-information-2-line"></i> Legacy
+                  <span class="icon" data-icon="info" aria-hidden="true"></span>
+                  <span data-i18n="games.timeline.legacyLabel">Legacy</span>
                 </a>
               </div>
-              <h3>Spook</h3>
-              <p>
+              <h3 data-i18n="games.timeline.spook.title">Spook</h3>
+              <p data-i18n="games.timeline.spook.body">
                 Our first horror game — a tense top-down survival experience
                 where you must escape a basement filled with zombies! The
                 beginning of our horror game series.
               </p>
               <div class="tags">
-                <span class="tag tag-genre">Horror</span>
-                <span class="tag tag-platform">PC</span>
-                <span class="tag tag-status">Released</span>
+                <span class="tag tag-genre" data-i18n="games.timeline.spook.tag1"
+                  >Horror</span
+                >
+                <span class="tag tag-platform" data-i18n="games.timeline.spook.tag2"
+                  >PC</span
+                >
+                <span class="tag tag-status" data-i18n="games.timeline.spook.tag3"
+                  >Released</span
+                >
               </div>
               <div class="game-links">
                 <a
@@ -703,6 +855,7 @@
                   class="button secondary-button"
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-i18n="games.timeline.spook.cta"
                   >Newgrounds</a
                 >
               </div>
@@ -716,24 +869,38 @@
                 class="anchor-link"
                 href="#toaster-2"
                 aria-label="Link to this timeline item"
+                data-i18n-attr="aria-label:games.timeline.linkLabel"
                 >#</a
               >
               <div class="card-header">
                 <span class="timeline-date">2014</span>
                 <a href="/blog/legacy-games.html" class="legacy-chip">
-                  <i class="ri-information-2-line"></i> Legacy
+                  <span class="icon" data-icon="info" aria-hidden="true"></span>
+                  <span data-i18n="games.timeline.legacyLabel">Legacy</span>
                 </a>
               </div>
-              <h3>Toaster 2</h3>
-              <p>
+              <h3 data-i18n="games.timeline.toaster2.title">Toaster 2</h3>
+              <p data-i18n="games.timeline.toaster2.body">
                 The sequel to Toaster: A Nurikabe Experience. Join Toaster as he
                 investigates who was behind his girlfriend's kidnapping in the
                 previous game — don't worry, she's safe this time!
               </p>
               <div class="tags">
-                <span class="tag tag-genre">Puzzle Platformer</span>
-                <span class="tag tag-platform">PC</span>
-                <span class="tag tag-status">Released</span>
+                <span
+                  class="tag tag-genre"
+                  data-i18n="games.timeline.toaster2.tag1"
+                  >Puzzle Platformer</span
+                >
+                <span
+                  class="tag tag-platform"
+                  data-i18n="games.timeline.toaster2.tag2"
+                  >PC</span
+                >
+                <span
+                  class="tag tag-status"
+                  data-i18n="games.timeline.toaster2.tag3"
+                  >Released</span
+                >
               </div>
               <div class="game-links">
                 <a
@@ -741,6 +908,7 @@
                   class="button secondary-button"
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-i18n="games.timeline.toaster2.cta1"
                   >Download</a
                 >
                 <a
@@ -748,6 +916,7 @@
                   class="button secondary-button"
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-i18n="games.timeline.toaster2.cta2"
                   >Source</a
                 >
               </div>
@@ -765,24 +934,40 @@
                 class="anchor-link"
                 href="#golden-lego-block"
                 aria-label="Link to this timeline item"
+                data-i18n-attr="aria-label:games.timeline.linkLabel"
                 >#</a
               >
               <div class="card-header">
                 <span class="timeline-date">2014</span>
                 <a href="/blog/legacy-games.html" class="legacy-chip">
-                  <i class="ri-information-2-line"></i> Legacy
+                  <span class="icon" data-icon="info" aria-hidden="true"></span>
+                  <span data-i18n="games.timeline.legacyLabel">Legacy</span>
                 </a>
               </div>
-              <h3>Golden Lego Block</h3>
-              <p>
+              <h3 data-i18n="games.timeline.goldenLego.title">
+                Golden Lego Block
+              </h3>
+              <p data-i18n="games.timeline.goldenLego.body">
                 The original 2-player platformer that inspired Golden Cargo
                 Block. One player controls the character while the other
                 manipulates a golden Lego block to create platforms.
               </p>
               <div class="tags">
-                <span class="tag tag-genre">Cooperative Platformer</span>
-                <span class="tag tag-platform">PC</span>
-                <span class="tag tag-status">Released</span>
+                <span
+                  class="tag tag-genre"
+                  data-i18n="games.timeline.goldenLego.tag1"
+                  >Cooperative Platformer</span
+                >
+                <span
+                  class="tag tag-platform"
+                  data-i18n="games.timeline.goldenLego.tag2"
+                  >PC</span
+                >
+                <span
+                  class="tag tag-status"
+                  data-i18n="games.timeline.goldenLego.tag3"
+                  >Released</span
+                >
               </div>
               <div class="game-links">
                 <a
@@ -790,6 +975,7 @@
                   class="button secondary-button"
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-i18n="games.timeline.goldenLego.cta1"
                   >Download</a
                 >
                 <a
@@ -797,6 +983,7 @@
                   class="button secondary-button"
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-i18n="games.timeline.goldenLego.cta2"
                   >Source</a
                 >
               </div>
@@ -814,24 +1001,40 @@
                 class="anchor-link"
                 href="#toaster-nurikabe"
                 aria-label="Link to this timeline item"
+                data-i18n-attr="aria-label:games.timeline.linkLabel"
                 >#</a
               >
               <div class="card-header">
                 <span class="timeline-date">2014</span>
                 <a href="/blog/legacy-games.html" class="legacy-chip">
-                  <i class="ri-information-2-line"></i> Legacy
+                  <span class="icon" data-icon="info" aria-hidden="true"></span>
+                  <span data-i18n="games.timeline.legacyLabel">Legacy</span>
                 </a>
               </div>
-              <h3>Toaster: A Nurikabe Experience</h3>
-              <p>
+              <h3 data-i18n="games.timeline.toasterNurikabe.title">
+                Toaster: A Nurikabe Experience
+              </h3>
+              <p data-i18n="games.timeline.toasterNurikabe.body">
                 Our very first game! A platformer starring Toaster, a nurikabe
                 character who must rescue his kidnapped girlfriend. The start of
                 the Toaster series!
               </p>
               <div class="tags">
-                <span class="tag tag-genre">Puzzle Platformer</span>
-                <span class="tag tag-platform">PC</span>
-                <span class="tag tag-status">Released</span>
+                <span
+                  class="tag tag-genre"
+                  data-i18n="games.timeline.toasterNurikabe.tag1"
+                  >Puzzle Platformer</span
+                >
+                <span
+                  class="tag tag-platform"
+                  data-i18n="games.timeline.toasterNurikabe.tag2"
+                  >PC</span
+                >
+                <span
+                  class="tag tag-status"
+                  data-i18n="games.timeline.toasterNurikabe.tag3"
+                  >Released</span
+                >
               </div>
               <div class="game-links">
                 <a
@@ -839,6 +1042,7 @@
                   class="button secondary-button"
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-i18n="games.timeline.toasterNurikabe.cta1"
                   >Download</a
                 >
                 <a
@@ -846,6 +1050,7 @@
                   class="button secondary-button"
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-i18n="games.timeline.toasterNurikabe.cta2"
                   >Source</a
                 >
               </div>
@@ -905,7 +1110,14 @@
         const a = document.createElement("a");
         a.href = `#${el.id}`;
         a.className = "anchor-link";
-        a.setAttribute("aria-label", "Link to this timeline item");
+        const label =
+          (window.JG_I18N &&
+            window.JG_I18N.t(
+              "games.timeline.linkLabel",
+              "Link to this timeline item"
+            )) ||
+          "Link to this timeline item";
+        a.setAttribute("aria-label", label);
         a.textContent = "#";
         content.prepend(a);
       });
@@ -967,13 +1179,22 @@
         });
       }
 
+      let coverRaf = null;
+      function scheduleCoveredYearsUpdate() {
+        if (coverRaf) return;
+        coverRaf = requestAnimationFrame(() => {
+          coverRaf = null;
+          updateCoveredYears();
+        });
+      }
+
       // Init + listeners
       updateCoveredYears();
-      document.addEventListener("scroll", updateCoveredYears, {
+      document.addEventListener("scroll", scheduleCoveredYearsUpdate, {
         passive: true,
       });
-      window.addEventListener("resize", updateCoveredYears);
-      window.addEventListener("orientationchange", updateCoveredYears);
+      window.addEventListener("resize", scheduleCoveredYearsUpdate);
+      window.addEventListener("orientationchange", scheduleCoveredYearsUpdate);
     </script>
   </body>
 </html>

@@ -2,24 +2,35 @@
     const root = document.querySelector("header");
     if (!root) return;
     const currentPath = window.location.pathname;
+    function normalizePath(path) {
+        if (!path) return "";
+        let next = path;
+        if (next.endsWith("index.html")) {
+            next = next.slice(0, -"index.html".length);
+        }
+        if (next.endsWith(".html")) {
+            next = next.slice(0, -".html".length);
+        }
+        if (!next.startsWith("/")) {
+            next = `/${next}`;
+        }
+        if (next.length > 1 && next.endsWith("/")) {
+            next = next.slice(0, -1);
+        }
+        return next;
+    }
     function shouldBeActive(linkPath) {
         if (
             linkPath === "/" &&
             (currentPath === "/" || currentPath === "/index.html")
         )
             return true;
-        if (linkPath.endsWith("index.html")) {
-            const base = linkPath.slice(0, -"index.html".length);
-            return (
-                currentPath === linkPath ||
-                currentPath === base ||
-                currentPath.startsWith(base)
-            );
-        }
+        const linkBase = normalizePath(linkPath);
+        const currentBase = normalizePath(currentPath);
+        if (!linkBase || linkBase === "/") return false;
         return (
-            currentPath === linkPath ||
-            (currentPath.endsWith(".html") &&
-                currentPath.replace(".html", "") === linkPath)
+            currentBase === linkBase ||
+            currentPath.startsWith(`${linkBase}/`)
         );
     }
     const desktopLinks = root.querySelectorAll(".nav-links a");
@@ -92,126 +103,38 @@
             }
         });
     }
-})();
 
-// Mutant Standard emoji replacement (vanilla)
-(function () {
-    const BASE =
-        "https://cdn.jsdelivr.net/gh/Mstrodl/mutant-standard-mirror@master/emoji/";
-    const SKIP_TAGS = new Set([
-        "SCRIPT",
-        "STYLE",
-        "TEXTAREA",
-        "CODE",
-        "PRE",
-        "NOSCRIPT",
-        "SVG",
-        "MATH",
-    ]);
-    let emojiLike;
-    try {
-        emojiLike = new RegExp("[\\p{Extended_Pictographic}\\u200D\\uFE0F]", "u");
-    } catch (e) {
-        // Fallback range for emoji blocks + ZWJ/VS16
-        emojiLike = /[\u200D\uFE0F\u{1F1E6}-\u{1F6FF}\u{1F700}-\u{1FAFF}]/u;
-    }
+    const navbar = root.querySelector(".navbar");
+    const navLinks = root.querySelector(".nav-links");
+    const navActions = root.querySelector(".nav-actions");
+    const logo = root.querySelector(".logo");
+    const MIN_GAP = 16;
 
-    function toCodeSeq(grapheme) {
-        const codes = [];
-        for (let i = 0; i < grapheme.length;) {
-            const cp = grapheme.codePointAt(i);
-            codes.push(cp.toString(16).toLowerCase());
-            i += cp > 0xffff ? 2 : 1;
+    function updateNavLayout() {
+        if (!navbar || !navLinks || !logo) return;
+        if (getComputedStyle(navLinks).display === "none") return;
+
+        navbar.classList.remove("nav-between");
+
+        const navRect = navLinks.getBoundingClientRect();
+        const logoRect = logo.getBoundingClientRect();
+        const actionsEl = navActions || hamburger;
+        const actionsRect = actionsEl ? actionsEl.getBoundingClientRect() : null;
+
+        let overlaps = navRect.left < logoRect.right + MIN_GAP;
+        if (actionsRect) {
+            overlaps = overlaps || navRect.right > actionsRect.left - MIN_GAP;
         }
-        return codes.join("-");
-    }
 
-    function createEmojiImg(gr) {
-        const img = document.createElement("img");
-        img.className = "emoji";
-        img.loading = "lazy";
-        img.decoding = "async";
-        img.setAttribute("role", "img");
-        img.setAttribute("aria-label", gr);
-        img.alt = ""; // avoid double-reading
-        img.src = BASE + toCodeSeq(gr) + ".svg";
-        return img;
-    }
-
-    function segment(text) {
-        if (window.Intl && Intl.Segmenter) {
-            const seg = new Intl.Segmenter(undefined, { granularity: "grapheme" });
-            return Array.from(seg.segment(text), (s) => s.segment);
-        }
-        // Fallback: naive split by code point
-        const arr = [];
-        for (const ch of text) arr.push(ch);
-        return arr;
-    }
-
-    function processTextNode(node) {
-        const s = node.nodeValue;
-        if (!s || !emojiLike.test(s)) return;
-        const parts = segment(s);
-        const frag = document.createDocumentFragment();
-        for (const part of parts) {
-            if (emojiLike.test(part)) {
-                frag.appendChild(createEmojiImg(part));
-            } else {
-                frag.appendChild(document.createTextNode(part));
-            }
-        }
-        node.parentNode && node.parentNode.replaceChild(frag, node);
-    }
-
-    function walk(node) {
-        if (!node || SKIP_TAGS.has(node.nodeName)) return;
-        // Skip already replaced emoji images
-        if (
-            node.nodeType === Node.ELEMENT_NODE &&
-            node.classList &&
-            node.classList.contains("emoji")
-        )
-            return;
-        if (node.nodeType === Node.TEXT_NODE) {
-            processTextNode(node);
-            return;
-        }
-        let child = node.firstChild;
-        while (child) {
-            const next = child.nextSibling;
-            walk(child);
-            child = next;
+        if (overlaps) {
+            navbar.classList.add("nav-between");
         }
     }
 
-    function processRoot(root) {
-        walk(root || document.body);
+    window.addEventListener("resize", updateNavLayout);
+    document.addEventListener("jg-i18n-ready", updateNavLayout);
+    if (document.fonts && typeof document.fonts.ready?.then === "function") {
+        document.fonts.ready.then(updateNavLayout);
     }
-
-    function observe() {
-        const mo = new MutationObserver((mutations) => {
-            for (const m of mutations) {
-                m.addedNodes &&
-                    m.addedNodes.forEach((n) => {
-                        if (n.nodeType === Node.TEXT_NODE) {
-                            processTextNode(n);
-                        } else if (n.nodeType === Node.ELEMENT_NODE) {
-                            processRoot(n);
-                        }
-                    });
-            }
-        });
-        mo.observe(document.documentElement, { childList: true, subtree: true });
-    }
-
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", () => {
-            processRoot(document.body);
-            observe();
-        });
-    } else {
-        processRoot(document.body);
-        observe();
-    }
+    requestAnimationFrame(updateNavLayout);
 })();

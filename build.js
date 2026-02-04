@@ -58,6 +58,7 @@ const capsulesDir = path.join(srcDir, "capsules");
 const stylesDir = path.join(srcDir, "styles");
 const pagesDir = path.join(srcDir, "pages");
 const assetsDir = path.join(srcDir, "assets");
+const GLOBAL_HEAD_SCRIPTS = ["/scripts/i18n.js", "/scripts/emoji.js"];
 
 // Blog-specific paths
 const blogDir = path.join(srcDir, "blog");
@@ -189,6 +190,20 @@ function injectCapsulesInContent(content) {
   }
   return `${updatedContent}${injection}`;
 }
+function injectHeadScripts(content) {
+  let updated = content;
+  GLOBAL_HEAD_SCRIPTS.forEach((src) => {
+    const pattern = new RegExp(`<script[^>]+src=["']${src}["']`, "i");
+    if (pattern.test(updated)) return;
+    const tag = `    <script defer src="${src}"></script>`;
+    if (/<\/head>/i.test(updated)) {
+      updated = updated.replace(/<\/head>/i, `${tag}\n  </head>`);
+    } else {
+      updated = `${tag}\n${updated}`;
+    }
+  });
+  return updated;
+}
 function injectCapsules(pagePath) {
   console.log(`Injecting capsules into: ${pagePath}`);
   if (!fileExists(pagePath)) {
@@ -196,7 +211,8 @@ function injectCapsules(pagePath) {
     return null;
   }
   const pageContent = readFile(pagePath);
-  return injectCapsulesInContent(pageContent);
+  const withCapsules = injectCapsulesInContent(pageContent);
+  return injectHeadScripts(withCapsules);
 }
 function getCSSVariables() {
   const variablesPath = path.join(stylesDir, "variables.css");
@@ -489,11 +505,15 @@ function buildBlog() {
   copyBlogStaticAssets();
 
   console.log("Loading and compiling templates...");
-  const postTemplateSource = injectCapsulesInContent(
-    readTemplateOrExit(path.join(templateDir, "post-template.html"))
+  const postTemplateSource = injectHeadScripts(
+    injectCapsulesInContent(
+      readTemplateOrExit(path.join(templateDir, "post-template.html"))
+    )
   );
-  const indexTemplateSource = injectCapsulesInContent(
-    readTemplateOrExit(path.join(templateDir, "index-template.html"))
+  const indexTemplateSource = injectHeadScripts(
+    injectCapsulesInContent(
+      readTemplateOrExit(path.join(templateDir, "index-template.html"))
+    )
   );
   const postTemplate = Handlebars.compile(postTemplateSource);
   const indexTemplate = Handlebars.compile(indexTemplateSource);

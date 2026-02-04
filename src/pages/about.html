@@ -3,22 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>About - Jonnil Games</title>
+    <title data-i18n="about.meta.title">About - Jonnil Games</title>
 
     <!-- Primary Meta Tags -->
-    <meta name="title" content="About - Jonnil Games" />
+    <meta name="title" content="About - Jonnil Games" data-i18n-attr="content:about.meta.title" />
     <meta
       name="description"
       content="Learn about Jonnil Games — an indie game studio creating inclusive, innovative gaming experiences with a focus on storytelling and community."
+      data-i18n-attr="content:about.meta.description"
     />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://jonnil.games/about.html" />
-    <meta property="og:title" content="About - Jonnil Games" />
+    <meta property="og:title" content="About - Jonnil Games" data-i18n-attr="content:about.meta.title" />
     <meta
       property="og:description"
       content="Learn about Jonnil Games — an indie game studio creating inclusive, innovative gaming experiences with a focus on storytelling and community."
+      data-i18n-attr="content:about.meta.description"
     />
     <meta
       property="og:image"
@@ -28,10 +30,11 @@
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="About - Jonnil Games" />
+    <meta name="twitter:title" content="About - Jonnil Games" data-i18n-attr="content:about.meta.title" />
     <meta
       name="twitter:description"
       content="Learn about Jonnil Games — an indie game studio creating inclusive, innovative gaming experiences with a focus on storytelling and community."
+      data-i18n-attr="content:about.meta.description"
     />
     <meta
       name="twitter:image"
@@ -57,16 +60,16 @@
     <link rel="stylesheet" href="styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css"
-    />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
 
-    <!-- Favicon -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" media="print" onload="this.media='all'" />
+
+    <noscript>
+
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
+
+    </noscript>
+<!-- Favicon -->
     <link rel="icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   </head>
@@ -76,8 +79,8 @@
 
     <main>
       <section class="hero">
-        <h1>About</h1>
-        <p>
+        <h1 data-i18n="about.hero.title">About</h1>
+        <p data-i18n="about.hero.body">
           Jonnil Games is a very small indie game studio where we improve our skills one project at a time,
           and try to make the best games we can with a small team and a big amount of passion.
         </p>
@@ -86,8 +89,8 @@
       <div class="divider large-divider"></div>
 
       <section class="about-section">
-        <h2>Who We Are</h2>
-        <p>
+        <h2 data-i18n="about.who.title">Who We Are</h2>
+        <p data-i18n="about.who.body">
           Jonnil Games is mainly the work of Jonna Nilsson, and I'm a game developer who loves
           creating games that I love to play myself. I really enjoy platformers, so that's the kind
           of games I tend to make the most. I have a dream to be able to make my own platformer
@@ -106,8 +109,8 @@
       <div class="divider small-divider"></div>
 
       <section class="principles-section">
-        <h2>What Matters to Us</h2>
-        <p>
+        <h2 data-i18n="about.principles.title">What Matters to Us</h2>
+        <p data-i18n="about.principles.body">
           For me, making games is not only about having a cool idea, it is about how the game feels to actually play.
           I care a lot about the tiny details, like movement, controls, sound, and how understandable things are without needing a big explanation.
           I also care about being honest about where I am in my journey.
@@ -117,8 +120,8 @@
 
         <div class="principle-grid">
           <div class="principle-card">
-            <h3>Accessibility</h3>
-            <p>
+            <h3 data-i18n="about.principles.accessibility.title">Accessibility</h3>
+            <p data-i18n="about.principles.accessibility.body">
               I do tend to make my games with a focus on accessibility and options, so that as many
               people as possible can enjoy them! It's been a important focus for me, as I've had to watch
               friends struggle to play games that didn't have the options they needed to be able to
@@ -137,8 +140,8 @@
           </div>
 
           <div class="principle-card">
-            <h3>Player-Centric Design</h3>
-            <p>
+            <h3 data-i18n="about.principles.playerCentric.title">Player-Centric Design</h3>
+            <p data-i18n="about.principles.playerCentric.body">
               I try to design my games around what the player actually experiences, not just what sounds cool on paper.
               Sometimes I get really excited about adding features, but I have learned that more features does not always mean a better game.
               I'm very proud of what kind of features I've been able to add to my games, but I understand it has lead to feature creep in many cases.
@@ -151,8 +154,8 @@
           </div>
 
           <div class="principle-card">
-            <h3>Community</h3>
-            <p>
+            <h3 data-i18n="about.principles.community.title">Community</h3>
+            <p data-i18n="about.principles.community.body">
               I really want to hear what players think about my games, feedback is important to me!
               We do have a Discord server where players can join to chat with us and each other about our games,
               but I also am aware that I'm not always available there, as it can be difficult to engage with such
@@ -168,8 +171,8 @@
           </div>
 
           <div class="principle-card">
-            <h3>Authenticity</h3>
-            <p>
+            <h3 data-i18n="about.principles.authenticity.title">Authenticity</h3>
+            <p data-i18n="about.principles.authenticity.body">
               I want my games to feel like they were made by a real person.
               I'm not trying to copy what is popular just because it sells, even though I do think about success a lot.
               I like making games that reflect what I genuinely love, and sometimes what I've struggled with too.
@@ -198,8 +201,8 @@
       <div class="divider small-divider"></div>
 
       <section class="vision-section">
-        <h2>Our Vision</h2>
-        <p>
+        <h2 data-i18n="about.vision.title">Our Vision</h2>
+        <p data-i18n="about.vision.body">
           My vision for Jonnil Games is to keep growing into a studio that players can trust.
           I want to be known for games that feel good to play, have tons of creativity, and give players real freedom.
           I especially love games that let people express themselves, like level editors, custom characters, and community creations.
@@ -212,8 +215,8 @@
       <div class="divider small-divider"></div>
 
       <section class="journey-section">
-        <h2>Our Journey Forward</h2>
-        <p>
+        <h2 data-i18n="about.journey.title">Our Journey Forward</h2>
+        <p data-i18n="about.journey.body">
           Going forward, I want to keep making new games, improving older ones, and learning how to do things properly.
           I'm not perfect at planning, and sometimes I disappear into development mode for a while without posting updates.
           But I always come back to the same goal: make something I'm proud of, and make something players genuinely enjoy.

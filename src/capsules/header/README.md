@@ -1,7 +1,7 @@
 # Header Capsule
 
 A responsive navigation header capsule for the Jonnil Games website with mobile
-menu support, active link highlighting, and emoji replacement.
+menu support and active link highlighting.
 
 ## Features
 
@@ -10,7 +10,6 @@ menu support, active link highlighting, and emoji replacement.
 - Automatic active link highlighting based on current URL
 - Social links in the mobile menu
 - Accessibility support with ARIA attributes and focus management
-- Emoji replacement (Mutant Standard SVGs) for consistent cross-platform glyphs
 
 ## Usage
 
@@ -53,13 +52,13 @@ Update the social media links in the mobile menu section of `header.html`.
   - Highlights active nav links (desktop and mobile).
   - Handles opening/closing the mobile menu, including Escape key and resize.
   - Keeps the mobile footer year current.
-  - Replaces emoji characters with Mutant Standard SVGs via a MutationObserver.
+  - Emoji rendering is handled by the shared `/scripts/emoji.js`.
 
 ## Files
 
 - `header.html` - Markup for the header and mobile menu
 - `header.css` - Reserved for small overrides (base styles live in `base.css`)
-- `header.js` - Header behavior and emoji replacement
+- `header.js` - Header behavior
 
 ## Accessibility
 

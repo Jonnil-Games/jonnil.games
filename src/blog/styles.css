@@ -5,21 +5,15 @@
   text-align: center;
   margin-bottom: var(--spacing-xl);
   padding: var(--spacing-2xl) var(--spacing-xl);
-  background: linear-gradient(
-    135deg,
-    rgba(37, 99, 235, 0.1),
-    rgba(124, 58, 237, 0.1)
-  );
-  border-radius: var(--radius-lg);
+  background-color: var(--md-primary-container);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--surface-outline);
 }
 
 .blog-header h1 {
   font-size: 2.5rem;
   margin-bottom: var(--spacing-lg);
-  background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--md-on-primary-container);
   line-height: 1.2;
 }
 
@@ -34,9 +28,10 @@
 .blog-post {
   margin: 0 auto;
   padding: var(--spacing-2xl);
-  background: white;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  background: var(--md-surface-container);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--surface-outline);
   transition: box-shadow var(--transition-normal);
 }
 
@@ -53,10 +48,7 @@
 
 .post-header h1 {
   margin-bottom: var(--spacing-lg);
-  background: linear-gradient(90deg, var(--blue-600), var(--purple-600));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--md-on-surface);
   font-size: 2.5rem;
   line-height: 1.2;
 }
@@ -92,8 +84,8 @@
 }
 
 .post-category {
-  background: rgba(37, 99, 235, 0.1);
-  color: var(--blue-600);
+  background: var(--md-secondary-container);
+  color: var(--md-on-secondary-container);
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: var(--radius-full);
   font-size: 0.85rem;
@@ -103,7 +95,7 @@
 
 .post-category:hover {
   transform: translateY(-1px);
-  background: rgba(37, 99, 235, 0.2);
+  filter: brightness(0.97);
 }
 
 .post-content {
@@ -173,22 +165,23 @@
 }
 
 .post-content a {
-  color: var(--blue-600);
+  color: var(--primary);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
 
 .post-content a:hover {
-  color: var(--blue-700);
+  color: #255be0;
   text-decoration: underline;
 }
 
 /* Blog Filters */
 .blog-filters {
-  background: white;
+  background: var(--md-surface-container);
   padding: var(--spacing-xl);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--surface-outline);
   margin-bottom: var(--spacing-2xl);
   transition: box-shadow var(--transition-normal);
 }
@@ -203,12 +196,17 @@
 }
 
 .search-container::before {
-  content: "🔍";
+  content: "";
   position: absolute;
   left: var(--spacing-md);
   top: 50%;
   transform: translateY(-50%);
-  color: var(--text-gray-600);
+  width: 1.1em;
+  height: 1.1em;
+  background-image: url("https://cdn.jsdelivr.net/gh/Mstrodl/mutant-standard-mirror@master/emoji/1f50d.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   pointer-events: none;
 }
 
@@ -216,19 +214,19 @@
   width: 100%;
   padding: var(--spacing-md) var(--spacing-md) var(--spacing-md)
     calc(var(--spacing-xl) + var(--spacing-sm));
-  border: 2px solid rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(27, 27, 34, 0.12);
   border-radius: var(--radius-md);
   font-size: 1rem;
   transition: border-color var(--transition-fast),
     box-shadow var(--transition-fast);
   color: var(--text-gray-900);
-  background: white;
+  background: var(--surface);
 }
 
 #blog-search:focus {
   outline: none;
-  border-color: var(--blue-600);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(47, 107, 255, 0.25);
 }
 
 #blog-search::placeholder {
@@ -262,11 +260,11 @@
 
 .filter-group select {
   padding: var(--spacing-sm) var(--spacing-md);
-  border: 2px solid rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(27, 27, 34, 0.12);
   border-radius: var(--radius-md);
   font-size: 0.9rem;
   color: var(--text-gray-900);
-  background-color: white;
+  background-color: var(--surface);
   cursor: pointer;
   transition: all var(--transition-fast);
   appearance: none;
@@ -278,13 +276,13 @@
 }
 
 .filter-group select:hover {
-  border-color: var(--blue-600);
+  border-color: var(--primary);
 }
 
 .filter-group select:focus {
   outline: none;
-  border-color: var(--blue-600);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(47, 107, 255, 0.25);
 }
 
 /* Post Grid and Cards */
@@ -309,12 +307,14 @@
 
 /* Improved Blog Card Design */
 .post-card {
-  background: white;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  background: var(--md-surface-container);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--surface-outline);
   padding: 0;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.3s ease, opacity 0.3s ease-in-out;
+  transition: transform var(--motion-duration-medium) var(--motion-ease-standard),
+    box-shadow var(--transition-normal),
+    opacity var(--motion-duration-short) var(--motion-ease-standard);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -327,6 +327,7 @@
 .post-card:hover {
   transform: translateY(-8px);
   box-shadow: var(--shadow-lg);
+  border-color: var(--surface-outline-strong);
 }
 
 .post-card.fade-out {
@@ -346,7 +347,7 @@
   padding: var(--spacing-md) var(--spacing-xl);
   font-size: 0.85rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  background-color: rgba(37, 99, 235, 0.03);
+  background-color: var(--md-surface-container-high);
 }
 
 .post-card .post-meta time {
@@ -378,7 +379,7 @@
 }
 
 .post-title:hover {
-  color: var(--blue-600);
+  color: var(--primary);
 }
 
 .post-footer {
@@ -388,7 +389,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(37, 99, 235, 0.03);
+  background-color: var(--md-surface-container-high);
 }
 
 .post-author {
@@ -397,7 +398,7 @@
 }
 
 .read-more-link {
-  color: var(--blue-600);
+  color: var(--primary);
   font-weight: 500;
   font-size: 0.9rem;
   text-decoration: none;
@@ -405,7 +406,7 @@
 }
 
 .read-more-link:hover {
-  color: var(--blue-700);
+  color: #255be0;
   transform: translateX(2px);
 }
 

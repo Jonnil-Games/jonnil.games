@@ -81,22 +81,7 @@ from = "/*"
 to = "/404.html"
 status = 404
 
-# Headers for specific paths (development-friendly cache policy)
-[[headers]]
-for = "/media/*"
-[headers.values]
-Cache-Control = "no-store"
-
-[[headers]]
-for = "/css/*"
-[headers.values]
-Cache-Control = "no-store"
-
-[[headers]]
-for = "/js/*"
-[headers.values]
-Cache-Control = "no-store"
-
+# Headers (production-friendly cache policy)
 [[headers]]
 for = "/*"
 [headers.values]
@@ -105,40 +90,71 @@ X-XSS-Protection = "1; mode=block"
 X-Content-Type-Options = "nosniff"
 Referrer-Policy = "strict-origin-when-cross-origin"
 Content-Security-Policy = "default-src 'self' https:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https: fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https: fonts.gstatic.com;"
-Cache-Control = "no-store"
+Cache-Control = "public, max-age=0, must-revalidate"
 
-[[headers]]
-for = "/static/*"
-[headers.values]
-Cache-Control = "no-store"
-
+# Long-lived static assets (no filename fingerprinting yet, so keep a modest TTL)
 [[headers]]
 for = "/*.css"
 [headers.values]
-Cache-Control = "no-store"
+Cache-Control = "public, max-age=604800"
+
+[[headers]]
+for = "/**/*.css"
+[headers.values]
+Cache-Control = "public, max-age=604800"
 
 [[headers]]
 for = "/*.js"
 [headers.values]
-Cache-Control = "no-store"
+Cache-Control = "public, max-age=604800"
+
+[[headers]]
+for = "/**/*.js"
+[headers.values]
+Cache-Control = "public, max-age=604800"
 
 [[headers]]
 for = "/images/*"
 [headers.values]
-Cache-Control = "no-store"
+Cache-Control = "public, max-age=604800"
 
-# --- Optional: once ready for prod caching, consider targeted cache for feeds/sitemap ---
-# [[headers]]
-#   for = "/sitemap.xml"
-#   [headers.values]
-#     Cache-Control = "public, max-age=600"
-#
-# [[headers]]
-#   for = "/blog/rss.xml"
-#   [headers.values]
-#     Cache-Control = "public, max-age=300"
-#
-# [[headers]]
-#   for = "/blog/atom.xml"
-#   [headers.values]
-#     Cache-Control = "public, max-age=300"
+[[headers]]
+for = "/images/**"
+[headers.values]
+Cache-Control = "public, max-age=604800"
+
+[[headers]]
+for = "/icons/*"
+[headers.values]
+Cache-Control = "public, max-age=604800"
+
+[[headers]]
+for = "/emoji/*"
+[headers.values]
+Cache-Control = "public, max-age=604800"
+
+[[headers]]
+for = "/scripts/*"
+[headers.values]
+Cache-Control = "public, max-age=604800"
+
+[[headers]]
+for = "/capsules/*"
+[headers.values]
+Cache-Control = "public, max-age=604800"
+
+# Feeds and sitemap: cache briefly
+[[headers]]
+for = "/sitemap.xml"
+[headers.values]
+Cache-Control = "public, max-age=600"
+
+[[headers]]
+for = "/blog/rss.xml"
+[headers.values]
+Cache-Control = "public, max-age=300"
+
+[[headers]]
+for = "/blog/atom.xml"
+[headers.values]
+Cache-Control = "public, max-age=300"

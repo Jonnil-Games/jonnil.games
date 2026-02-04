@@ -14,6 +14,9 @@
 /* Base dark surface */
 body {
   background-color: #121212;
+  background-image:
+    radial-gradient(circle at 12% 6%, rgba(18, 18, 18, 0.95), transparent 52%),
+    radial-gradient(circle at 50% 92%, rgba(255, 122, 89, 0.14), transparent 48%);
   color: #e0e0e0;
 }
 
@@ -22,9 +25,28 @@ main {
 }
 
 /* Header overrides (capsule markup) */
+body {
+  --header-bg: #1e1e1e;
+  --header-border: rgba(0, 0, 0, 0.4);
+  --md-surface: #121212;
+  --md-surface-container: #1e1e1e;
+  --md-surface-container-high: #232323;
+  --surface: #1e1e1e;
+  --md-primary: var(--accent-light);
+  --md-on-primary: #0b1b16;
+  --md-primary-container: rgba(0, 255, 148, 0.08);
+  --md-on-primary-container: #e0ffe8;
+  --md-secondary: var(--accent-dark);
+  --md-on-secondary: #0b1b16;
+  --md-secondary-container: rgba(0, 190, 110, 0.08);
+  --md-on-secondary-container: #d8ffe9;
+  --md-outline-variant: rgba(255, 255, 255, 0.12);
+  --md-outline: rgba(255, 255, 255, 0.2);
+}
+
 header,
 .navbar {
-  background-color: #1e1e1e;
+  background: #1e1e1e;
 }
 
 .nav-links li a {
@@ -32,7 +54,16 @@ header,
 }
 .nav-links li a:hover,
 .nav-links li a.active {
-  color: var(--accent-light);
+  color: var(--md-on-primary);
+}
+
+.nav-links li a:hover:not(.active) {
+  color: var(--md-primary);
+  background-color: var(--md-primary-container);
+}
+
+.nav-links li a.active {
+  background-color: var(--md-primary);
 }
 .nav-links li a::after {
   background-color: var(--accent-light);
@@ -51,6 +82,12 @@ header,
 }
 .hamburger.active .hamburger-bar {
   background-color: var(--accent-light);
+}
+
+header .lang-select {
+  background-color: #1e1e1e;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #e0e0e0;
 }
 
 /* Content */
@@ -166,7 +203,9 @@ header,
   background: linear-gradient(90deg, var(--accent-dark), var(--accent-light));
   color: #121212;
   font-weight: bold;
-  transition: transform 0.3s, filter 0.3s;
+  transition:
+    transform var(--motion-duration-short) var(--motion-ease-standard),
+    filter var(--motion-duration-short) var(--motion-ease-standard);
 }
 
 .button.primary-button:hover {
@@ -208,7 +247,9 @@ header,
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid #2e2e2e;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition:
+    transform var(--motion-duration-medium) var(--motion-ease-standard),
+    box-shadow var(--transition-normal);
   box-shadow: var(--shadow-sm);
 }
 
@@ -242,6 +283,8 @@ header,
 
 .character-sprite {
   width: 100%;
+  height: auto;
+  display: block;
   opacity: 0.5;
 }
 .ghost-sprite {
@@ -249,6 +292,8 @@ header,
   top: 0;
   left: 0;
   width: 100%;
+  height: auto;
+  display: block;
   opacity: 0.3;
   pointer-events: none;
 }
@@ -269,11 +314,17 @@ footer {
 
 /* Responsive */
 @media (max-width: 768px) {
+  .hero {
+    padding-top: var(--spacing-md);
+  }
+
   .character-container {
     width: 60vw;
-    margin: 100vh auto 2rem;
+    margin: 100vh 0 2rem;
     display: block;
-    text-align: center;
+    text-align: left;
+    margin-left: var(--spacing-md);
+    margin-right: auto;
   }
   .responsive-logo {
     max-width: 85%;
@@ -312,7 +363,10 @@ footer {
   box-shadow: var(--shadow-sm);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  transition:
+    opacity var(--motion-duration-short) var(--motion-ease-standard),
+    transform var(--motion-duration-short) var(--motion-ease-standard),
+    background var(--motion-duration-short) var(--motion-ease-standard);
 }
 
 .sound-toggle.is-active {
@@ -325,7 +379,7 @@ footer {
   background: rgba(15, 15, 15, 0.75);
 }
 
-.sound-toggle i {
+.sound-toggle .icon {
   font-size: 1.2rem;
 }
 
@@ -349,7 +403,7 @@ footer {
   );
   filter: blur(0.4px);
   animation-name: spark-fall;
-  animation-timing-function: ease-out;
+  animation-timing-function: var(--motion-ease-decelerate);
 }
 
 @keyframes spark-fall {
@@ -367,6 +421,6 @@ footer {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 0.22s ease;
+  transition: opacity var(--motion-duration-short) var(--motion-ease-standard);
   pointer-events: none;
 }

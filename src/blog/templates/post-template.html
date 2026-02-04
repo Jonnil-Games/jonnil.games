@@ -51,24 +51,24 @@
     <link rel="stylesheet" href="/styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="/blog/styles.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css"
-    />
-    <!-- Favicon -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" media="print" onload="this.media='all'" />
+
+    <noscript>
+
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
+
+    </noscript>
+<link rel="stylesheet" href="/blog/styles.css" /><!-- Favicon -->
     <link rel="icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <style>
       /* Enhanced animation for blog post cards to match homepage */
       .post-card {
         will-change: transform;
-        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-          box-shadow 0.3s ease;
+        transition: transform var(--motion-duration-medium) var(--motion-ease-standard),
+          box-shadow var(--transition-normal);
       }
     </style>
   </head>
@@ -81,7 +81,9 @@
         <h1>{{title}}</h1>
         <div class="post-meta">
           <time datetime="{{date}}">{{formatDate date}}</time>
-          <p class="post-author">By {{author}}</p>
+          <p class="post-author">
+            <span data-i18n="blog.post.by">By</span> {{author}}
+          </p>
           {{#if categories.length}}
           <div class="post-categories">
             {{#each categories}}

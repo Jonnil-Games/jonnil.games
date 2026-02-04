@@ -16,7 +16,8 @@ if present.
 
 - `footer.js` keeps the copyright year current.
 - Styling is driven by shared base styles in `src/styles/base.css`.
-- Remixicon classes (`ri-*`) are used for social icons and the copyright icon.
+- Social/copyright icons use the shared `.icon` mask system from
+  `src/styles/base.css`.
 
 ## Files
 

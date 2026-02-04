@@ -3,22 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Jonnil Games</title>
+    <title data-i18n="home.meta.title">Jonnil Games</title>
 
     <!-- Primary Meta Tags -->
-    <meta name="title" content="Jonnil Games" />
+    <meta name="title" content="Jonnil Games" data-i18n-attr="content:home.meta.title" />
     <meta
       name="description"
       content="Indie game development studio creating inclusive and innovative gaming experiences"
+      data-i18n-attr="content:home.meta.description"
     />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://jonnil.games/" />
-    <meta property="og:title" content="Jonnil Games" />
+    <meta property="og:title" content="Jonnil Games" data-i18n-attr="content:home.meta.title" />
     <meta
       property="og:description"
       content="Indie game development studio creating inclusive and innovative gaming experiences"
+      data-i18n-attr="content:home.meta.description"
     />
     <meta
       property="og:image"
@@ -27,10 +29,11 @@
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Jonnil Games" />
+    <meta name="twitter:title" content="Jonnil Games" data-i18n-attr="content:home.meta.title" />
     <meta
       name="twitter:description"
       content="Indie game development studio creating inclusive and innovative gaming experiences"
+      data-i18n-attr="content:home.meta.description"
     />
     <meta
       name="twitter:image"
@@ -54,20 +57,19 @@
 
     <!-- Styles & Fonts -->
     <link rel="stylesheet" href="styles.css" />
-    <!-- Reuse blog card styles for homepage post cards -->
-    <link rel="stylesheet" href="/blog/styles.css" />
+    <link rel="preload" as="image" href="/images/sticky-paws.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css"
-    />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
 
-    <!-- Favicon -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" media="print" onload="this.media='all'" />
+
+    <noscript>
+
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
+
+    </noscript>
+<!-- Favicon -->
     <link rel="icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
@@ -80,64 +82,90 @@
     <!-- Main Content -->
     <main>
       <section class="hero">
-        <h1>Welcome to Jonnil&nbsp;Games</h1>
+        <h1 data-i18n="home.hero.title">Welcome to Jonnil&nbsp;Games</h1>
         <div class="animated-text">
-          <p class="animated-text-content active">
+          <p class="animated-text-content active" data-i18n="home.hero.line1">
             Game development insights and adventures
           </p>
-          <p class="animated-text-content">
+          <p class="animated-text-content" data-i18n="home.hero.line2">
             Crafting immersive gaming experiences
           </p>
-          <p class="animated-text-content">
+          <p class="animated-text-content" data-i18n="home.hero.line3">
             Building worlds one pixel at a time
           </p>
-          <p class="animated-text-content">Where creativity meets technology</p>
-          <p class="animated-text-content">
+          <p class="animated-text-content" data-i18n="home.hero.line4">
+            Where creativity meets technology
+          </p>
+          <p class="animated-text-content" data-i18n="home.hero.line5">
             Because we need more crazy in this world
           </p>
-          <p class="animated-text-content">🏳️‍⚧️ Trans rights are human rights</p>
-          <p class="animated-text-content">
+          <p class="animated-text-content" data-i18n="home.hero.line6">
+            🏳️‍⚧️ Trans rights are human rights
+          </p>
+          <p class="animated-text-content" data-i18n="home.hero.line7">
             Making games with love and rainbows 🌈
           </p>
-          <p class="animated-text-content">Games are for everyone 💝</p>
-          <p class="animated-text-content">
+          <p class="animated-text-content" data-i18n="home.hero.line8">
+            Games are for everyone 💝
+          </p>
+          <p class="animated-text-content" data-i18n="home.hero.line9">
             Pushing pixels and breaking boundaries
           </p>
-          <p class="animated-text-content">
+          <p class="animated-text-content" data-i18n="home.hero.line10">
             Creating inclusive digital worlds ✨
           </p>
-          <p class="animated-text-content">Where imagination knows no limits</p>
-          <p class="animated-text-content">Coding with pride 🏳️‍🌈</p>
-          <p class="animated-text-content">Spelglädje från Sverige!</p>
+          <p class="animated-text-content" data-i18n="home.hero.line11">
+            Where imagination knows no limits
+          </p>
+          <p class="animated-text-content" data-i18n="home.hero.line12">
+            Coding with pride 🏳️‍🌈
+          </p>
+          <p class="animated-text-content" data-i18n="home.hero.line13">
+            Spelglädje från Sverige!
+          </p>
         </div>
       </section>
 
       <div class="divider large-divider"></div>
 
       <section class="featured-games">
-        <h2>Featured Games</h2>
+        <h2 data-i18n="home.featured.title">Featured Games</h2>
         <div class="game-grid">
           <div class="game-card">
-            <div
-              class="game-image"
-              style="background-image: url('/images/sticky-paws.png')"
-            >
+            <div class="game-image">
+              <img
+                src="/images/sticky-paws.png"
+                alt="Sticky Paws key art"
+                width="1920"
+                height="1080"
+                decoding="async"
+                fetchpriority="high"
+              />
               <div class="game-overlay">
-                <span class="game-status">Released</span>
+                <span class="game-status" data-i18n="home.featured.sticky.status"
+                  >Released</span
+                >
               </div>
             </div>
             <div class="game-info">
-              <h3>Sticky Paws</h3>
-              <p>
+              <h3 data-i18n="home.featured.sticky.title">Sticky Paws</h3>
+              <p data-i18n="home.featured.sticky.description">
                 Help Sticky & friends get their stolen cake back in this
                 charming platformer adventure!
               </p>
               <div class="tags">
-                <span class="tag tag-genre">Platformer</span>
-                <span class="tag tag-feature">Multiplayer</span>
+                <span class="tag tag-genre" data-i18n="home.featured.sticky.tag1"
+                  >Platformer</span
+                >
+                <span
+                  class="tag tag-feature"
+                  data-i18n="home.featured.sticky.tag2"
+                  >Multiplayer</span
+                >
               </div>
               <div class="game-links">
                 <a href="/games/sticky" class="button primary-button"
+                  data-i18n="home.featured.sticky.ctaPrimary"
                   >Learn More</a
                 >
                 <a
@@ -145,6 +173,7 @@
                   target="_blank"
                   rel="noopener noreferrer"
                   class="button secondary-button"
+                  data-i18n="home.featured.sticky.ctaSecondary"
                   >Steam</a
                 >
               </div>
@@ -152,29 +181,44 @@
           </div>
 
           <div class="game-card">
-            <div
-              class="game-image"
-              style="background-image: url('/images/asylum.png')"
-            >
+            <div class="game-image">
+              <img
+                src="/images/asylum.png"
+                alt="Juni's Asylum key art"
+                width="1920"
+                height="1080"
+                loading="lazy"
+                decoding="async"
+              />
               <div class="game-overlay">
-                <span class="game-status">In Development</span>
+                <span class="game-status" data-i18n="home.featured.asylum.status"
+                  >In Development</span
+                >
               </div>
             </div>
             <div class="game-info">
-              <h3>Juni's Asylum</h3>
-              <p>
+              <h3 data-i18n="home.featured.asylum.title">Juni's Asylum</h3>
+              <p data-i18n="home.featured.asylum.description">
                 An exciting new project currently in development. Follow our
                 progress and be the first to know when it launches!
               </p>
               <div class="tags">
-                <span class="tag tag-status">Coming Soon</span>
-                <span class="tag tag-feature">Single Player</span>
+                <span class="tag tag-status" data-i18n="home.featured.asylum.tag1"
+                  >Coming Soon</span
+                >
+                <span
+                  class="tag tag-feature"
+                  data-i18n="home.featured.asylum.tag2"
+                  >Single Player</span
+                >
               </div>
               <div class="game-links">
                 <a href="/games/asylum" class="button primary-button"
+                  data-i18n="home.featured.asylum.ctaPrimary"
                   >View Progress</a
                 >
                 <a href="#newsletter" class="button secondary-button"
+                  data-i18n="home.featured.asylum.ctaSecondary"
                   >Get Updates</a
                 >
               </div>
@@ -186,19 +230,27 @@
       <div class="divider small-divider"></div>
 
       <section class="latest-posts">
-        <h2>Latest Posts</h2>
+        <h2 data-i18n="home.latest.title">Latest Posts</h2>
         <div class="post-grid">
           <!-- Blog posts will be dynamically loaded here by JavaScript -->
           <noscript>
             <p>
-              Enable JavaScript to see the latest posts, or visit the
-              <a href="/blog/">blog</a>.
+              <span data-i18n="home.latest.noscriptBefore"
+                >Enable JavaScript to see the latest posts, or visit the</span
+              >
+              <a href="/blog/" data-i18n="home.latest.noscriptLink">blog</a
+              ><span data-i18n="home.latest.noscriptAfter">.</span>
             </p>
           </noscript>
         </div>
 
         <div class="view-all-container">
-          <a href="/blog" class="button outline-button">View All Posts</a>
+          <a
+            href="/blog"
+            class="button outline-button"
+            data-i18n="home.latest.viewAll"
+            >View All Posts</a
+          >
         </div>
       </section>
 
@@ -215,7 +267,6 @@
       // Mobile menu logic is included with the header capsule
       // Keep only the page-specific JavaScript
       let animatedTexts;
-      let currentTextIndex = 0;
 
       // Fisher-Yates shuffle algorithm
       function shuffleNodes(nodeList) {
@@ -238,19 +289,6 @@
         return array;
       }
 
-      function rotateText() {
-        // Add a small delay before removing the active class to ensure smooth transition
-        setTimeout(() => {
-          animatedTexts[currentTextIndex].classList.remove("active");
-          animatedTexts[currentTextIndex].classList.add("inactive");
-
-          currentTextIndex = (currentTextIndex + 1) % animatedTexts.length;
-
-          animatedTexts[currentTextIndex].classList.remove("inactive");
-          animatedTexts[currentTextIndex].classList.add("active");
-        }, 100);
-      }
-
       // Initialize the animated text with a slight delay to ensure proper setup
       window.addEventListener("DOMContentLoaded", () => {
         // Get the animated text elements
@@ -267,14 +305,40 @@
         // Re-query the elements after shuffling to get them in the new order
         animatedTexts = document.querySelectorAll(".animated-text-content");
 
-        // Add a small delay before starting the animation
-        setTimeout(() => {
-          // Set the first text as active
-          animatedTexts[0].classList.add("active");
+        const container = document.querySelector(".animated-text");
+        if (container && animatedTexts.length > 0) {
+          const interval = 4;
+          const fade = 0.3;
+          const total = animatedTexts.length * interval;
+          const fadePct = (fade / total) * 100;
+          const holdPct = ((interval - fade * 2) / total) * 100;
+          const holdEnd = fadePct + holdPct;
+          const outEnd = (interval / total) * 100;
 
-          // Start the rotation with a longer display time
-          setInterval(rotateText, 4000);
-        }, 100);
+          const styleId = "animated-text-rotate-style";
+          let styleEl = document.getElementById(styleId);
+          if (!styleEl) {
+            styleEl = document.createElement("style");
+            styleEl.id = styleId;
+            document.head.appendChild(styleEl);
+          }
+          styleEl.textContent = `
+            @keyframes text-rotate {
+              0% { opacity: 0; transform: translateY(1.5em); }
+              ${fadePct.toFixed(4)}% { opacity: 1; transform: translateY(0); }
+              ${holdEnd.toFixed(4)}% { opacity: 1; transform: translateY(0); }
+              ${outEnd.toFixed(4)}% { opacity: 0; transform: translateY(-1.5em); }
+              100% { opacity: 0; transform: translateY(1.5em); }
+            }
+          `;
+
+          const baseDelay = 0.1;
+          animatedTexts.forEach((text, index) => {
+            text.style.animationDuration = `${total}s`;
+            text.style.animationDelay = `${baseDelay + index * interval}s`;
+          });
+          container.classList.add("has-css-rotate");
+        }
       });
 
       // Add smooth scrolling for anchor links
@@ -299,43 +363,65 @@
         });
       });
 
+      let recentPostsCache = null;
+
+      function t(key, fallback) {
+        if (window.JG_I18N) return window.JG_I18N.t(key, fallback);
+        return fallback;
+      }
+
+      function getLocale() {
+        if (window.JG_I18N) return window.JG_I18N.getState().locale;
+        return "en-US";
+      }
+
+      function renderRecentPosts(posts) {
+        const postGrid = document.querySelector(".post-grid");
+        if (!postGrid) return;
+        const byLabel = t("home.latest.by", "By");
+        const authorFallback = t("home.latest.byDefault", "Team Jonnil");
+        const readMoreLabel = t("home.latest.readMore", "Read More →");
+        const locale = getLocale();
+        postGrid.innerHTML = posts
+          .map(
+            (post) => `
+              <article class="post-card">
+                  <div class="post-meta">
+                      <time datetime="${post.date}">${new Date(
+              post.date + "T12:00:00Z"
+            ).toLocaleDateString(locale, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}</time>
+                      <span class="post-category">${post.category}</span>
+                  </div>
+                  <h2><a href="${post.url}" class="post-title">${
+              post.title
+            }</a></h2>
+                  <p>${post.excerpt}</p>
+                  <div class="post-footer">
+                      <span class="post-author">${byLabel} ${
+              post.author || authorFallback
+            }</span>
+                      <a href="${post.url}" class="read-more-link">${readMoreLabel}</a>
+                  </div>
+              </article>
+          `
+          )
+          .join("");
+        if (window.JG_EMOJI) {
+          window.JG_EMOJI.process(postGrid);
+        }
+      }
+
       // Load recent blog posts
       async function loadRecentPosts() {
         try {
           const response = await fetch("/blog/recent-posts.json");
           const posts = await response.json();
-
-          const postGrid = document.querySelector(".post-grid");
-          postGrid.innerHTML = posts
-            .map(
-              (post) => `
-              <article class="post-card">
-                  <div class="post-meta">
-                      <time datetime="${post.date}">${new Date(
-                post.date + "T12:00:00Z"
-              ).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}</time>
-                      <span class="post-category">${post.category}</span>
-                  </div>
-                  <h2><a href="${post.url}" class="post-title">${
-                post.title
-              }</a></h2>
-                  <p>${post.excerpt}</p>
-                  <div class="post-footer">
-                      <span class="post-author">By ${
-                        post.author || "Team Jonnil"
-                      }</span>
-                      <a href="${
-                        post.url
-                      }" class="read-more-link">Read More →</a>
-                  </div>
-              </article>
-          `
-            )
-            .join("");
+          recentPostsCache = posts;
+          renderRecentPosts(posts);
         } catch (error) {
           console.error("Error loading recent posts:", error);
         }
@@ -343,6 +429,9 @@
 
       // Load recent posts when the page loads
       document.addEventListener("DOMContentLoaded", loadRecentPosts);
+      document.addEventListener("jg-i18n-ready", () => {
+        if (recentPostsCache) renderRecentPosts(recentPostsCache);
+      });
     </script>
   </body>
 </html>

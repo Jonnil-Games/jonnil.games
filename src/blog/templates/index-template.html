@@ -3,22 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Blog - Jonnil Games</title>
+    <title data-i18n="blog.meta.title">Blog - Jonnil Games</title>
 
     <!-- Primary Meta Tags -->
-    <meta name="title" content="Blog - Jonnil Games" />
+    <meta name="title" content="Blog - Jonnil Games" data-i18n-attr="content:blog.meta.title" />
     <meta
       name="description"
       content="Latest updates, insights, and announcements from the Jonnil Games team. Read about game development, behind-the-scenes content, and more."
+      data-i18n-attr="content:blog.meta.description"
     />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://jonnil.games/blog/" />
-    <meta property="og:title" content="Blog - Jonnil Games" />
+    <meta property="og:title" content="Blog - Jonnil Games" data-i18n-attr="content:blog.meta.title" />
     <meta
       property="og:description"
       content="Latest updates, insights, and announcements from the Jonnil Games team. Read about game development, behind-the-scenes content, and more."
+      data-i18n-attr="content:blog.meta.description"
     />
     <meta
       property="og:image"
@@ -27,10 +29,11 @@
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Blog - Jonnil Games" />
+    <meta name="twitter:title" content="Blog - Jonnil Games" data-i18n-attr="content:blog.meta.title" />
     <meta
       name="twitter:description"
       content="Latest updates, insights, and announcements from the Jonnil Games team. Read about game development, behind-the-scenes content, and more."
+      data-i18n-attr="content:blog.meta.description"
     />
     <meta
       name="twitter:image"
@@ -55,24 +58,24 @@
     <link rel="stylesheet" href="/styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="/blog/styles.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css"
-    />
-    <!-- Favicon -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" media="print" onload="this.media='all'" />
+
+    <noscript>
+
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
+
+    </noscript>
+<link rel="stylesheet" href="/blog/styles.css" /><!-- Favicon -->
     <link rel="icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <style>
       /* Enhanced animation for blog post cards to match homepage */
       .post-card {
         will-change: transform;
-        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-          box-shadow 0.3s ease;
+        transition: transform var(--motion-duration-medium) var(--motion-ease-standard),
+          box-shadow var(--transition-normal);
       }
     </style>
   </head>
@@ -82,8 +85,8 @@
 
     <main>
       <section class="blog-header">
-        <h1>Blog</h1>
-        <p>
+        <h1 data-i18n="blog.header.title">Blog</h1>
+        <p data-i18n="blog.header.subtitle">
           Latest updates, insights, and announcements from the Jonnil&nbsp;Games
           team
         </p>
@@ -96,14 +99,17 @@
             id="blog-search"
             placeholder="Search posts..."
             aria-label="Search blog posts"
+            data-i18n-attr="placeholder:blog.filters.searchPlaceholder,aria-label:blog.filters.searchAria"
           />
         </div>
 
         <div class="filter-grid">
           <div class="filter-group">
-            <label for="author-filter">Filter by Author</label>
+            <label for="author-filter" data-i18n="blog.filters.authorLabel"
+              >Filter by Author</label
+            >
             <select id="author-filter">
-              <option value="">All Authors</option>
+              <option value="" data-i18n="blog.filters.authorAll">All Authors</option>
               {{#each authors}}
               <option value="{{this}}">{{this}}</option>
               {{/each}}
@@ -111,9 +117,13 @@
           </div>
 
           <div class="filter-group">
-            <label for="category-filter">Filter by Category</label>
+            <label for="category-filter" data-i18n="blog.filters.categoryLabel"
+              >Filter by Category</label
+            >
             <select id="category-filter">
-              <option value="">All Categories</option>
+              <option value="" data-i18n="blog.filters.categoryAll"
+                >All Categories</option
+              >
               {{#each categories}}
               <option value="{{this}}">{{this}}</option>
               {{/each}}
@@ -132,8 +142,12 @@
           <h2><a href="{{url}}" class="post-title">{{title}}</a></h2>
           <p>{{excerpt}}</p>
           <div class="post-footer">
-            <span class="post-author">By {{author}}</span>
-            <a href="{{url}}" class="read-more-link">Read More →</a>
+            <span class="post-author"
+              ><span data-i18n="blog.post.by">By</span> {{author}}</span
+            >
+            <a href="{{url}}" class="read-more-link" data-i18n="blog.post.readMore"
+              >Read More →</a
+            >
           </div>
         </article>
         {{/each}}

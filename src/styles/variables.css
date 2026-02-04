@@ -1,27 +1,72 @@
 :root {
   /* Colors */
-  --bg: #ffffff;
-  --text: #333333;
-  --primary: #6200ee;
-  --secondary: #03dac6;
-  --accent: #bb86fc;
-  --error: #b00020;
+  /* Material 3 style color roles */
+  --md-primary: #2f6bff;
+  --md-on-primary: #ffffff;
+  --md-primary-container: #dfe8ff;
+  --md-on-primary-container: #0b1b5a;
+  --md-secondary: #8a4bff;
+  --md-on-secondary: #ffffff;
+  --md-secondary-container: #ede4ff;
+  --md-on-secondary-container: #2d0b66;
+  --md-tertiary: #ff7a59;
+  --md-on-tertiary: #ffffff;
+  --md-tertiary-container: #ffe4db;
+  --md-on-tertiary-container: #3b0f07;
+  --md-error: #c62828;
+  --md-on-error: #ffffff;
+  --md-error-container: #ffdad4;
+  --md-on-error-container: #410002;
+  --md-surface: #f7f8fd;
+  --md-surface-dim: #edf0f7;
+  --md-surface-bright: #fbfcff;
+  --md-surface-container-lowest: #ffffff;
+  --md-surface-container-low: #f3f5fc;
+  --md-surface-container: #eef1fb;
+  --md-surface-container-high: #e7ebf7;
+  --md-surface-container-highest: #e1e6f2;
+  --md-surface-variant: #e4e7f0;
+  --md-on-surface: #1f1f25;
+  --md-on-surface-variant: #4a4f63;
+  --md-outline: rgba(27, 27, 34, 0.16);
+  --md-outline-variant: rgba(27, 27, 34, 0.1);
+  --md-surface-tint: var(--md-primary);
+
+  /* Site aliases */
+  --bg: var(--md-surface);
+  --surface: var(--md-surface);
+  --surface-variant: var(--md-surface-variant);
+  --surface-accent: var(--md-primary-container);
+  --surface-tint: rgba(47, 107, 255, 0.18);
+  --surface-elevated: var(--md-surface-container);
+  --surface-outline: var(--md-outline-variant);
+  --surface-outline-strong: var(--md-outline);
+  --text: var(--md-on-surface);
+  --text-muted: var(--md-on-surface-variant);
+  --primary: var(--md-primary);
+  --secondary: var(--md-secondary);
+  --accent: var(--md-tertiary);
+  --error: var(--md-error);
+  --on-primary: var(--md-on-primary);
+  --on-surface: var(--md-on-surface);
+  --header-bg: var(--md-surface-container-high);
+  --header-border: rgba(47, 107, 255, 0.2);
 
   /* Text colors from public/styles.css */
-  --text-gray-600: #4b5563;
-  --text-gray-700: #374151;
-  --text-gray-900: #111827;
+  --text-gray-600: var(--md-on-surface-variant);
+  --text-gray-700: #37312c;
+  --text-gray-900: var(--md-on-surface);
 
   /* Color variations from public/styles.css */
-  --blue-600: #2563eb;
-  --blue-700: #1d4ed8;
-  --blue-800: #1e40af;
+  --blue-600: var(--md-secondary);
+  --blue-700: #255be0;
+  --blue-800: #1c49b8;
   --green-600: #065f46;
   --green-700: #064e3b;
   --yellow-600: #92400e;
   --yellow-700: #78350f;
-  --purple-600: #7c3aed;
-  --purple-700: #6d28d9;
+  --purple-600: var(--md-tertiary);
+  --purple-700: #743be6;
   --pink-600: #db2777;
   --pink-700: #be185d;
   --red-600: #dc2626;
@@ -44,28 +89,36 @@
   --font-size-xxl: 2rem;
 
   /* Effects */
-  --border-radius-sm: 4px;
-  --border-radius-md: 8px;
-  --border-radius-lg: 16px;
+  --border-radius-sm: 6px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 20px;
+  --border-radius-xl: 28px;
   --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
   /* Border radius from public/styles.css */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
+  --radius-sm: 0.4rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.1rem;
+  --radius-xl: 1.6rem;
   --radius-full: 9999px;
 
   /* Transitions from public/styles.css */
-  --transition-fast: 0.2s ease;
-  --transition-normal: 0.3s ease;
-  --transition-slow: 0.5s ease;
+  --motion-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+  --motion-ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+  --motion-ease-sharp: cubic-bezier(0.4, 0, 0.6, 1);
+  --motion-duration-short: 150ms;
+  --motion-duration-medium: 200ms;
+  --motion-duration-long: 300ms;
+  --motion-duration-xlong: 375ms;
+  --transition-fast: var(--motion-duration-short) var(--motion-ease-standard);
+  --transition-normal: var(--motion-duration-medium) var(--motion-ease-standard);
+  --transition-slow: var(--motion-duration-long) var(--motion-ease-decelerate);
+  --transition-spring: 0.3s cubic-bezier(0.2, 0.9, 0.2, 1.1);
 
   /* Shadows from public/styles.css */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 2px rgba(24, 24, 31, 0.06);
+  --shadow-md: 0 6px 16px rgba(24, 24, 31, 0.1);
+  --shadow-lg: 0 12px 24px rgba(24, 24, 31, 0.14);
+  --shadow-xl: 0 20px 40px rgba(24, 24, 31, 0.18);
 }
