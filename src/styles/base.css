@@ -973,16 +973,21 @@ section {
 
 /* Post Cards */
 .post-card {
-  background-color: var(--md-surface-container);
+  background: var(--md-surface-container);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--surface-outline);
-  padding: var(--spacing-xl);
+  padding: 0;
   transition: transform var(--motion-duration-medium) var(--motion-ease-standard),
-    box-shadow var(--transition-normal);
+    box-shadow var(--transition-normal),
+    opacity var(--motion-duration-short) var(--motion-ease-standard);
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: hidden;
+  position: relative;
+  will-change: transform, opacity;
+  opacity: 1;
 }
 
 .post-card:hover {
@@ -996,9 +1001,12 @@ section {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--spacing-md);
+  margin: 0;
+  padding: var(--spacing-md) var(--spacing-xl);
   font-size: 0.85rem;
   color: var(--text-gray-600);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: var(--md-surface-container-high);
 }
 
 .post-category {
@@ -1017,7 +1025,8 @@ section {
 
 .post-card h2 {
   font-size: 1.3rem;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-xl) var(--spacing-xl) 0;
   color: var(--text-gray-900);
 }
 
@@ -1028,7 +1037,8 @@ section {
 .post-card p {
   font-size: 0.95rem;
   color: var(--text-gray-600);
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  padding: 0 var(--spacing-xl);
   flex-grow: 1;
 }
 
@@ -1044,11 +1054,17 @@ section {
 
 .post-footer {
   margin-top: auto;
-  padding-top: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-xl);
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: var(--md-surface-container-high);
+}
+
+.post-author {
+  color: var(--text-gray-600);
+  font-size: 0.9rem;
 }
 
 .read-more-link {
