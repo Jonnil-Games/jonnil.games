@@ -17,7 +17,7 @@
       "quote": "\"toki! mi Jonna. mi jan lawa pi Jonnil Games! tenpo mute la mi wile pali e musi. tan ni la mi kama sona e pali musi lon ilo GameMaker. musi pi Jonnil Games la, mute la ona li kama tan lawa mi. taso jan pona mute li wile pona e pali mi, li pali tawa kama lon pi musi ni! mi pilin pona tan jan ale ni. mi wile awen pali e musi lon tenpo mute!\"",
       "alt": "sitelen pi jan Jonna Nilsson"
     },
-    "visitSite": "o kama lukin e lipu →",
+    "visitSite": "o tawa lipu →",
     "cyan": {
       "title": "jan pi ilo sona",
       "pronouns": "(ona)",
@@ -44,10 +44,10 @@
     },
     "hero": {
       "title": "o kama pona tawa Jonnil Games",
-      "line1": "sona en tawa musi pi pali musi",
-      "line2": "mi pali e musi pi insa ale",
+      "line1": "sona pi pali musi en tawa musi",
+      "line2": "mi pali e musi pi kama insa",
       "line3": "mi pali e ma sin kepeken sitelen lili",
-      "line4": "lon ni la musi li kama jo e ilo sona",
+      "line4": "lon ni la wile namako en ilo sona li kama wan",
       "line5": "tan ni: ma ni li wile e nasa sin",
       "line6": "🏳️‍⚧️ ken pi jan tonsi li ken pi jan ale",
       "line7": "mi pali e musi kepeken olin en kule pi sewi 🌈",
@@ -328,7 +328,7 @@
       "genre": "musi pi tawa ko"
     },
     "subhero": {
-      "body": "o tawa lon poka Sticky, soweli suwi! ona li wile kama jo sin e pan suwi tan soweli lili ike. ma luka luka luka luka luka luka luka luka luka luka li lon (10). sina ken tawa sewi lon sinpin, sina ken tawa wawa lon poki lipu, en sina ken musi lon poka jan pona. musi ni li jo e nasin pi ko wawa, li pona tawa jan wan anu jan mute."
+      "body": "o tawa lon poka Sticky, soweli suwi! ona li wile kama jo sin e pan suwi tan soweli lili ike. ma 10 li lon. sina ken tawa sewi lon sinpin, sina ken tawa wawa lon poki lipu, en sina ken musi lon poka jan pona. musi ni li jo e nasin pi ko wawa, li pona tawa jan wan anu jan mute."
     },
     "steam": {
       "title": "ilo Steam",
@@ -414,8 +414,8 @@
       "body": "tenpo ni la Juni's Asylum li lon open pali. mi pali e nasin open, e ijo pi kon, e sitelen pi ma. tenpo kama la ona li kama lon, taso tenpo ni la mi wile pana e toki sin tawa sina. mi wile kin pana e musi lili (demo) tawa jan mute, tawa ni: jan li ken musi, li pana e toki, li pona e pali mi. mi awen tawa wile pi musi ni, taso ken la ijo lili li ante lon tenpo pali."
     },
     "hero": {
-      "unmute": "o pana e kalama lon monsi",
-      "mute": "o weka e kalama lon monsi",
+      "unmute": "o pana e kalama ma",
+      "mute": "o weka e kalama ma",
       "titleAlt": "Juni's Asylum"
     }
   },
@@ -456,7 +456,7 @@
   },
   "lang": {
     "label": "toki",
-    "auto": "nasin ilo",
+    "auto": "nasin pi ilo",
     "english": "toki Inli",
     "swedish": "toki Suwesi",
     "tokiPona": "toki pona"
