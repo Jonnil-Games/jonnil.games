@@ -25,6 +25,7 @@ import { sanitizeExternalUrl } from "/lib/sanitize-url.js";
     bookmarks: [],
   });
   let latestBuckets = createBuckets();
+  let hasFetchedBuckets = false;
 
   const t = (key, fallback) => {
     if (window.JG_I18N && typeof window.JG_I18N.t === "function") {
@@ -290,6 +291,7 @@ import { sanitizeExternalUrl } from "/lib/sanitize-url.js";
       const payload = await res.json();
       const buckets = groupMentions(payload);
       latestBuckets = buckets;
+      hasFetchedBuckets = true;
       render(buckets);
     } catch (err) {
       if (err.name !== "AbortError") {
@@ -333,6 +335,7 @@ import { sanitizeExternalUrl } from "/lib/sanitize-url.js";
   refresh();
   schedule();
   document.addEventListener("jg-i18n-ready", () => {
+    if (!hasFetchedBuckets) return;
     render(latestBuckets);
   });
 

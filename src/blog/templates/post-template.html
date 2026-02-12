@@ -47,8 +47,6 @@
       href="/blog/atom.xml"
     />
     <link rel="canonical" href="{{canonicalUrl}}" />
-    <link rel="webmention" href="https://webmention.io/jonnil.games/webmention" />
-    <link rel="pingback" href="https://webmention.io/jonnil.games/xmlrpc" />
     <!-- EXTERNAL_RESOURCES -->
 
     <link rel="stylesheet" href="/styles.css" />
@@ -114,8 +112,19 @@
         </div>
       </section>
 
-      <article class="blog-post">
-        <div class="post-content" data-blog-l10n-group>
+      <article class="blog-post h-entry">
+        <header class="h-entry-meta" hidden>
+          <a class="u-url" href="{{canonicalUrl}}">{{title}}</a>
+          <span class="p-name">{{title}}</span>
+          <time class="dt-published" datetime="{{date}}T00:00:00Z"
+            >{{formatDate date}}</time
+          >
+          <span class="p-author h-card">
+            <span class="p-name">{{author}}</span>
+          </span>
+        </header>
+
+        <div class="post-content e-content" data-blog-l10n-group>
           {{#each localizedVariants}}
           <div data-blog-lang="{{lang}}" {{#unless isDefault}}hidden{{/unless}}>
             {{{content}}}
@@ -127,6 +136,7 @@
           id="webmentions"
           class="webmentions"
           data-target="{{canonicalUrl}}"
+          data-refresh-seconds="60"
         >
           <h2 data-i18n="blog.webmentions.title">Webmentions</h2>
           {{#unless hasWebmentions}}
@@ -134,6 +144,126 @@
             No webmentions yet.
           </p>
           {{/unless}}
+          {{#if webmentions.likes.length}}
+          <div class="webmentions-group webmentions-likes">
+            <h3>
+              <span data-i18n="blog.webmentions.likes">Likes</span>
+              ({{webmentions.likes.length}})
+            </h3>
+            <ul class="webmentions-people">
+              {{#each webmentions.likes}}
+              <li>
+                {{#if authorUrl}}
+                <a href="{{authorUrl}}" rel="nofollow ugc">
+                  <span>{{authorName}}</span>
+                </a>
+                {{else}}
+                <span>{{authorName}}</span>
+                {{/if}}
+              </li>
+              {{/each}}
+            </ul>
+          </div>
+          {{/if}}
+          {{#if webmentions.reposts.length}}
+          <div class="webmentions-group webmentions-reposts">
+            <h3>
+              <span data-i18n="blog.webmentions.reposts">Reposts</span>
+              ({{webmentions.reposts.length}})
+            </h3>
+            <ul class="webmentions-people">
+              {{#each webmentions.reposts}}
+              <li>
+                {{#if authorUrl}}
+                <a href="{{authorUrl}}" rel="nofollow ugc">
+                  <span>{{authorName}}</span>
+                </a>
+                {{else}}
+                <span>{{authorName}}</span>
+                {{/if}}
+              </li>
+              {{/each}}
+            </ul>
+          </div>
+          {{/if}}
+          {{#if webmentions.mentions.length}}
+          <div class="webmentions-group webmentions-mentions">
+            <h3>
+              <span data-i18n="blog.webmentions.mentions">Mentions</span>
+              ({{webmentions.mentions.length}})
+            </h3>
+            <ul class="webmentions-people">
+              {{#each webmentions.mentions}}
+              <li>
+                {{#if authorUrl}}
+                <a href="{{authorUrl}}" rel="nofollow ugc">
+                  <span>{{authorName}}</span>
+                </a>
+                {{else}}
+                <span>{{authorName}}</span>
+                {{/if}}
+              </li>
+              {{/each}}
+            </ul>
+          </div>
+          {{/if}}
+          {{#if webmentions.bookmarks.length}}
+          <div class="webmentions-group webmentions-bookmarks">
+            <h3>
+              <span data-i18n="blog.webmentions.bookmarks">Bookmarks</span>
+              ({{webmentions.bookmarks.length}})
+            </h3>
+            <ul class="webmentions-people">
+              {{#each webmentions.bookmarks}}
+              <li>
+                {{#if authorUrl}}
+                <a href="{{authorUrl}}" rel="nofollow ugc">
+                  <span>{{authorName}}</span>
+                </a>
+                {{else}}
+                <span>{{authorName}}</span>
+                {{/if}}
+              </li>
+              {{/each}}
+            </ul>
+          </div>
+          {{/if}}
+          {{#if webmentions.replies.length}}
+          <div class="webmentions-group webmentions-replies">
+            <h3>
+              <span data-i18n="blog.webmentions.replies">Replies</span>
+              ({{webmentions.replies.length}})
+            </h3>
+            <ul class="webmentions-replies">
+              {{#each webmentions.replies}}
+              <li class="webmention-reply">
+                <div class="webmention-meta">
+                  {{#if authorUrl}}
+                  <a href="{{authorUrl}}" rel="nofollow ugc">{{authorName}}</a>
+                  {{else}}
+                  <span>{{authorName}}</span>
+                  {{/if}}
+                  {{#if published}}
+                  <time datetime="{{published}}">{{formatDateTime published}}</time>
+                  {{/if}}
+                </div>
+                {{#if text}}
+                <p>{{text}}</p>
+                {{/if}}
+                {{#if url}}
+                <a
+                  class="webmention-source"
+                  href="{{url}}"
+                  rel="nofollow ugc"
+                  data-i18n="blog.webmentions.source"
+                  >View source</a
+                >
+                {{/if}}
+              </li>
+              {{/each}}
+            </ul>
+          </div>
+          {{/if}}
         </section>
 
         {{#if bridgyPublishTargets.length}}

@@ -91,13 +91,10 @@ const SYNDICATION_SITES = {
 };
 
 const BRIDGY_PUBLISH_TARGETS = {
-  mastodon: "https://brid.gy/publish/mastodon",
   bluesky: "https://brid.gy/publish/bluesky",
 };
 
-const TARGET_ALIASES = {
-  fediverse: "mastodon",
-};
+const TARGET_ALIASES = {};
 
 function normalizeSyndication(raw) {
   const links = [];
@@ -190,7 +187,6 @@ function getSyndicatedTargets(raw) {
     if (!value) return;
     const key = String(value).trim().toLowerCase();
     if (BRIDGY_PUBLISH_TARGETS[key]) targets.add(key);
-    if (key === "fediverse") targets.add("mastodon");
   };
 
   if (Array.isArray(raw)) {
@@ -333,6 +329,13 @@ function generateResourcesHTML(config, siteUrl) {
   }
 
   if (siteUrl) {
+    let siteHost = "";
+    try {
+      siteHost = new URL(siteUrl).hostname;
+    } catch {
+      siteHost = "";
+    }
+
     html += `\n    <link rel="alternate" type="application/rss+xml" title="RSS" href="${toAbsoluteUrl(
       siteUrl,
       "/blog/rss.xml",
@@ -349,6 +352,20 @@ function generateResourcesHTML(config, siteUrl) {
       siteUrl,
       "/blog/",
     )}" />`;
+
+    if (siteHost) {
+      html += `\n    <link rel="webmention" href="https://webmention.io/${siteHost}/webmention" />`;
+      html += `\n    <link rel="pingback" href="https://webmention.io/${siteHost}/xmlrpc" />`;
+    }
+
+    const relMeLinks = Array.isArray(config?.meta?.relMe)
+      ? config.meta.relMe.filter((entry) => typeof entry === "string")
+      : [];
+    for (const href of relMeLinks) {
+      const trimmed = href.trim();
+      if (!trimmed) continue;
+      html += `\n    <link rel="me" href="${trimmed}" />`;
+    }
   }
 
   return html;
