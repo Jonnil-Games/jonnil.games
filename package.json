@@ -18,6 +18,8 @@
     "node": ">=24"
   },
   "devDependencies": {
-    "prettier": "^3.8.1"
+    "eslint": "^8.57.1",
+    "prettier": "^3.8.1",
+    "serve": "14.2.4"
   }
 }

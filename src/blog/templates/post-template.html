@@ -11,7 +11,7 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="article" />
-    <meta property="og:url" content="https://jonnil.games{{url}}" />
+    <meta property="og:url" content="{{canonicalUrl}}" />
     <meta property="og:title" content="{{title}} - Jonnil Games" />
     <meta property="og:description" content="{{excerpt}}" />
     <meta
@@ -46,7 +46,10 @@
       title="Atom"
       href="/blog/atom.xml"
     />
-    <link rel="canonical" href="{{siteUrl}}{{url}}" />
+    <link rel="canonical" href="{{canonicalUrl}}" />
+    <link rel="webmention" href="https://webmention.io/jonnil.games/webmention" />
+    <link rel="pingback" href="https://webmention.io/jonnil.games/xmlrpc" />
+    <!-- EXTERNAL_RESOURCES -->
 
     <link rel="stylesheet" href="/styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -78,24 +81,83 @@
 
     <main>
       <section class="blog-header">
-        <h1>{{title}}</h1>
+        <h1 data-blog-l10n-group>
+          {{#each localizedVariants}}
+          <span data-blog-lang="{{lang}}" {{#unless isDefault}}hidden{{/unless}}
+            >{{title}}</span
+          >
+          {{/each}}
+        </h1>
         <div class="post-meta">
           <time datetime="{{date}}">{{formatDate date}}</time>
           <p class="post-author">
-            <span data-i18n="blog.post.by">By</span> {{author}}
+            <span data-i18n="blog.post.by">By</span>
+            <span data-blog-l10n-group>
+              {{#each localizedVariants}}
+              <span data-blog-lang="{{lang}}" {{#unless isDefault}}hidden{{/unless}}
+                >{{author}}</span
+              >
+              {{/each}}
+            </span>
           </p>
-          {{#if categories.length}}
           <div class="post-categories">
-            {{#each categories}}
-            <span class="post-category">{{this}}</span>
+            <span data-blog-l10n-group>
+            {{#each localizedVariants}}
+            <span data-blog-lang="{{lang}}" {{#unless isDefault}}hidden{{/unless}}>
+              {{#each categories}}
+              <span class="post-category">{{this}}</span>
+              {{/each}}
+            </span>
             {{/each}}
+            </span>
           </div>
-          {{/if}}
         </div>
       </section>
 
       <article class="blog-post">
-        <div class="post-content">{{{content}}}</div>
+        <div class="post-content" data-blog-l10n-group>
+          {{#each localizedVariants}}
+          <div data-blog-lang="{{lang}}" {{#unless isDefault}}hidden{{/unless}}>
+            {{{content}}}
+          </div>
+          {{/each}}
+        </div>
+
+        <section
+          id="webmentions"
+          class="webmentions"
+          data-target="{{canonicalUrl}}"
+        >
+          <h2 data-i18n="blog.webmentions.title">Webmentions</h2>
+          {{#unless hasWebmentions}}
+          <p class="webmentions-empty" data-i18n="blog.webmentions.empty">
+            No webmentions yet.
+          </p>
+          {{/unless}}
+        </section>
+
+        {{#if bridgyPublishTargets.length}}
+        <div class="bridgy-publish-links" aria-hidden="true">
+          {{#each bridgyPublishTargets}}
+          <a href="{{this}}" rel="nofollow">{{this}}</a>
+          {{/each}}
+        </div>
+        {{/if}}
+
+        {{#if syndicationLinks.length}}
+        <div class="blog-syndication">
+          <span class="blog-syndication-label" data-i18n="blog.alsoOn"
+            >Also on:</span
+          >
+          <div class="blog-syndication-links">
+            {{#each syndicationLinks}}
+            <a class="u-syndication" href="{{url}}" rel="noopener noreferrer"
+              >{{label}}</a
+            >
+            {{/each}}
+          </div>
+        </div>
+        {{/if}}
 
         <drop capsule="continue-discussion"></drop>
       </article>
@@ -105,6 +167,8 @@
     <drop capsule="footer"></drop>
 
     <!-- JavaScript -->
-    <script src="/blog/scripts/scripts.js"></script>
+    <script src="/blog/scripts/scripts.js" defer></script>
+    <script src="/blog/scripts/localized-content.js" defer></script>
+    <script type="module" src="/blog/scripts/webmentions.js"></script>
   </body>
 </html>

@@ -1,45 +1,15 @@
 # Netlify configuration file
 
 [build]
-# Command to build the entire site (pages + capsules + blog + feeds + sitemap)
-command = "npm run build"
-# Directory to publish the site
 publish = "public"
+command = "npm run build"
 
-# Optional shared environment (safe defaults)
 [build.environment]
-BLOG_TITLE = "Jonnil Games Blog"
-BLOG_DESC = "Indie dev logs, updates, and brain leaks."
-BLOG_LANG = "en-us"
-BLOG_AUTHOR = "Jonnil"
+NODE_VERSION = "24"
 
-# In production, set the canonical site URL so feeds/sitemap/canonicals are absolute.
-# For previews/branch deploys, we omit SITE_URL so the builder falls back to Netlify's preview URL.
-[context.production.environment]
-SITE_URL = "https://jonnil.games"
-
-[context.deploy-preview.environment]
-# SITE_URL intentionally not set here; build.js will use DEPLOY_PRIME_URL
-
-[context.branch-deploy.environment]
-# SITE_URL intentionally not set here; build.js will use DEPLOY_URL
-
-[build.processing]
-skip_processing = false
-[build.processing.css]
-bundle = true
-minify = true
-[build.processing.js]
-bundle = true
-minify = true
-[build.processing.images]
-compress = true
-
-# Redirect all requests under /blog to the /public/blog directory
-[[redirects]]
-from = "/blog/*"
-to = "/blog/:splat"
-status = 200
+[[edge_functions]]
+path = "/*"
+function = "bots"
 
 # Discord redirects
 [[redirects]]
@@ -75,6 +45,43 @@ to = "https://bsky.app/profile/jonnil.games"
 status = 301
 force = true
 
+# Well-known convenience redirects
+[[redirects]]
+from = "/code-of-conduct.txt"
+to = "/.well-known/code-of-conduct.txt"
+status = 301
+
+[[redirects]]
+from = "/humans.txt"
+to = "/.well-known/humans.txt"
+status = 301
+
+[[redirects]]
+from = "/robots.txt"
+to = "/.well-known/robots.txt"
+status = 301
+
+[[redirects]]
+from = "/security.txt"
+to = "/.well-known/security.txt"
+status = 301
+
+# Feed aliases
+[[redirects]]
+from = "/feed.xml"
+to = "/blog/rss.xml"
+status = 301
+
+[[redirects]]
+from = "/rss.xml"
+to = "/blog/rss.xml"
+status = 301
+
+[[redirects]]
+from = "/atom.xml"
+to = "/blog/atom.xml"
+status = 301
+
 # SPA-style fallback for the root site
 [[redirects]]
 from = "/*"
@@ -86,75 +93,73 @@ status = 404
 for = "/*"
 [headers.values]
 X-Frame-Options = "DENY"
-X-XSS-Protection = "1; mode=block"
+Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
 X-Content-Type-Options = "nosniff"
+X-XSS-Protection = "1; mode=block"
+Content-Security-Policy = "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https:; frame-src 'self' https:;"
 Referrer-Policy = "strict-origin-when-cross-origin"
-Content-Security-Policy = "default-src 'self' https:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https: fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https: fonts.gstatic.com;"
 Cache-Control = "public, max-age=0, must-revalidate"
+AI-Training = "none"
+X-Robots-Tag = "noai, noimageai"
 
-# Long-lived static assets (no filename fingerprinting yet, so keep a modest TTL)
-[[headers]]
-for = "/*.css"
-[headers.values]
-Cache-Control = "public, max-age=604800"
-
+# Headers for specific paths
 [[headers]]
 for = "/**/*.css"
 [headers.values]
-Cache-Control = "public, max-age=604800"
-
-[[headers]]
-for = "/*.js"
-[headers.values]
-Cache-Control = "public, max-age=604800"
+Cache-Control = "public, max-age=604800, must-revalidate"
 
 [[headers]]
 for = "/**/*.js"
 [headers.values]
-Cache-Control = "public, max-age=604800"
-
-[[headers]]
-for = "/images/*"
-[headers.values]
-Cache-Control = "public, max-age=604800"
+Cache-Control = "public, max-age=604800, must-revalidate"
 
 [[headers]]
 for = "/images/**"
 [headers.values]
-Cache-Control = "public, max-age=604800"
+Cache-Control = "public, max-age=604800, must-revalidate"
 
 [[headers]]
 for = "/icons/*"
 [headers.values]
-Cache-Control = "public, max-age=604800"
+Cache-Control = "public, max-age=604800, must-revalidate"
 
 [[headers]]
 for = "/emoji/*"
 [headers.values]
-Cache-Control = "public, max-age=604800"
+Cache-Control = "public, max-age=604800, must-revalidate"
 
 [[headers]]
 for = "/scripts/*"
 [headers.values]
-Cache-Control = "public, max-age=604800"
+Cache-Control = "public, max-age=604800, must-revalidate"
+
+[[headers]]
+for = "/scripts.js"
+[headers.values]
+Cache-Control = "public, max-age=300, must-revalidate"
 
 [[headers]]
 for = "/capsules/*"
 [headers.values]
-Cache-Control = "public, max-age=604800"
+Cache-Control = "public, max-age=604800, must-revalidate"
+
+[[headers]]
+for = "/.well-known/*"
+[headers.values]
+Cache-Control = "public, max-age=300, must-revalidate"
 
 # Feeds and sitemap: cache briefly
 [[headers]]
 for = "/sitemap.xml"
 [headers.values]
-Cache-Control = "public, max-age=600"
+Cache-Control = "public, max-age=600, must-revalidate"
 
 [[headers]]
 for = "/blog/rss.xml"
 [headers.values]
-Cache-Control = "public, max-age=300"
+Cache-Control = "public, max-age=300, must-revalidate"
 
 [[headers]]
 for = "/blog/atom.xml"
 [headers.values]
-Cache-Control = "public, max-age=300"
+Cache-Control = "public, max-age=300, must-revalidate"

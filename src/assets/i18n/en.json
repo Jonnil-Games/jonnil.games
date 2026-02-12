@@ -369,9 +369,9 @@
     },
     "screenshots": {
       "title": "Game Screenshots",
-      "alt1": "Multiplayer gameplay showing cooperative platforming",
-      "alt2": "Level editor interface with custom level creation",
-      "alt3": "Competitive mode showing high scores and speedrun times"
+      "alt1": "Screenshot of Sticky Paws Level 1",
+      "alt2": "Screenshot of Sticky Paws Level 2",
+      "alt3": "Screenshot of Sticky Paws Level 3"
     },
     "hero": {
       "titleAlt": "Sticky Paws"
@@ -480,6 +480,17 @@
     "post": {
       "by": "By",
       "readMore": "Read More →"
+    },
+    "alsoOn": "Also on:",
+    "webmentions": {
+      "title": "Webmentions",
+      "empty": "No webmentions yet.",
+      "likes": "Likes",
+      "reposts": "Reposts",
+      "mentions": "Mentions",
+      "bookmarks": "Bookmarks",
+      "replies": "Replies",
+      "source": "View source"
     }
   }
 }

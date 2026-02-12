@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const blogSearch = document.getElementById("blog-search");
   const authorFilter = document.getElementById("author-filter");
   const categoryFilter = document.getElementById("category-filter");
-  const tagFilter = document.getElementById("tag-filter");
   const posts = document.querySelectorAll(".post-card");
 
   let debounceTimeout;
@@ -34,39 +33,47 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
+  function normalizeValue(value) {
+    return String(value || "")
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, " ");
+  }
+
+  function getVisibleLocalizedText(container, selector) {
+    const target = container.querySelector(selector);
+    if (!target) return "";
+    const localized = target.querySelector?.("[data-blog-lang]:not([hidden])");
+    const content = localized || target;
+    return normalizeValue(content.textContent);
+  }
+
   function filterPosts() {
-    const searchQuery = blogSearch?.value.toLowerCase().trim() || "";
-    const selectedAuthor = authorFilter?.value || "";
-    const selectedCategory = categoryFilter?.value || "";
-    const selectedTag = tagFilter?.value || "";
+    const searchQuery = normalizeValue(blogSearch?.value || "");
+    const selectedAuthor = normalizeValue(authorFilter?.value || "");
+    const selectedCategory = normalizeValue(categoryFilter?.value || "");
 
     posts.forEach((post) => {
-      const postTitle =
-        post.querySelector("h2")?.textContent.toLowerCase() || "";
-      const postAuthor =
-        post.querySelector(".post-author")?.textContent.toLowerCase() || "";
-      const postCategory =
-        post.querySelector(".post-category")?.textContent.toLowerCase() || "";
-      const postTags = Array.from(post.querySelectorAll(".tag")).map((tag) =>
-        tag.textContent.toLowerCase()
-      );
+      const postTitle = getVisibleLocalizedText(post, "h2");
+      const postAuthorText = getVisibleLocalizedText(post, ".post-author");
+      const postExcerpt = getVisibleLocalizedText(post, "p[data-blog-l10n-group]");
+      const postCategoryText = getVisibleLocalizedText(post, ".post-category");
+      const postAuthorKey = normalizeValue(post.dataset.authorKey);
+      const postCategoryKey = normalizeValue(post.dataset.categoryKey);
 
       const matchesSearch =
         !searchQuery ||
         postTitle.includes(searchQuery) ||
-        postAuthor.includes(searchQuery) ||
-        postCategory.includes(searchQuery) ||
-        postTags.some((tag) => tag.includes(searchQuery));
+        postAuthorText.includes(searchQuery) ||
+        postCategoryText.includes(searchQuery) ||
+        postExcerpt.includes(searchQuery);
 
-      const matchesAuthor =
-        !selectedAuthor || postAuthor.includes(selectedAuthor.toLowerCase());
+      const matchesAuthor = !selectedAuthor || postAuthorKey === selectedAuthor;
       const matchesCategory =
-        !selectedCategory || postCategory === selectedCategory.toLowerCase();
-      const matchesTag =
-        !selectedTag || postTags.includes(selectedTag.toLowerCase());
+        !selectedCategory || postCategoryKey === selectedCategory;
 
       // Use CSS classes for transitions instead of inline styles
-      if (matchesSearch && matchesAuthor && matchesCategory && matchesTag) {
+      if (matchesSearch && matchesAuthor && matchesCategory) {
         post.classList.remove("hidden");
         requestAnimationFrame(() => post.classList.remove("fade-out"));
       } else {
@@ -88,12 +95,12 @@ document.addEventListener("DOMContentLoaded", function () {
   blogSearch?.addEventListener("input", debouncedFilter);
   authorFilter?.addEventListener("change", filterPosts);
   categoryFilter?.addEventListener("change", filterPosts);
-  tagFilter?.addEventListener("change", filterPosts);
 
   // Initialize all posts with proper visibility
   posts.forEach((post) => {
     post.classList.remove("hidden", "fade-out");
   });
+  filterPosts();
 
   // Add smooth scrolling for anchor links
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
@@ -119,5 +126,8 @@ document.addEventListener("DOMContentLoaded", function () {
   // Header/mobile menu behavior is provided by the header capsule inline script
 
   formatDates();
-  document.addEventListener("jg-i18n-ready", formatDates);
+  document.addEventListener("jg-i18n-ready", () => {
+    formatDates();
+    filterPosts();
+  });
 });

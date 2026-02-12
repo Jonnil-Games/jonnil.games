@@ -53,7 +53,8 @@
       title="Atom"
       href="/blog/atom.xml"
     />
-    <link rel="canonical" href="{{siteUrl}}{{url}}" />
+    <link rel="canonical" href="{{siteUrl}}/blog/" />
+    <!-- EXTERNAL_RESOURCES -->
 
     <link rel="stylesheet" href="/styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -110,8 +111,8 @@
             >
             <select id="author-filter">
               <option value="" data-i18n="blog.filters.authorAll">All Authors</option>
-              {{#each authors}}
-              <option value="{{this}}">{{this}}</option>
+              {{#each authorOptions}}
+              <option value="{{value}}">{{label}}</option>
               {{/each}}
             </select>
           </div>
@@ -124,8 +125,8 @@
               <option value="" data-i18n="blog.filters.categoryAll"
                 >All Categories</option
               >
-              {{#each categories}}
-              <option value="{{this}}">{{this}}</option>
+              {{#each categoryOptions}}
+              <option value="{{value}}">{{label}}</option>
               {{/each}}
             </select>
           </div>
@@ -134,17 +135,50 @@
 
       <div class="post-grid">
         {{#each posts}}
-        <article class="post-card">
+        <article
+          class="post-card"
+          data-author-key="{{authorFilterKey}}"
+          data-category-key="{{categoryFilterKey}}"
+        >
           <div class="post-meta">
             <time datetime="{{date}}">{{formatDate date}}</time>
-            <span class="post-category">{{categories.[0]}}</span>
+            <span class="post-category" data-blog-l10n-group>
+              {{#each localizedVariants}}
+              <span data-blog-lang="{{lang}}" {{#unless isDefault}}hidden{{/unless}}
+                >{{categories.[0]}}</span
+              >
+              {{/each}}
+            </span>
           </div>
-          <h2><a href="{{url}}" class="post-title">{{title}}</a></h2>
-          <p>{{excerpt}}</p>
-          <div class="post-footer">
-            <span class="post-author"
-              ><span data-i18n="blog.post.by">By</span> {{author}}</span
+          <h2 data-blog-l10n-group>
+            {{#each localizedVariants}}
+            <a
+              href="{{../url}}"
+              class="post-title"
+              data-blog-lang="{{lang}}"
+              {{#unless isDefault}}hidden{{/unless}}
+              >{{title}}</a
             >
+            {{/each}}
+          </h2>
+          <p data-blog-l10n-group>
+            {{#each localizedVariants}}
+            <span data-blog-lang="{{lang}}" {{#unless isDefault}}hidden{{/unless}}
+              >{{excerpt}}</span
+            >
+            {{/each}}
+          </p>
+          <div class="post-footer">
+            <span class="post-author">
+              <span data-i18n="blog.post.by">By</span>
+              <span data-blog-l10n-group>
+                {{#each localizedVariants}}
+                <span data-blog-lang="{{lang}}" {{#unless isDefault}}hidden{{/unless}}
+                  >{{author}}</span
+                >
+                {{/each}}
+              </span>
+            </span>
             <a href="{{url}}" class="read-more-link" data-i18n="blog.post.readMore"
               >Read More →</a
             >
@@ -158,6 +192,7 @@
     <drop capsule="footer"></drop>
 
     <!-- JavaScript -->
-    <script src="/blog/scripts/scripts.js"></script>
+    <script src="/blog/scripts/scripts.js" defer></script>
+    <script src="/blog/scripts/localized-content.js" defer></script>
   </body>
 </html>

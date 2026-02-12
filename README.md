@@ -2,6 +2,8 @@
 
 Welcome to the `jonnil.games` website repository. This powers our static site (home, games, blog) with a minimal, DRY-first workflow.
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/0d1fa51c-f8c6-4efe-9a24-0c6c87053fa3/deploy-status)](https://app.netlify.com/projects/jonnil/deploys)
+
 ⸻
 
 ✨ Philosophy

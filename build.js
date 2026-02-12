@@ -1,21 +1,63 @@
-const fs = require("fs");
-const path = require("path");
-const fm = require("front-matter");
-const marked = require("marked").marked;
-const Handlebars = require("handlebars");
+import fs from "fs/promises";
+import path from "path";
+import { fileURLToPath } from "url";
+import fm from "front-matter";
+import { marked } from "marked";
+import Handlebars from "handlebars";
+import {
+  getSiteUrl,
+  getCanonicalBlogPath,
+  isProductionBuild,
+} from "./lib/site-url.js";
+import { canonicalizeUrl, toAbsoluteUrl } from "./lib/url.js";
+import { sanitizeExternalUrl } from "./lib/sanitize-url.js";
 
-// -----------------------------
-// Quiet mode & Markdown config
-// -----------------------------
-const QUIET =
-  process.argv.includes("--quiet") ||
-  process.env.BUILD_QUIET === "1" ||
-  process.env.BLOG_QUIET === "1";
-if (QUIET) {
-  // Keep warnings/errors; silence standard logs
-  // eslint-disable-next-line no-console
-  console.log = () => {};
-}
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const SRC_DIR = path.join(__dirname, "src");
+const PAGES_DIR = path.join(SRC_DIR, "pages");
+const CAPSULES_DIR = path.join(SRC_DIR, "capsules");
+const STYLES_DIR = path.join(SRC_DIR, "styles");
+const ASSETS_DIR = path.join(SRC_DIR, "assets");
+const SCRIPTS_DIR = path.join(ASSETS_DIR, "scripts");
+const PUBLIC_DIR = path.join(__dirname, "public");
+const CONFIG_PATH = path.join(SRC_DIR, "config.json");
+
+const BLOG_DIR = path.join(SRC_DIR, "blog");
+const BLOG_POSTS_DIR = path.join(BLOG_DIR, "posts");
+const BLOG_TEMPLATES_DIR = path.join(BLOG_DIR, "templates");
+const BLOG_OUTPUT_DIR = path.join(PUBLIC_DIR, "blog");
+const BLOG_STYLES_FILE = path.join(BLOG_DIR, "styles.css");
+const BLOG_SCRIPTS_DIR = path.join(BLOG_DIR, "scripts");
+const DEFAULT_WEBMENTION_FETCH_TIMEOUT_MS = 8000;
+const DEFAULT_WEBMENTION_FETCH_CONCURRENCY = 4;
+const WEBMENTION_FETCH_TIMEOUT_MS = (() => {
+  const raw = Number.parseInt(
+    process.env.WEBMENTION_FETCH_TIMEOUT_MS || "",
+    10,
+  );
+  return Number.isFinite(raw) && raw > 0
+    ? raw
+    : DEFAULT_WEBMENTION_FETCH_TIMEOUT_MS;
+})();
+const WEBMENTION_FETCH_CONCURRENCY = (() => {
+  const raw = Number.parseInt(
+    process.env.WEBMENTION_FETCH_CONCURRENCY || "",
+    10,
+  );
+  return Number.isFinite(raw) && raw > 0
+    ? raw
+    : DEFAULT_WEBMENTION_FETCH_CONCURRENCY;
+})();
+const WEBMENTIONS_BUILD_FETCH_ENABLED = (() => {
+  const raw = String(process.env.WEBMENTIONS_BUILD_FETCH || "")
+    .trim()
+    .toLowerCase();
+  if (["0", "false", "off", "no"].includes(raw)) return false;
+  if (["1", "true", "on", "yes"].includes(raw)) return true;
+  return isProductionBuild();
+})();
+
 marked.setOptions({
   gfm: true,
   breaks: false,
@@ -23,318 +65,1015 @@ marked.setOptions({
   mangle: false,
 });
 
-// -----------------------------
-// Handlebars helpers (shared)
-// -----------------------------
 Handlebars.registerHelper("formatDate", function (date) {
   const options = { year: "numeric", month: "long", day: "numeric" };
-  const utcDate = new Date(date + "T12:00:00Z"); // noon UTC avoids tz drift
+  const utcDate = new Date(date + "T12:00:00Z");
   return utcDate.toLocaleDateString("en-US", options);
 });
-Handlebars.registerHelper("blogUrl", function (fileName) {
-  return `/blog/${fileName}`;
-});
-Handlebars.registerHelper("slug", function (str) {
-  return String(str || "")
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-});
-Handlebars.registerHelper("truncate", function (str, len) {
-  const s = String(str || "");
-  if (s.length <= len) return s;
-  return s.slice(0, len - 1) + "…";
+
+Handlebars.registerHelper("formatDateTime", function (date) {
+  if (!date) return "";
+  const parsed = new Date(date);
+  if (Number.isNaN(parsed.getTime())) return "";
+  return parsed.toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 });
 
-// -----------------------------
-// Paths
-// -----------------------------
-const rootDir = __dirname;
-const srcDir = path.join(rootDir, "src");
-const publicDir = path.join(rootDir, "public");
-const capsulesDir = path.join(srcDir, "capsules");
-const stylesDir = path.join(srcDir, "styles");
-const pagesDir = path.join(srcDir, "pages");
-const assetsDir = path.join(srcDir, "assets");
-const GLOBAL_HEAD_SCRIPTS = ["/scripts/i18n.js", "/scripts/emoji.js"];
+const SYNDICATION_SITES = {
+  bluesky: { label: "Bluesky" },
+  mastodon: { label: "Mastodon" },
+  fediverse: { label: "Mastodon" },
+};
 
-// Blog-specific paths
-const blogDir = path.join(srcDir, "blog");
-const postsDir = path.join(blogDir, "posts");
-const templateDir = path.join(blogDir, "templates");
-const blogOutputDir = path.join(publicDir, "blog");
-const blogStylesFile = path.join(blogDir, "styles.css");
-const blogScriptsDir = path.join(blogDir, "scripts");
+const BRIDGY_PUBLISH_TARGETS = {
+  mastodon: "https://brid.gy/publish/mastodon",
+  bluesky: "https://brid.gy/publish/bluesky",
+};
 
-// -----------------------------
-// Site URL (Netlify-aware)
-// -----------------------------
-function getSiteUrl() {
-  const raw =
-    process.env.SITE_URL ||
-    process.env.URL || // Netlify production site URL
-    process.env.DEPLOY_PRIME_URL || // Deploy Preview URL
-    process.env.DEPLOY_URL || // Specific deploy URL
-    "http://localhost:8888";
-  return String(raw).replace(/\/+$/, "");
-}
-const SITE_URL = getSiteUrl();
+const TARGET_ALIASES = {
+  fediverse: "mastodon",
+};
 
-// Blog feed meta (env-overridable)
-const BLOG_TITLE = process.env.BLOG_TITLE || "Jonnil Games Blog";
-const BLOG_DESC =
-  process.env.BLOG_DESC || "Indie dev logs, updates, and brain leaks.";
-const BLOG_LANG = process.env.BLOG_LANG || "en-us";
-const BLOG_AUTHOR = process.env.BLOG_AUTHOR || "Jonnil";
+function normalizeSyndication(raw) {
+  const links = [];
+  if (!raw) return links;
 
-// -----------------------------
-// FS helpers
-// -----------------------------
-function ensureDirectoryExists(dirPath) {
-  if (!fs.existsSync(dirPath)) {
-    fs.mkdirSync(dirPath, { recursive: true });
-    console.log(`Created directory: ${dirPath}`);
+  function addLink(site, url, labelOverride) {
+    if (!url || typeof url !== "string") return;
+    const trimmed = url.trim();
+    if (!trimmed) return;
+    const meta = site ? SYNDICATION_SITES[site] : null;
+    const label = labelOverride || (meta && meta.label);
+    if (!label) return;
+    links.push({ site, label, url: trimmed });
   }
-}
-function fileExists(filePath) {
-  return fs.existsSync(filePath);
-}
-function readFile(filePath) {
-  try {
-    if (fileExists(filePath)) {
-      return fs.readFileSync(filePath, "utf-8");
+
+  if (Array.isArray(raw)) {
+    for (const item of raw) {
+      if (!item) continue;
+      if (typeof item === "object") {
+        const site = item.site || item.network || item.service;
+        const url = item.url || item.href;
+        addLink(site, url, item.label);
+      }
     }
-    console.warn(`Warning: File not found: ${filePath}`);
-    return "";
-  } catch (error) {
-    console.error(`Error reading file ${filePath}:`, error);
-    return "";
+    return links;
   }
+
+  if (typeof raw === "object") {
+    for (const [site, value] of Object.entries(raw)) {
+      if (Array.isArray(value)) {
+        value.forEach((url) => addLink(site, url));
+      } else if (typeof value === "string") {
+        addLink(site, value);
+      } else if (value && typeof value === "object") {
+        addLink(site, value.url || value.href, value.label);
+      }
+    }
+  }
+
+  return links;
 }
-function writeFile(filePath, content) {
+
+function normalizeSyndicateTargets(raw) {
+  const targets = new Set();
+
+  const normalizeTarget = (value) => {
+    if (!value) return "";
+    const key = String(value).trim().toLowerCase();
+    return TARGET_ALIASES[key] || key;
+  };
+
+  const addTarget = (value) => {
+    const key = normalizeTarget(value);
+    if (BRIDGY_PUBLISH_TARGETS[key]) {
+      targets.add(key);
+    }
+  };
+
+  if (Array.isArray(raw)) {
+    raw.forEach((entry) => {
+      if (!entry) return;
+      if (typeof entry === "string") {
+        addTarget(entry);
+        return;
+      }
+      if (typeof entry === "object") {
+        Object.entries(entry).forEach(([key, enabled]) => {
+          if (!enabled) return;
+          addTarget(key);
+        });
+      }
+    });
+  } else if (typeof raw === "object") {
+    Object.entries(raw).forEach(([key, enabled]) => {
+      if (!enabled) return;
+      addTarget(key);
+    });
+  } else if (typeof raw === "string") {
+    addTarget(raw);
+  }
+
+  return Array.from(targets);
+}
+
+function getSyndicatedTargets(raw) {
+  const targets = new Set();
+  if (!raw) return targets;
+
+  const addTarget = (value) => {
+    if (!value) return;
+    const key = String(value).trim().toLowerCase();
+    if (BRIDGY_PUBLISH_TARGETS[key]) targets.add(key);
+    if (key === "fediverse") targets.add("mastodon");
+  };
+
+  if (Array.isArray(raw)) {
+    raw.forEach((entry) => {
+      if (!entry) return;
+      if (typeof entry === "string") return;
+      if (typeof entry === "object") {
+        const key = entry.site || entry.network || entry.service;
+        const url = entry.url || entry.href;
+        if (key && url) addTarget(key);
+      }
+    });
+    return targets;
+  }
+
+  if (typeof raw === "object") {
+    Object.entries(raw).forEach(([key, value]) => {
+      if (!value) return;
+      if (typeof value === "string") {
+        addTarget(key);
+        return;
+      }
+      if (Array.isArray(value)) {
+        if (value.length > 0) addTarget(key);
+        return;
+      }
+      if (typeof value === "object") {
+        const url = value.url || value.href;
+        if (url) addTarget(key);
+      }
+    });
+  }
+
+  return targets;
+}
+
+async function pathExists(p) {
   try {
-    ensureDirectoryExists(path.dirname(filePath));
-    fs.writeFileSync(filePath, content, "utf-8");
-    console.log(`File written: ${filePath}`);
-  } catch (error) {
-    console.error(`Error writing file ${filePath}:`, error);
+    await fs.access(p);
+    return true;
+  } catch {
+    return false;
   }
 }
-function cleanDirectory(dirPath) {
-  if (fs.existsSync(dirPath)) {
-    fs.rmSync(dirPath, { recursive: true, force: true });
+
+async function mapWithConcurrency(items, limit, mapper) {
+  if (items.length === 0) return [];
+
+  const results = new Array(items.length);
+  let nextIndex = 0;
+  const workerCount = Math.max(1, Math.min(limit, items.length));
+
+  async function worker() {
+    while (true) {
+      const current = nextIndex;
+      if (current >= items.length) return;
+      nextIndex += 1;
+      results[current] = await mapper(items[current], current);
+    }
   }
-  fs.mkdirSync(dirPath, { recursive: true });
+
+  await Promise.all(Array.from({ length: workerCount }, () => worker()));
+  return results;
 }
-function copyDirectory(src, dest) {
-  if (!fs.existsSync(src)) return;
-  ensureDirectoryExists(dest);
-  const entries = fs.readdirSync(src, { withFileTypes: true });
+
+async function cleanPublic() {
+  if (await pathExists(PUBLIC_DIR)) {
+    await fs.rm(PUBLIC_DIR, { recursive: true, force: true });
+  }
+  await fs.mkdir(PUBLIC_DIR, { recursive: true });
+}
+
+async function copyDir(src, dest) {
+  if (!(await pathExists(src))) return;
+  await fs.mkdir(dest, { recursive: true });
+  const entries = await fs.readdir(src, { withFileTypes: true });
   for (const entry of entries) {
+    if (entry.name === ".DS_Store") continue;
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
     if (entry.isDirectory()) {
-      copyDirectory(srcPath, destPath);
+      await copyDir(srcPath, destPath);
     } else {
-      fs.copyFileSync(srcPath, destPath);
+      await fs.copyFile(srcPath, destPath);
     }
   }
 }
 
-// -----------------------------
-// Site: capsule injection & styles
-// -----------------------------
-function injectCapsulesInContent(content) {
-  const usedCapsules = [];
-  const seen = new Set();
-  const updatedContent = content.replace(
-    /<drop\s+capsule="([^"]+)"[^>]*><\/drop>/g,
-    (_full, capsuleName) => {
-      if (!seen.has(capsuleName)) {
-        seen.add(capsuleName);
-        usedCapsules.push(capsuleName);
-      }
-      const capsulePath = path.join(
-        capsulesDir,
-        capsuleName,
-        `${capsuleName}.html`
-      );
-      if (!fileExists(capsulePath)) {
-        console.error(`Capsule not found: ${capsulePath}`);
-        return `<!-- missing capsule: ${capsuleName} -->`;
-      }
-      const capsuleHtml = readFile(capsulePath);
-
-      // Note: header now ships with inline JS in its HTML; do not auto-inject external capsule scripts
-
-      return capsuleHtml;
-    }
-  );
-  const scriptTags = usedCapsules
-    .map((capsuleName) => {
-      const capsuleScriptPath = path.join(
-        capsulesDir,
-        capsuleName,
-        `${capsuleName}.js`
-      );
-      if (!fileExists(capsuleScriptPath)) return "";
-      return `<script src="/capsules/${capsuleName}/${capsuleName}.js"></script>`;
-    })
-    .filter(Boolean);
-  if (scriptTags.length === 0) return updatedContent;
-  const injection = `\n${scriptTags.join("\n")}\n`;
-  if (/<\/body>/i.test(updatedContent)) {
-    return updatedContent.replace(/<\/body>/i, `${injection}</body>`);
-  }
-  return `${updatedContent}${injection}`;
-}
-function injectHeadScripts(content) {
-  let updated = content;
-  GLOBAL_HEAD_SCRIPTS.forEach((src) => {
-    const pattern = new RegExp(`<script[^>]+src=["']${src}["']`, "i");
-    if (pattern.test(updated)) return;
-    const tag = `    <script defer src="${src}"></script>`;
-    if (/<\/head>/i.test(updated)) {
-      updated = updated.replace(/<\/head>/i, `${tag}\n  </head>`);
-    } else {
-      updated = `${tag}\n${updated}`;
-    }
-  });
-  return updated;
-}
-function injectCapsules(pagePath) {
-  console.log(`Injecting capsules into: ${pagePath}`);
-  if (!fileExists(pagePath)) {
-    console.error(`Page not found: ${pagePath}`);
-    return null;
-  }
-  const pageContent = readFile(pagePath);
-  const withCapsules = injectCapsulesInContent(pageContent);
-  return injectHeadScripts(withCapsules);
-}
-function getCSSVariables() {
-  const variablesPath = path.join(stylesDir, "variables.css");
-  if (fileExists(variablesPath)) {
-    console.log(`Reading CSS variables from: ${variablesPath}`);
-    const variablesCss = readFile(variablesPath);
-    return `/* CSS Variables - Automatically injected from variables.css */\n${variablesCss}\n\n`;
-  }
-  console.error(`CSS variables file not found: ${variablesPath}`);
-  return "";
-}
-function getCapsuleStyles() {
-  console.log("Collecting capsule styles...");
-  if (!fs.existsSync(capsulesDir)) return "";
-  let capsuleStyles = "";
-  const capsuleDirs = fs
-    .readdirSync(capsulesDir)
-    .filter((name) => {
-      const p = path.join(capsulesDir, name);
-      return fs.statSync(p).isDirectory();
-    })
-    .sort((a, b) => a.localeCompare(b));
-  for (const capsuleName of capsuleDirs) {
-    const capsuleStylePath = path.join(
-      capsulesDir,
-      capsuleName,
-      `${capsuleName}.css`
-    );
-    if (fileExists(capsuleStylePath)) {
-      console.log(`Adding styles from: ${capsuleStylePath}`);
-      const capsuleCss = readFile(capsuleStylePath);
-      capsuleStyles += `/* ${capsuleName} Capsule Styles */\n${capsuleCss}\n\n`;
-    }
-  }
-  return capsuleStyles;
-}
-function updateStyles() {
-  const stylesPath = path.join(publicDir, "styles.css");
-  const baseStylesPath = path.join(stylesDir, "base.css");
-  const base = readFile(baseStylesPath);
-  if (!base) console.warn(`Warning: Base styles missing at ${baseStylesPath}`);
-  const cssVariables = getCSSVariables();
-  const updatedStyles = [
-    cssVariables,
-    base,
-    "",
-    "/* BEGIN CAPSULE STYLES */",
-    getCapsuleStyles(),
-    "/* END CAPSULE STYLES */",
-    "",
-  ].join("\n");
-  writeFile(stylesPath, updatedStyles);
-}
-function processDirectory(srcPath, destPath) {
-  console.log(`Processing directory: ${srcPath}`);
-  ensureDirectoryExists(destPath);
+async function loadConfig() {
   try {
-    const entries = fs.readdirSync(srcPath, { withFileTypes: true });
-    for (const entry of entries) {
-      const srcFull = path.join(srcPath, entry.name);
-      const destFull = path.join(destPath, entry.name);
-      if (entry.isDirectory()) {
-        processDirectory(srcFull, destFull);
-      } else if (entry.name.endsWith(".html")) {
-        const updatedContent = injectCapsules(srcFull);
-        if (updatedContent) writeFile(destFull, updatedContent);
-      } else {
-        fs.copyFileSync(srcFull, destFull);
-      }
-    }
-  } catch (error) {
-    console.error(`Error processing directory ${srcPath}:`, error);
+    const raw = await fs.readFile(CONFIG_PATH, "utf-8");
+    return JSON.parse(raw);
+  } catch {
+    return { fonts: {}, externalResources: {}, meta: {} };
   }
 }
-function copyCapsuleScriptsToPublic() {
-  if (!fs.existsSync(capsulesDir)) return;
-  const destBase = path.join(publicDir, "capsules");
-  ensureDirectoryExists(destBase);
-  const entries = fs.readdirSync(capsulesDir, { withFileTypes: true });
+
+function generateResourcesHTML(config, siteUrl) {
+  let html = "";
+  const preconnects = new Set();
+
+  if (config.fonts) {
+    for (const font of Object.values(config.fonts)) {
+      if (!font.url) continue;
+      preconnects.add("https://fonts.googleapis.com");
+      preconnects.add("https://fonts.gstatic.com");
+      html += `\n    <link href="${font.url}" rel="stylesheet" />`;
+    }
+  }
+
+  if (config.externalResources) {
+    for (const resource of Object.values(config.externalResources)) {
+      if (resource.url) {
+        try {
+          const host = new URL(resource.url).hostname;
+          if (host === "cdn.jsdelivr.net") {
+            preconnects.add("https://cdn.jsdelivr.net");
+          }
+        } catch {
+          // ignore invalid URLs
+        }
+      }
+      if (resource.type === "stylesheet") {
+        html += `\n    <link href="${resource.url}" rel="stylesheet" />`;
+      } else if (resource.type === "script") {
+        html += `\n    <script src="${resource.url}"${resource.defer ? " defer" : ""}></script>`;
+      }
+    }
+  }
+
+  if (preconnects.size > 0) {
+    const ordered = Array.from(preconnects).sort();
+    const tags = ordered.map((href) => {
+      const crossorigin = href.includes("fonts.gstatic.com")
+        ? " crossorigin"
+        : "";
+      return `\n    <link rel="preconnect" href="${href}"${crossorigin} />`;
+    });
+    html = `${tags.join("")}${html}`;
+  }
+
+  if (siteUrl) {
+    html += `\n    <link rel="alternate" type="application/rss+xml" title="RSS" href="${toAbsoluteUrl(
+      siteUrl,
+      "/blog/rss.xml",
+    )}" />`;
+    html += `\n    <link rel="alternate" type="application/atom+xml" title="Atom" href="${toAbsoluteUrl(
+      siteUrl,
+      "/blog/atom.xml",
+    )}" />`;
+    html += `\n    <link rel="alternate" type="application/mf2+html" title="Microformats" href="${toAbsoluteUrl(
+      siteUrl,
+      "/blog/",
+    )}" />`;
+    html += `\n    <link rel="feed" href="${toAbsoluteUrl(
+      siteUrl,
+      "/blog/",
+    )}" />`;
+  }
+
+  return html;
+}
+
+async function loadCapsules() {
+  if (!(await pathExists(CAPSULES_DIR))) return {};
+  const entries = await fs.readdir(CAPSULES_DIR, { withFileTypes: true });
+  const capsules = {};
+
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
     const name = entry.name;
-    const capsuleScriptPath = path.join(
-      capsulesDir,
-      name,
-      `${name}.js`
+    const base = path.join(CAPSULES_DIR, name);
+    const capsule = { name };
+
+    const htmlPath = path.join(base, `${name}.html`);
+    if (await pathExists(htmlPath)) {
+      capsule.html = await fs.readFile(htmlPath, "utf-8");
+    }
+
+    const cssPath = path.join(base, `${name}.css`);
+    if (await pathExists(cssPath)) {
+      capsule.cssPath = cssPath;
+    }
+
+    const jsPath = path.join(base, `${name}.js`);
+    if (await pathExists(jsPath)) {
+      capsule.jsPath = jsPath;
+    }
+
+    capsules[name] = capsule;
+  }
+
+  return capsules;
+}
+
+function injectResources(content, resourcesHTML, config) {
+  const placeholder = "<!-- EXTERNAL_RESOURCES -->";
+  let output = content.includes(placeholder)
+    ? content.replace(placeholder, resourcesHTML)
+    : content.replace(/<\/head>/i, `${resourcesHTML}\n  </head>`);
+
+  if (config.meta && config.meta.title) {
+    const hasTitle = /<title>[\s\S]*?<\/title>/i.test(output);
+    if (!hasTitle) {
+      output = output.replace(
+        /<\/head>/i,
+        `    <title>${config.meta.title}</title>\n  </head>`,
+      );
+    }
+  }
+
+  return output;
+}
+
+function ensureCanonicalLink(html, canonicalUrl) {
+  if (!canonicalUrl) return html;
+  if (/<link\s+[^>]*rel=["']canonical["']/i.test(html)) return html;
+  return html.replace(
+    /<\/head>/i,
+    `    <link rel="canonical" href="${canonicalUrl}" />\n  </head>`,
+  );
+}
+
+function ensureSiteBundleScript(html) {
+  if (/<script\s+[^>]*src=["']\/scripts\.js["']/i.test(html)) {
+    return html;
+  }
+  return html.replace(/<\/body>/i, `    <script src="/scripts.js" defer></script>\n  </body>`);
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function ensureCapsuleScripts(html, usedCapsules, capsules) {
+  const scriptPaths = Array.from(usedCapsules)
+    .sort()
+    .map((name) => {
+      const cap = capsules[name];
+      if (!cap || !cap.jsPath) return null;
+      return `/capsules/${name}/${name}.js`;
+    })
+    .filter(Boolean);
+
+  if (scriptPaths.length === 0) return html;
+
+  const missing = scriptPaths.filter((src) => {
+    const pattern = new RegExp(
+      `<script\\s+[^>]*src=["']${escapeRegExp(src)}["']`,
+      "i",
     );
-    if (!fileExists(capsuleScriptPath)) continue;
-    const destDir = path.join(destBase, name);
-    ensureDirectoryExists(destDir);
-    fs.copyFileSync(capsuleScriptPath, path.join(destDir, `${name}.js`));
+    return !pattern.test(html);
+  });
+  if (missing.length === 0) return html;
+
+  const tags = missing.map((src) => `    <script src="${src}" defer></script>`).join("\n");
+  if (/<\/body>/i.test(html)) {
+    return html.replace(/<\/body>/i, `${tags}\n  </body>`);
+  }
+  return `${html}\n${tags}`;
+}
+
+async function injectCapsules(content, capsules, pageName) {
+  const used = new Set();
+  const dropRegex = /<drop\s+capsule=['"]([^'" ]+)['"]([^>]*)><\/drop>/g;
+
+  let result = "";
+  let lastIndex = 0;
+  let match;
+
+  while ((match = dropRegex.exec(content)) !== null) {
+    result += content.slice(lastIndex, match.index);
+    const capsuleName = match[1];
+    const attributes = match[2];
+    const capsule = capsules[capsuleName];
+
+    if (!capsule || !capsule.html) {
+      console.warn(`Missing capsule "${capsuleName}" on page ${pageName}`);
+      result += match[0];
+      lastIndex = match.index + match[0].length;
+      continue;
+    }
+
+    used.add(capsuleName);
+    let capsuleHtml = capsule.html;
+    const dataAttrs = {};
+
+    if (attributes.trim()) {
+      const attrRegex = /data-([a-zA-Z0-9-]+)=['"]([^'"]+)['"]/g;
+      let attrMatch;
+      while ((attrMatch = attrRegex.exec(attributes)) !== null) {
+        const [, name, value] = attrMatch;
+        dataAttrs[name] = value;
+      }
+    }
+
+    capsuleHtml = capsuleHtml.replace(
+      /{{\s*([a-zA-Z0-9_-]+)\s*}}/g,
+      (_, key) => {
+        return key in dataAttrs ? String(dataAttrs[key]) : "";
+      },
+    );
+
+    result += capsuleHtml;
+    lastIndex = match.index + match[0].length;
+  }
+
+  result += content.slice(lastIndex);
+  return { html: result, used };
+}
+
+async function expandAllDrops(
+  inputHtml,
+  capsules,
+  pageName,
+  globalUsed,
+  localUsed = null,
+) {
+  const MAX_PASSES = 20;
+  let html = inputHtml;
+
+  for (let pass = 0; pass < MAX_PASSES; pass += 1) {
+    if (!html.includes("<drop ")) break;
+    const { html: nextHtml, used } = await injectCapsules(
+      html,
+      capsules,
+      `${pageName}#${pass}`,
+    );
+    used.forEach((u) => {
+      globalUsed.add(u);
+      if (localUsed) localUsed.add(u);
+    });
+    if (nextHtml === html) break;
+    html = nextHtml;
+  }
+
+  if (html.includes("<drop ")) {
+    console.warn(`expandAllDrops reached MAX_PASSES for ${pageName}`);
+  }
+
+  return html;
+}
+
+async function buildPages(capsules, config, globalUsed, siteUrl) {
+  async function collectEntries(dir, base = dir) {
+    const entries = await fs.readdir(dir, { withFileTypes: true });
+    const files = [];
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.name === ".DS_Store") continue;
+      if (entry.isDirectory()) {
+        files.push(...(await collectEntries(fullPath, base)));
+        continue;
+      }
+      files.push({
+        relPath: path.relative(base, fullPath),
+        fullPath,
+      });
+    }
+    return files;
+  }
+
+  const files = await collectEntries(PAGES_DIR);
+  const resourcesHTML = generateResourcesHTML(config, siteUrl);
+
+  await Promise.all(
+    files.map(async ({ relPath, fullPath }) => {
+      const normalizedRelPath = relPath.replace(/\\/g, "/");
+      const destPath = path.join(PUBLIC_DIR, relPath);
+
+      if (!normalizedRelPath.toLowerCase().endsWith(".html")) {
+        await fs.mkdir(path.dirname(destPath), { recursive: true });
+        await fs.copyFile(fullPath, destPath);
+        return;
+      }
+
+      let content = await fs.readFile(fullPath, "utf-8");
+
+      content = injectResources(content, resourcesHTML, config);
+      const canonicalPath =
+        normalizedRelPath === "index.html"
+          ? "/"
+          : normalizedRelPath.endsWith("/index.html")
+            ? `/${normalizedRelPath.slice(0, -"index.html".length)}`
+            : `/${normalizedRelPath}`;
+      content = ensureCanonicalLink(
+        content,
+        canonicalizeUrl(siteUrl, canonicalPath),
+      );
+      const pageUsedCapsules = new Set();
+      const withCapsules = await expandAllDrops(
+        content,
+        capsules,
+        normalizedRelPath,
+        globalUsed,
+        pageUsedCapsules,
+      );
+      const withSiteBundle = ensureSiteBundleScript(withCapsules);
+      const contentFinal = ensureCapsuleScripts(
+        withSiteBundle,
+        pageUsedCapsules,
+        capsules,
+      );
+
+      await fs.mkdir(path.dirname(destPath), { recursive: true });
+      await fs.writeFile(destPath, contentFinal);
+    }),
+  );
+}
+
+async function bundleStyles(capsules) {
+  const files = (await fs.readdir(STYLES_DIR)).sort();
+  const ordered = ["variables.css", "base.css"];
+  const remaining = files.filter(
+    (f) => f.endsWith(".css") && !ordered.includes(f),
+  );
+  const cssFiles = [...ordered.filter((f) => files.includes(f)), ...remaining];
+
+  let output = "";
+  for (const file of cssFiles) {
+    const css = await fs.readFile(path.join(STYLES_DIR, file), "utf-8");
+    output += `\n/* === ${file} === */\n${css}`;
+  }
+
+  for (const name of Object.keys(capsules).sort()) {
+    const cap = capsules[name];
+    if (!cap.cssPath) continue;
+    const css = await fs.readFile(cap.cssPath, "utf-8");
+    output += `\n/* === Capsule: ${name} === */\n${css}`;
+  }
+
+  await fs.writeFile(path.join(PUBLIC_DIR, "styles.css"), output);
+}
+
+async function bundleScripts(usedCapsules, capsules) {
+  let output = "";
+
+  if (await pathExists(SCRIPTS_DIR)) {
+    const files = (await fs.readdir(SCRIPTS_DIR)).sort();
+    for (const file of files) {
+      if (!file.endsWith(".js")) continue;
+      const js = await fs.readFile(path.join(SCRIPTS_DIR, file), "utf-8");
+      output += `\n// === ${file} ===\n${js}`;
+    }
+  }
+
+  const orderedCapsules = Array.from(usedCapsules).sort();
+  const capsuleScripts = orderedCapsules.filter(
+    (capName) => capsules[capName] && capsules[capName].jsPath,
+  );
+  if (capsuleScripts.length > 0) {
+    const capsulesDir = path.join(PUBLIC_DIR, "capsules");
+    await fs.mkdir(capsulesDir, { recursive: true });
+    await Promise.all(
+      capsuleScripts.map(async (capName) => {
+        const cap = capsules[capName];
+        if (!cap || !cap.jsPath) return;
+        const destDir = path.join(capsulesDir, capName);
+        await fs.mkdir(destDir, { recursive: true });
+        await fs.copyFile(cap.jsPath, path.join(destDir, `${capName}.js`));
+      }),
+    );
+  }
+
+  await fs.writeFile(path.join(PUBLIC_DIR, "scripts.js"), output);
+}
+
+async function copyStatic() {
+  await copyDir(ASSETS_DIR, PUBLIC_DIR);
+  const scriptsOutDir = path.join(PUBLIC_DIR, "scripts");
+  if (await pathExists(scriptsOutDir)) {
+    await fs.rm(scriptsOutDir, { recursive: true, force: true });
+  }
+  await copyDir(
+    path.join(SRC_DIR, ".well-known"),
+    path.join(PUBLIC_DIR, ".well-known"),
+  );
+
+  const sanitizeUrlSrc = path.join(__dirname, "lib", "sanitize-url.js");
+  if (await pathExists(sanitizeUrlSrc)) {
+    const libOutDir = path.join(PUBLIC_DIR, "lib");
+    await fs.mkdir(libOutDir, { recursive: true });
+    await fs.copyFile(sanitizeUrlSrc, path.join(libOutDir, "sanitize-url.js"));
   }
 }
 
-// -----------------------------
-// Feeds (RSS 2.0 and Atom 1.0)
-// -----------------------------
+function getFunctionsBaseUrl(siteUrl) {
+  return siteUrl;
+}
+
+function initWebmentionBuckets() {
+  return {
+    replies: [],
+    likes: [],
+    reposts: [],
+    mentions: [],
+    bookmarks: [],
+  };
+}
+
+function extractWebmentionText(item) {
+  if (!item || !item.content) return "";
+  if (typeof item.content === "string") return item.content.trim();
+  if (typeof item.content === "object") {
+    return String(item.content.text || item.content.value || "").trim();
+  }
+  return "";
+}
+
+function normalizeWebmentionAuthor(item) {
+  const author = (item && item.author) || {};
+  const authorName =
+    String(author.name || author.url || item.url || "Someone").trim() ||
+    "Someone";
+  const authorUrl = sanitizeExternalUrl(author.url || item.url);
+  const authorPhoto = sanitizeExternalUrl(author.photo);
+  return { authorName, authorUrl, authorPhoto };
+}
+
+function normalizeWebmentionReply(item) {
+  const author = normalizeWebmentionAuthor(item);
+  const published = item.published || item["wm-received"] || "";
+  const received = item["wm-received"] || item.published || "";
+  const text = extractWebmentionText(item);
+  const url = sanitizeExternalUrl(item.url);
+
+  return {
+    ...author,
+    published,
+    received,
+    text,
+    url,
+  };
+}
+
+function normalizeWebmentionPerson(item) {
+  const author = normalizeWebmentionAuthor(item);
+  const url = sanitizeExternalUrl(item.url) || author.authorUrl || null;
+
+  return {
+    ...author,
+    url,
+  };
+}
+
+function toTime(value) {
+  if (!value) return 0;
+  const parsed = Date.parse(value);
+  return Number.isNaN(parsed) ? 0 : parsed;
+}
+
+function buildWebmentionBuckets(payload) {
+  const buckets = initWebmentionBuckets();
+  const items = Array.isArray(payload?.children) ? payload.children : [];
+
+  for (const item of items) {
+    if (!item) continue;
+    const isPrivate =
+      item["wm-private"] === true ||
+      item["wm-private"] === "true" ||
+      item["wm-private"] === 1;
+    if (isPrivate) continue;
+
+    const prop = item["wm-property"];
+    if (prop === "in-reply-to") {
+      buckets.replies.push(normalizeWebmentionReply(item));
+    } else if (prop === "like-of") {
+      buckets.likes.push(normalizeWebmentionPerson(item));
+    } else if (prop === "repost-of") {
+      buckets.reposts.push(normalizeWebmentionPerson(item));
+    } else if (prop === "mention-of") {
+      buckets.mentions.push(normalizeWebmentionPerson(item));
+    } else if (prop === "bookmark-of") {
+      buckets.bookmarks.push(normalizeWebmentionPerson(item));
+    }
+  }
+
+  buckets.replies.sort((a, b) => toTime(a.received) - toTime(b.received));
+
+  return buckets;
+}
+
+async function fetchWebmentions(targetUrl, functionsBaseUrl) {
+  if (!WEBMENTIONS_BUILD_FETCH_ENABLED) return null;
+  if (!functionsBaseUrl) return null;
+  const endpoint = `${functionsBaseUrl}/.netlify/functions/webmentions?target=${encodeURIComponent(
+    targetUrl,
+  )}`;
+  const controller = new AbortController();
+  const timeout = setTimeout(
+    () => controller.abort(),
+    WEBMENTION_FETCH_TIMEOUT_MS,
+  );
+
+  try {
+    const res = await fetch(endpoint, {
+      headers: { Accept: "application/json" },
+      signal: controller.signal,
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 function xmlEscape(s = "") {
   return String(s)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
+    .replace(/\"/g, "&quot;")
     .replace(/'/g, "&apos;");
 }
-function absUrl(p = "") {
-  return p.startsWith("http") ? p : SITE_URL + p;
-}
+
 function rfc2822(dateStr) {
   return new Date(dateStr).toUTCString();
 }
+
 function iso8601(dateStr) {
   return new Date(dateStr).toISOString();
 }
 
-function buildRSS(posts) {
+function normalizeLanguageKey(value) {
+  if (!value) return "en";
+  const normalized = String(value).trim().toLowerCase();
+  if (!normalized) return "en";
+  return normalized.split(/[-_]/)[0] || "en";
+}
+
+function normalizeLanguageList(value) {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => normalizeLanguageKey(item))
+      .filter((item, index, array) => item && array.indexOf(item) === index);
+  }
+  if (typeof value === "string") {
+    return value
+      .split(",")
+      .map((item) => normalizeLanguageKey(item))
+      .filter((item, index, array) => item && array.indexOf(item) === index);
+  }
+  return [];
+}
+
+function normalizeCategories(value) {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item).trim()).filter(Boolean);
+  }
+  if (value == null) return [];
+  const single = String(value).trim();
+  return single ? [single] : [];
+}
+
+function normalizeFilterValue(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+}
+
+function buildFilterOptions(values) {
+  const byValue = new Map();
+  for (const raw of values) {
+    const label = String(raw || "").trim();
+    if (!label) continue;
+    const value = normalizeFilterValue(label);
+    if (!value || byValue.has(value)) continue;
+    byValue.set(value, label);
+  }
+  return Array.from(byValue.entries())
+    .sort((a, b) => a[1].localeCompare(b[1]))
+    .map(([value, label]) => ({ value, label }));
+}
+
+function stripMarkdown(markdown = "") {
+  return String(markdown)
+    .replace(/```[\s\S]*?```/g, "")
+    .replace(/`[^`]*`/g, "")
+    .replace(/!\[[^\]]*\]\([^\)]+\)/g, "")
+    .replace(/\[[^\]]+\]\([^\)]+\)/g, "")
+    .replace(/[#>*_~\-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function toExcerpt(rawExcerpt, markdownBody) {
+  const plainBody = stripMarkdown(markdownBody);
+  const candidate = String(rawExcerpt || "").trim() || plainBody.slice(0, 180);
+  if (!candidate) return "";
+  return /[.!?…]$/.test(candidate) ? candidate : `${candidate}…`;
+}
+
+function parseTranslationEntry(entry) {
+  if (typeof entry === "string") {
+    return { body: entry };
+  }
+  if (!entry || typeof entry !== "object") return null;
+
+  const bodyValue =
+    typeof entry.body === "string"
+      ? entry.body
+      : typeof entry.content === "string"
+        ? entry.content
+        : typeof entry.markdown === "string"
+          ? entry.markdown
+          : null;
+
+  return {
+    title:
+      typeof entry.title === "string" && entry.title.trim()
+        ? entry.title.trim()
+        : null,
+    excerpt:
+      typeof entry.excerpt === "string" && entry.excerpt.trim()
+        ? entry.excerpt.trim()
+        : null,
+    author:
+      typeof entry.author === "string" && entry.author.trim()
+        ? entry.author.trim()
+        : null,
+    categories:
+      entry.categories != null ? normalizeCategories(entry.categories) : null,
+    body: bodyValue,
+  };
+}
+
+function parseLocalizedBodySections(markdown) {
+  const sections = new Map();
+  const lines = String(markdown || "").split("\n");
+  const remainder = [];
+
+  let activeLang = null;
+  let sectionLines = [];
+
+  const startPattern = /^:::lang\s+([a-zA-Z0-9_-]+)\s*$/;
+  const endPattern = /^:::\s*$/;
+
+  function flushSection() {
+    if (!activeLang) return;
+    const sectionBody = sectionLines.join("\n").trim();
+    sections.set(activeLang, { body: sectionBody });
+    activeLang = null;
+    sectionLines = [];
+  }
+
+  for (const line of lines) {
+    if (!activeLang) {
+      const start = line.match(startPattern);
+      if (start) {
+        activeLang = normalizeLanguageKey(start[1]);
+        sectionLines = [];
+        continue;
+      }
+      remainder.push(line);
+      continue;
+    }
+
+    if (endPattern.test(line)) {
+      flushSection();
+      continue;
+    }
+
+    sectionLines.push(line);
+  }
+
+  if (activeLang) {
+    remainder.push(`:::lang ${activeLang}`);
+    remainder.push(...sectionLines);
+  }
+
+  return {
+    sections,
+    remainder: remainder.join("\n").trim(),
+  };
+}
+
+function buildLocalizedVariants(attributes, body, fallbackTitle) {
+  const defaultLang = normalizeLanguageKey(
+    attributes.defaultLanguage || attributes.defaultLang || "en",
+  );
+  const declaredLanguages = normalizeLanguageList(
+    attributes.languages || attributes.langs,
+  );
+  const { sections: bodySections, remainder } = parseLocalizedBodySections(body);
+  const fallbackBodyFromSections =
+    bodySections.get(defaultLang)?.body ||
+    (declaredLanguages[0] ? bodySections.get(declaredLanguages[0])?.body : "") ||
+    Array.from(bodySections.values())[0]?.body ||
+    "";
+  const baseBody =
+    (bodySections.size > 0 ? fallbackBodyFromSections : "") ||
+    remainder ||
+    (typeof body === "string" ? body : "");
+  const baseVariant = {
+    title: fallbackTitle,
+    author: attributes.author || "Jonnil Games",
+    date: attributes.date,
+    categories: normalizeCategories(attributes.categories),
+    content: marked(baseBody),
+    excerpt: toExcerpt(attributes.excerpt, baseBody),
+  };
+
+  const variants = new Map([[defaultLang, baseVariant]]);
+  const translations = attributes.translations;
+  const translationEntriesByLang = new Map();
+  const languageSet = new Set([defaultLang, ...declaredLanguages]);
+
+  Array.from(bodySections.keys()).forEach((lang) => languageSet.add(lang));
+  if (translations && typeof translations === "object") {
+    Object.entries(translations).forEach(([lang, entry]) => {
+      const normalizedLang = normalizeLanguageKey(lang);
+      if (!normalizedLang) return;
+      languageSet.add(normalizedLang);
+
+      // Keep the first translation for a normalized key, but prefer exact base keys.
+      if (!translationEntriesByLang.has(normalizedLang) || lang === normalizedLang) {
+        translationEntriesByLang.set(normalizedLang, entry);
+      }
+    });
+  }
+
+  for (const lang of languageSet) {
+    if (!lang) continue;
+    const translationEntry = translationEntriesByLang.get(lang) || null;
+    const parsedTranslation = parseTranslationEntry(translationEntry);
+    const section = bodySections.get(lang) || null;
+    const sectionBody = section ? section.body : "";
+
+    const markdownBody =
+      (parsedTranslation && typeof parsedTranslation.body === "string"
+        ? parsedTranslation.body
+        : "") ||
+      (sectionBody || "") ||
+      baseBody;
+
+    variants.set(lang, {
+      title:
+        (parsedTranslation && parsedTranslation.title) ||
+        baseVariant.title,
+      author:
+        (parsedTranslation && parsedTranslation.author) ||
+        baseVariant.author,
+      date: baseVariant.date,
+      categories:
+        (parsedTranslation && parsedTranslation.categories) ||
+        baseVariant.categories,
+      content: marked(markdownBody),
+      excerpt: toExcerpt(
+        (parsedTranslation && parsedTranslation.excerpt) ||
+          "",
+        markdownBody,
+      ),
+    });
+  }
+
+  const localizedVariants = Array.from(variants.entries())
+    .map(([lang, data]) => ({
+      lang,
+      isDefault: lang === defaultLang,
+      ...data,
+    }))
+    .sort((a, b) => {
+      if (a.isDefault && !b.isDefault) return -1;
+      if (!a.isDefault && b.isDefault) return 1;
+      return a.lang.localeCompare(b.lang);
+    });
+
+  return {
+    defaultLang,
+    localizedVariants,
+  };
+}
+
+function buildRSS(posts, meta, siteUrl) {
   const lastBuild = posts[0]?.date
     ? rfc2822(posts[0].date)
     : new Date().toUTCString();
   const items = posts
     .map((p) => {
-      const link = absUrl(p.url);
+      const link = toAbsoluteUrl(siteUrl, p.url);
       const cats = (p.categories || [])
         .map((c) => `    <category>${xmlEscape(c)}</category>`)
         .join("\n");
@@ -342,7 +1081,7 @@ function buildRSS(posts) {
         "  <item>",
         `    <title>${xmlEscape(p.title)}</title>`,
         `    <link>${link}</link>`,
-        `    <guid isPermaLink="true">${link}</guid>`,
+        `    <guid isPermaLink=\"true\">${link}</guid>`,
         `    <pubDate>${rfc2822(p.date)}</pubDate>`,
         cats,
         `    <description>${xmlEscape(p.excerpt || "")}</description>`,
@@ -354,14 +1093,13 @@ function buildRSS(posts) {
     })
     .join("\n");
 
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0"
-  xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  return `<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<rss version=\"2.0\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\">
 <channel>
-  <title>${xmlEscape(BLOG_TITLE)}</title>
-  <link>${absUrl("/blog/")}</link>
-  <description>${xmlEscape(BLOG_DESC)}</description>
-  <language>${xmlEscape(BLOG_LANG)}</language>
+  <title>${xmlEscape(meta.title)}</title>
+  <link>${toAbsoluteUrl(siteUrl, "/blog/")}</link>
+  <description>${xmlEscape(meta.description)}</description>
+  <language>${xmlEscape(meta.language)}</language>
   <lastBuildDate>${lastBuild}</lastBuildDate>
 ${items}
 </channel>
@@ -369,29 +1107,27 @@ ${items}
 `;
 }
 
-function buildAtom(posts) {
+function buildAtom(posts, meta, siteUrl) {
   const updated = posts[0]?.date
     ? iso8601(posts[0].date)
     : new Date().toISOString();
   const entries = posts
     .map((p) => {
-      const link = absUrl(p.url);
+      const link = toAbsoluteUrl(siteUrl, p.url);
       const cats = (p.categories || [])
-        .map((c) => `    <category term="${xmlEscape(c)}"/>`)
+        .map((c) => `    <category term=\"${xmlEscape(c)}\"/>`)
         .join("\n");
       return [
         "  <entry>",
         `    <title>${xmlEscape(p.title)}</title>`,
         `    <id>${link}</id>`,
-        `    <link href="${link}"/>`,
+        `    <link href=\"${link}\"/>`,
         `    <updated>${iso8601(p.date)}</updated>`,
         `    <published>${iso8601(p.date)}</published>`,
-        `    <author><name>${xmlEscape(
-          p.author || BLOG_AUTHOR
-        )}</name></author>`,
+        `    <author><name>${xmlEscape(p.author || meta.author)}</name></author>`,
         cats,
-        `    <summary type="html">${xmlEscape(p.excerpt || "")}</summary>`,
-        `    <content type="html">${xmlEscape(p.content || "")}</content>`,
+        `    <summary type=\"html\">${xmlEscape(p.excerpt || "")}</summary>`,
+        `    <content type=\"html\">${xmlEscape(p.content || "")}</content>`,
         "  </entry>",
       ]
         .filter(Boolean)
@@ -399,288 +1135,259 @@ function buildAtom(posts) {
     })
     .join("\n");
 
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-  <title>${xmlEscape(BLOG_TITLE)}</title>
-  <id>${absUrl("/blog/")}</id>
+  return `<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<feed xmlns=\"http://www.w3.org/2005/Atom\">
+  <title>${xmlEscape(meta.title)}</title>
+  <id>${toAbsoluteUrl(siteUrl, "/blog/")}</id>
   <updated>${updated}</updated>
-  <link href="${absUrl("/blog/atom.xml")}" rel="self"/>
-  <link href="${absUrl("/blog/")}"/>
-  <author><name>${xmlEscape(BLOG_AUTHOR)}</name></author>
+  <link href=\"${toAbsoluteUrl(siteUrl, "/blog/atom.xml")}\" rel=\"self\"/>
+  <link href=\"${toAbsoluteUrl(siteUrl, "/blog/")}\"/>
+  <author><name>${xmlEscape(meta.author)}</name></author>
 ${entries}
 </feed>
 `;
 }
 
-// -----------------------------
-// Sitemap generator
-// -----------------------------
-function walkHtmlFiles(dir, base = publicDir) {
-  const results = [];
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      results.push(...walkHtmlFiles(full, base));
-    } else if (entry.isFile() && entry.name.toLowerCase().endsWith(".html")) {
-      const rel = path.relative(base, full).replace(/\\/g, "/");
-      results.push({ full, rel });
-    }
+async function buildBlog(capsules, config, globalUsed, siteUrl) {
+  if (!(await pathExists(BLOG_TEMPLATES_DIR))) return;
+
+  await fs.mkdir(BLOG_OUTPUT_DIR, { recursive: true });
+
+  if (await pathExists(BLOG_STYLES_FILE)) {
+    await fs.copyFile(
+      BLOG_STYLES_FILE,
+      path.join(BLOG_OUTPUT_DIR, "styles.css"),
+    );
   }
-  return results;
-}
 
-function relPathToUrl(rel) {
-  // map index.html to directory URL, otherwise keep the .html filename
-  if (rel === "index.html") return "/";
-  if (rel.endsWith("/index.html"))
-    return `/${rel.slice(0, -"index.html".length)}`;
-  return `/${rel}`;
-}
-
-function fileLastModISO(fullPath) {
-  try {
-    const stat = fs.statSync(fullPath);
-    // YYYY-MM-DD format is valid for <lastmod>, but ISO8601 is also fine
-    return new Date(stat.mtime).toISOString();
-  } catch {
-    return new Date().toISOString();
+  if (await pathExists(BLOG_SCRIPTS_DIR)) {
+    await copyDir(BLOG_SCRIPTS_DIR, path.join(BLOG_OUTPUT_DIR, "scripts"));
   }
-}
 
-function buildSitemap() {
-  console.log("Generating sitemap.xml…");
-  const pages = walkHtmlFiles(publicDir)
-    // Exclude anything inside blog/scripts (non-pages)
-    .filter((f) => !/^blog\/scripts\//.test(f.rel));
-
-  const urlset = pages
-    .map(({ full, rel }) => {
-      const loc = absUrl(relPathToUrl(rel));
-      const lastmod = fileLastModISO(full);
-      // changefreq/priority are optional; set gentle defaults
-      return [
-        "  <url>",
-        `    <loc>${xmlEscape(loc)}</loc>`,
-        `    <lastmod>${lastmod}</lastmod>`,
-        `    <changefreq>weekly</changefreq>`,
-        `    <priority>${rel === "index.html" ? "1.0" : "0.7"}</priority>`,
-        "  </url>",
-      ].join("\n");
-    })
-    .join("\n");
-
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urlset}
-</urlset>
-`;
-  writeFile(path.join(publicDir, "sitemap.xml"), xml);
-}
-
-// -----------------------------
-// Blog builder (integrated)
-// -----------------------------
-function readTemplateOrExit(templatePath) {
-  if (!fs.existsSync(templatePath)) {
-    console.error(`Template missing: ${templatePath}`);
-    process.exit(1);
-  }
-  return fs.readFileSync(templatePath, "utf8");
-}
-function copyBlogStaticAssets() {
-  if (fs.existsSync(blogStylesFile)) {
-    fs.copyFileSync(blogStylesFile, path.join(blogOutputDir, "styles.css"));
-    console.log(`Copied blog styles: ${blogStylesFile}`);
-  }
-  if (fs.existsSync(blogScriptsDir)) {
-    const dest = path.join(blogOutputDir, "scripts");
-    fs.cpSync(blogScriptsDir, dest, { recursive: true });
-    console.log(`Copied blog scripts: ${blogScriptsDir}`);
-  }
-}
-function buildBlog() {
-  console.log("Starting the blog build process...");
-  ensureDirectoryExists(blogOutputDir);
-  copyBlogStaticAssets();
-
-  console.log("Loading and compiling templates...");
-  const postTemplateSource = injectHeadScripts(
-    injectCapsulesInContent(
-      readTemplateOrExit(path.join(templateDir, "post-template.html"))
-    )
+  const indexTemplatePath = path.join(
+    BLOG_TEMPLATES_DIR,
+    "index-template.html",
   );
-  const indexTemplateSource = injectHeadScripts(
-    injectCapsulesInContent(
-      readTemplateOrExit(path.join(templateDir, "index-template.html"))
-    )
+  const postTemplatePath = path.join(BLOG_TEMPLATES_DIR, "post-template.html");
+
+  const indexTemplateRaw = await fs.readFile(indexTemplatePath, "utf-8");
+  const postTemplateRaw = await fs.readFile(postTemplatePath, "utf-8");
+
+  const resourcesHTML = generateResourcesHTML(config, siteUrl);
+  const indexWithResources = injectResources(
+    indexTemplateRaw,
+    resourcesHTML,
+    config,
   );
-  const postTemplate = Handlebars.compile(postTemplateSource);
+  const postWithResources = injectResources(
+    postTemplateRaw,
+    resourcesHTML,
+    config,
+  );
+
+  const indexUsedCapsules = new Set();
+  const postUsedCapsules = new Set();
+  const indexTemplateSourceRaw = await expandAllDrops(
+    indexWithResources,
+    capsules,
+    "blog-index",
+    globalUsed,
+    indexUsedCapsules,
+  );
+  const postTemplateSourceRaw = await expandAllDrops(
+    postWithResources,
+    capsules,
+    "blog-post",
+    globalUsed,
+    postUsedCapsules,
+  );
+  const indexTemplateSource = ensureCapsuleScripts(
+    ensureSiteBundleScript(indexTemplateSourceRaw),
+    indexUsedCapsules,
+    capsules,
+  );
+  const postTemplateSource = ensureCapsuleScripts(
+    ensureSiteBundleScript(postTemplateSourceRaw),
+    postUsedCapsules,
+    capsules,
+  );
+
   const indexTemplate = Handlebars.compile(indexTemplateSource);
+  const postTemplate = Handlebars.compile(postTemplateSource);
 
   let blogIndex = [];
-  let authors = new Set();
-  let categories = new Set();
+  const functionsBaseUrl = getFunctionsBaseUrl(siteUrl);
+  if (await pathExists(BLOG_POSTS_DIR)) {
+    const files = (await fs.readdir(BLOG_POSTS_DIR))
+      .filter((file) => file.endsWith(".md"))
+      .sort();
 
-  console.log("Reading blog posts...");
-  if (!fs.existsSync(postsDir)) {
-    console.warn(
-      `No posts directory found at ${postsDir}. Generating an empty index.`
-    );
-    generateIndexPage();
-    return;
-  }
+    const postEntries = await mapWithConcurrency(
+      files,
+      WEBMENTION_FETCH_CONCURRENCY,
+      async (file) => {
+        const filePath = path.join(BLOG_POSTS_DIR, file);
+        const markdown = await fs.readFile(filePath, "utf-8");
+        const { attributes, body } = fm(markdown);
 
-  const files = fs.readdirSync(postsDir).filter((file) => file.endsWith(".md"));
+        if (!attributes.title) {
+          attributes.title = path.basename(file, ".md");
+        }
 
-  for (const file of files) {
-    try {
-      console.log(`Processing post: ${file}`);
-      const filePath = path.join(postsDir, file);
-      const markdown = fs.readFileSync(filePath, "utf8");
-      const { attributes, body } = fm(markdown);
+        if (attributes.draft && process.env.BLOG_INCLUDE_DRAFTS !== "1") {
+          return null;
+        }
 
-      // Skip drafts unless explicitly included
-      if (attributes.draft && process.env.BLOG_INCLUDE_DRAFTS !== "1") {
-        console.log(`Skipping draft: ${file}`);
-        continue;
-      }
-      // Validation / normalization
-      if (!attributes.title) {
-        console.warn(`Post missing title: ${file} — using filename as title`);
-        attributes.title = path.basename(file, ".md");
-      }
-      if (!attributes.date || isNaN(new Date(attributes.date).getTime())) {
-        console.warn(
-          `Post has invalid or missing date: ${file} — using file mtime`
+        const { localizedVariants } = buildLocalizedVariants(
+          attributes,
+          body,
+          attributes.title,
         );
-        const stat = fs.statSync(filePath);
-        attributes.date = new Date(stat.mtime).toISOString().slice(0, 10);
-      }
-      if (attributes.categories && !Array.isArray(attributes.categories)) {
-        attributes.categories = [String(attributes.categories)];
-      }
+        const primaryVariant = localizedVariants[0];
+        const primaryCategory = primaryVariant.categories[0] || "";
 
-      const htmlContent = marked(body);
+        const slug = path.basename(file, ".md");
+        const defaultPath = getCanonicalBlogPath(slug);
+        const defaultCanonical = canonicalizeUrl(siteUrl, defaultPath);
+        const canonicalOverride = canonicalizeUrl(
+          siteUrl,
+          attributes.canonical,
+        );
+        const canonicalUrl = canonicalOverride || defaultCanonical;
 
-      // Generate excerpt (prefer front-matter)
-      const plainBody = body
-        .replace(/```[\s\S]*?```/g, "") // fenced code blocks
-        .replace(/`[^`]*`/g, "") // inline code
-        .replace(/!\[[^\]]*\]\([^\)]+\)/g, "") // markdown images
-        .replace(/\[[^\]]+\]\([^\)]+\)/g, "") // markdown links
-        .replace(/[#>*_~\-]+/g, " ") // md punctuation
-        .replace(/\s+/g, " ")
-        .trim();
-      const rawExcerpt = (attributes.excerpt || plainBody.slice(0, 180)).trim();
-      const excerpt = /[.!?…]$/.test(rawExcerpt)
-        ? rawExcerpt
-        : rawExcerpt + "…";
+        let url = canonicalUrl;
+        try {
+          const parsed = new URL(canonicalUrl);
+          if (parsed.origin === siteUrl) {
+            url = parsed.pathname;
+          }
+        } catch {
+          url = canonicalUrl;
+        }
 
-      const outputFileName = file.replace(".md", ".html");
-      const data = {
-        title: attributes.title,
-        author: attributes.author || "Unknown",
-        date: attributes.date,
-        categories: attributes.categories || [],
-        content: htmlContent,
-        excerpt,
-        url: `/blog/${outputFileName}`,
-        siteUrl: SITE_URL, // for canonical in templates
-      };
+        const webmentionPayload = await fetchWebmentions(
+          canonicalUrl,
+          functionsBaseUrl,
+        );
+        const webmentions = buildWebmentionBuckets(webmentionPayload);
+        const hasWebmentions = Object.values(webmentions).some(
+          (items) => items.length > 0,
+        );
+        const syndicateTargets = normalizeSyndicateTargets(
+          attributes.syndicate,
+        );
+        const syndicatedTargets = getSyndicatedTargets(attributes.syndication);
+        const pendingTargets = syndicateTargets.filter(
+          (target) => !syndicatedTargets.has(target),
+        );
+        const bridgyPublishTargets = pendingTargets.map(
+          (target) => BRIDGY_PUBLISH_TARGETS[target],
+        );
 
-      authors.add(data.author);
-      data.categories.forEach((cat) => categories.add(cat));
+        return {
+          slug,
+          data: {
+            title: primaryVariant.title,
+            author: primaryVariant.author,
+            date: attributes.date,
+            categories: primaryVariant.categories,
+            authorFilterKey: normalizeFilterValue(primaryVariant.author),
+            categoryFilterKey: normalizeFilterValue(primaryCategory),
+            content: primaryVariant.content,
+            excerpt: primaryVariant.excerpt,
+            localizedVariants,
+            url,
+            siteUrl,
+            canonicalUrl,
+            syndicationLinks: normalizeSyndication(attributes.syndication),
+            webmentions,
+            hasWebmentions,
+            bridgyPublishTargets,
+          },
+        };
+      },
+    );
 
-      const filledTemplate = postTemplate(data);
-      const outputPath = path.join(blogOutputDir, outputFileName);
-      fs.writeFileSync(outputPath, filledTemplate);
+    for (const entry of postEntries) {
+      if (!entry) continue;
+      const filledTemplate = postTemplate(entry.data);
+      const outputDir = path.join(BLOG_OUTPUT_DIR, entry.slug);
+      await fs.mkdir(outputDir, { recursive: true });
+      const outputPath = path.join(outputDir, "index.html");
+      await fs.writeFile(outputPath, filledTemplate);
 
-      blogIndex.push(data);
-    } catch (err) {
-      console.error(`Error processing ${file}:`, err);
+      blogIndex.push(entry.data);
     }
   }
 
   blogIndex.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
 
-  generateIndexPage();
+  const indexData = {
+    posts: blogIndex,
+    authorOptions: buildFilterOptions(blogIndex.map((post) => post.author)),
+    categoryOptions: buildFilterOptions(
+      blogIndex.map((post) => post.categories[0] || ""),
+    ),
+    siteUrl,
+  };
+  const filledIndexTemplate = indexTemplate(indexData);
+  await fs.writeFile(
+    path.join(BLOG_OUTPUT_DIR, "index.html"),
+    filledIndexTemplate,
+  );
 
-  function generateIndexPage() {
-    const indexData = {
-      posts: blogIndex,
-      authors: Array.from(authors).sort(),
-      categories: Array.from(categories).sort(),
-      siteUrl: SITE_URL, // for canonical in templates
-      url: "/blog/", // canonical path for blog index
-    };
-    const filledIndexTemplate = indexTemplate(indexData);
-    fs.writeFileSync(
-      path.join(blogOutputDir, "index.html"),
-      filledIndexTemplate
-    );
+  const recentCount = Math.max(
+    0,
+    Number.parseInt(process.env.BLOG_RECENT_COUNT || "3", 10) || 3,
+  );
+  const recentPosts = blogIndex.slice(0, recentCount).map((post) => ({
+    title: post.title,
+    date: post.date,
+    category: post.categories[0] || "",
+    excerpt: post.excerpt,
+    author: post.author,
+    url: post.url,
+  }));
+  await fs.writeFile(
+    path.join(BLOG_OUTPUT_DIR, "recent-posts.json"),
+    JSON.stringify(recentPosts, null, 2),
+  );
 
-    const RECENT_COUNT = Math.max(
-      0,
-      parseInt(process.env.BLOG_RECENT_COUNT || "3", 10) || 3
-    );
-    const recentPosts = blogIndex.slice(0, RECENT_COUNT).map((post) => ({
-      title: post.title,
-      date: post.date,
-      category: post.categories[0] || "",
-      excerpt: post.excerpt,
-      author: post.author,
-      url: post.url,
-    }));
-    fs.writeFileSync(
-      path.join(blogOutputDir, "recent-posts.json"),
-      JSON.stringify(recentPosts, null, 2)
-    );
+  const meta = {
+    title: process.env.BLOG_TITLE || "Jonnil Games Blog",
+    description:
+      process.env.BLOG_DESC ||
+      "Latest updates, insights, and announcements from Jonnil Games.",
+    language: process.env.BLOG_LANG || "en-us",
+    author: process.env.BLOG_AUTHOR || "Jonnil Games",
+  };
 
-    // Feeds
-    const rssXml = buildRSS(blogIndex);
-    writeFile(path.join(blogOutputDir, "rss.xml"), rssXml);
+  const rssXml = buildRSS(blogIndex, meta, siteUrl);
+  await fs.writeFile(path.join(BLOG_OUTPUT_DIR, "rss.xml"), rssXml);
 
-    const atomXml = buildAtom(blogIndex);
-    writeFile(path.join(blogOutputDir, "atom.xml"), atomXml);
-
-    if (blogIndex.length === 0) {
-      console.warn("No blog posts found. Generated index with no entries.");
-    }
-    console.log("Blog build completed successfully!");
-  }
+  const atomXml = buildAtom(blogIndex, meta, siteUrl);
+  await fs.writeFile(path.join(BLOG_OUTPUT_DIR, "atom.xml"), atomXml);
 }
 
-// -----------------------------
-// Top-level build
-// -----------------------------
-function build() {
-  console.log("Starting site build…");
+async function build() {
+  const config = await loadConfig();
+  const capsules = await loadCapsules();
+  const usedCapsules = new Set();
+  const siteUrl = getSiteUrl();
 
-  // Clean public directory
-  cleanDirectory(publicDir);
-
-  // Pages -> public (capsule injection)
-  processDirectory(pagesDir, publicDir);
-
-  // Static assets
-  copyDirectory(assetsDir, publicDir);
-
-  // Capsule scripts (JS only)
-  copyCapsuleScriptsToPublic();
-
-  // Styles bundle
-  updateStyles();
-
-  // Blog
-  buildBlog();
-
-  // Sitemap
-  buildSitemap();
+  await cleanPublic();
+  await buildPages(capsules, config, usedCapsules, siteUrl);
+  await buildBlog(capsules, config, usedCapsules, siteUrl);
+  await bundleStyles(capsules);
+  await bundleScripts(usedCapsules, capsules);
+  await copyStatic();
 
   console.log("Build complete -> public/");
 }
 
-build();
+build().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

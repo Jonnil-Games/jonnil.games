@@ -369,9 +369,9 @@
     },
     "screenshots": {
       "title": "Skärmbilder",
-      "alt1": "Flerspelargameplay som visar kooperativt plattformande",
-      "alt2": "Nivåredigerarens gränssnitt med skapande av egen bana",
-      "alt3": "Tävlingsläge som visar high scores och speedrun-tider"
+      "alt1": "Skärmbild av Sticky Paws nivå 1",
+      "alt2": "Skärmbild av Sticky Paws nivå 2",
+      "alt3": "Skärmbild av Sticky Paws nivå 3"
     },
     "hero": {
       "titleAlt": "Sticky Paws"
@@ -480,6 +480,17 @@
     "post": {
       "by": "Av",
       "readMore": "Läs mer →"
+    },
+    "alsoOn": "Även på:",
+    "webmentions": {
+      "title": "Webmentions",
+      "empty": "Inga webmentions än.",
+      "likes": "Gillar",
+      "reposts": "Reposts",
+      "mentions": "Omnämnanden",
+      "bookmarks": "Bokmärken",
+      "replies": "Svar",
+      "source": "Visa källa"
     }
   }
 }
