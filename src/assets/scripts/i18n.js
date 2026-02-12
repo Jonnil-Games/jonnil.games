@@ -6,37 +6,30 @@
 (function () {
   const STORAGE_KEY = "jg-lang";
   const DEFAULT_LANG = "en";
-  const SUPPORTED = ["en", "sv", "tok"];
+  const SUPPORTED = ["en", "sv"];
   const LOCALE_MAP = {
     en: "en-US",
     sv: "sv-SE",
-    tok: "en-US",
   };
   const ICONS = {
     auto: { type: "emoji", value: "🌐" },
     en: { type: "emoji", value: "🇺🇸" },
     sv: { type: "emoji", value: "🇸🇪" },
-    tok: {
-      type: "svg",
-      value: "/emoji/toki-pona.svg",
-    },
   };
   const LABEL_KEYS = {
     auto: "lang.auto",
     en: "lang.english",
     sv: "lang.swedish",
-    tok: "lang.tokiPona",
   };
   const LABEL_FALLBACKS = {
     auto: "Auto",
     en: "English",
     sv: "Svenska",
-    tok: "Toki Pona",
   };
   const cache = new Map();
 
-  let setting = null; // auto | en | sv | tok
-  let resolved = null; // en | sv | tok
+  let setting = null; // auto | en | sv
+  let resolved = null; // en | sv
   let dict = null;
   let fallback = null;
 
@@ -46,7 +39,6 @@
     if (v === "auto") return "auto";
     if (v === "en" || v === "eng" || v.startsWith("en-")) return "en";
     if (v === "sv" || v === "swe" || v.startsWith("sv-")) return "sv";
-    if (v === "tok" || v === "toki" || v.startsWith("tok-")) return "tok";
     return null;
   }
 

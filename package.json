@@ -1,22 +1,23 @@
 {
-  "name": "dynamic-blog",
+  "name": "jonnil-games",
   "version": "1.0.0",
+  "private": true,
+  "type": "module",
   "scripts": {
     "build": "node build.js",
-    "dev": "sh -c 'nodemon -w src -e html,css,js,md --exec \"node build.js\" & live-server public'",
+    "dev": "npm run build && npx serve public -l 3001",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
   "dependencies": {
     "front-matter": "^4.0.2",
     "handlebars": "^4.7.8",
-    "marked": "^4.0.12"
-  },
-  "devDependencies": {
-    "live-server": "^1.2.2",
-    "nodemon": "^3.1.10"
+    "marked": "^4.3.0"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.1"
   }
 }
