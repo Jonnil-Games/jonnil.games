@@ -18,7 +18,7 @@
       property="og:image"
       content="https://jonnil.games/images/og-preview.png"
     />
-    <meta property="article:published_time" content="{{date}}T00:00:00Z" />
+    <meta property="article:published_time" content="{{dateIso}}" />
     <meta property="article:author" content="{{author}}" />
     {{#each categories}}
     <meta property="article:tag" content="{{this}}" />
@@ -87,7 +87,7 @@
           {{/each}}
         </h1>
         <div class="post-meta">
-          <time class="dt-published" datetime="{{date}}">{{formatDate date}}</time>
+          <time class="dt-published" datetime="{{dateIso}}">{{formatDate date}}</time>
           <p class="post-author">
             <span data-i18n="blog.post.by">By</span>
             <span class="p-author h-card" data-blog-l10n-group>
@@ -123,7 +123,7 @@
         <header class="h-entry-meta" hidden>
           <a class="u-url" href="{{canonicalUrl}}">{{title}}</a>
           <span class="p-name">{{title}}</span>
-          <time class="dt-published" datetime="{{date}}T00:00:00Z"
+          <time class="dt-published" datetime="{{dateIso}}"
             >{{formatDate date}}</time
           >
           <span class="p-author h-card">
@@ -167,8 +167,8 @@
             <ul class="webmentions-people">
               {{#each webmentions.likes}}
               <li>
-                {{#if authorUrl}}
-                <a href="{{authorUrl}}" rel="nofollow ugc">
+                {{#if authorLink}}
+                <a href="{{authorLink}}" rel="nofollow ugc">
                   <span>{{authorName}}</span>
                 </a>
                 {{else}}
@@ -188,8 +188,8 @@
             <ul class="webmentions-people">
               {{#each webmentions.reposts}}
               <li>
-                {{#if authorUrl}}
-                <a href="{{authorUrl}}" rel="nofollow ugc">
+                {{#if authorLink}}
+                <a href="{{authorLink}}" rel="nofollow ugc">
                   <span>{{authorName}}</span>
                 </a>
                 {{else}}
@@ -209,8 +209,8 @@
             <ul class="webmentions-people">
               {{#each webmentions.mentions}}
               <li>
-                {{#if authorUrl}}
-                <a href="{{authorUrl}}" rel="nofollow ugc">
+                {{#if authorLink}}
+                <a href="{{authorLink}}" rel="nofollow ugc">
                   <span>{{authorName}}</span>
                 </a>
                 {{else}}
@@ -230,8 +230,8 @@
             <ul class="webmentions-people">
               {{#each webmentions.bookmarks}}
               <li>
-                {{#if authorUrl}}
-                <a href="{{authorUrl}}" rel="nofollow ugc">
+                {{#if authorLink}}
+                <a href="{{authorLink}}" rel="nofollow ugc">
                   <span>{{authorName}}</span>
                 </a>
                 {{else}}
@@ -252,8 +252,8 @@
               {{#each webmentions.replies}}
               <li class="webmention-reply">
                 <div class="webmention-meta">
-                  {{#if authorUrl}}
-                  <a href="{{authorUrl}}" rel="nofollow ugc">{{authorName}}</a>
+                  {{#if authorLink}}
+                  <a href="{{authorLink}}" rel="nofollow ugc">{{authorName}}</a>
                   {{else}}
                   <span>{{authorName}}</span>
                   {{/if}}

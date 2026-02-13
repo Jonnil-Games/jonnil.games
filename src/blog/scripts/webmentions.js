@@ -59,8 +59,10 @@ import { sanitizeExternalUrl } from "/lib/sanitize-url.js";
     const received = item["wm-received"] || item.published || "";
     const text = extractText(item);
     const url = sanitizeExternalUrl(item.url);
+    const authorLink = author.authorUrl || url || null;
     return {
       ...author,
+      authorLink,
       published,
       received,
       text,
@@ -71,8 +73,10 @@ import { sanitizeExternalUrl } from "/lib/sanitize-url.js";
   const normalizePerson = (item) => {
     const author = normalizeAuthor(item);
     const url = sanitizeExternalUrl(item.url) || author.authorUrl || null;
+    const authorLink = author.authorUrl || url || null;
     return {
       ...author,
+      authorLink,
       url,
     };
   };
@@ -127,12 +131,13 @@ import { sanitizeExternalUrl } from "/lib/sanitize-url.js";
 
     for (const item of items) {
       const li = document.createElement("li");
-      const hasLink = item.authorUrl;
+      const linkUrl = item.authorLink;
+      const hasLink = Boolean(linkUrl);
       const wrapper = hasLink
         ? document.createElement("a")
         : document.createElement("span");
       if (hasLink) {
-        wrapper.href = item.authorUrl;
+        wrapper.href = linkUrl;
         wrapper.rel = "nofollow ugc";
       }
 
@@ -166,12 +171,13 @@ import { sanitizeExternalUrl } from "/lib/sanitize-url.js";
       const meta = document.createElement("div");
       meta.className = "webmention-meta";
 
-      const hasLink = item.authorUrl;
+      const linkUrl = item.authorLink;
+      const hasLink = Boolean(linkUrl);
       const authorEl = hasLink
         ? document.createElement("a")
         : document.createElement("span");
       if (hasLink) {
-        authorEl.href = item.authorUrl;
+        authorEl.href = linkUrl;
         authorEl.rel = "nofollow ugc";
       }
       authorEl.textContent = item.authorName || "Someone";

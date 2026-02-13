@@ -603,7 +603,65 @@ export const handler = async (event) => {
             dirty = true;
             touch(target);
           }
-          // Confirm checks should be side-effect free to avoid duplicate publishes.
+
+          const publishTarget = BRIDGY_PUBLISH_TARGETS[target];
+          if (!publishTarget) {
+            continue;
+          }
+          const result = await sendBridgyWebmention({
+            source: canonicalUrl,
+            target: publishTarget,
+          });
+
+          if (result.ok && result.syndicatedUrl) {
+            if (!syndicationMap[target]) {
+              syndicationMap[target] = result.syndicatedUrl;
+              dirty = true;
+              touch(target);
+            }
+            const next = pickForwardStatus(statusMap[target], "confirmed");
+            if (next !== statusMap[target]) {
+              statusMap[target] = next;
+              dirty = true;
+              touch(target);
+            }
+            delete requestedAtMap[target];
+            delete checkedAtMap[target];
+            delete lastErrorMap[target];
+            touch(target);
+            continue;
+          }
+
+          if (shouldMarkRequested(result)) {
+            const next = pickForwardStatus(statusMap[target], "requested");
+            if (next !== statusMap[target]) {
+              statusMap[target] = next;
+              dirty = true;
+              touch(target);
+            }
+            if (!requestedAtMap[target]) {
+              requestedAtMap[target] = lease.nowIso;
+              dirty = true;
+              touch(target);
+            }
+            checkedAtMap[target] = lease.nowIso;
+            lastErrorMap[target] = summarizeSyndicationResult(result, "confirm");
+            dirty = true;
+            touch(target);
+            continue;
+          }
+
+          const next = pickForwardStatus(statusMap[target], "failed");
+          if (next !== statusMap[target]) {
+            statusMap[target] = next;
+            dirty = true;
+            touch(target);
+          }
+          requestedAtMap[target] = lease.nowIso;
+          delete checkedAtMap[target];
+          lastErrorMap[target] = summarizeSyndicationResult(result, "confirm");
+          dirty = true;
+          touch(target);
           continue;
         }
 

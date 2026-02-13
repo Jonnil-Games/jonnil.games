@@ -66,7 +66,18 @@ const WEBMENTIONS_BUILD_FETCH_ENABLED = (() => {
 const DATE_ONLY_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 function parsePostDate(value, source = "blog post") {
-  const raw = String(value || "").trim();
+  let raw = "";
+  if (value instanceof Date) {
+    if (Number.isNaN(value.getTime())) {
+      throw new Error(
+        `Invalid blog post date "${value}" in ${source}. Use YYYY-MM-DD or ISO 8601.`,
+      );
+    }
+    const iso = value.toISOString();
+    raw = iso.endsWith("T00:00:00.000Z") ? iso.slice(0, 10) : iso;
+  } else {
+    raw = String(value || "").trim();
+  }
   if (!raw) {
     throw new Error(
       `Missing required blog post date in ${source}. Use YYYY-MM-DD or ISO 8601.`,
@@ -84,6 +95,13 @@ function parsePostDate(value, source = "blog post") {
   }
 
   return { raw, parsed };
+}
+
+function toPublishedIso(rawDate, parsedDate) {
+  if (DATE_ONLY_RE.test(rawDate)) {
+    return `${rawDate}T00:00:00Z`;
+  }
+  return parsedDate.toISOString();
 }
 
 marked.setOptions({
@@ -669,9 +687,11 @@ function normalizeWebmentionReply(item) {
   const received = item["wm-received"] || item.published || "";
   const text = extractWebmentionText(item);
   const url = sanitizeExternalUrl(item.url);
+  const authorLink = author.authorUrl || url || null;
 
   return {
     ...author,
+    authorLink,
     published,
     received,
     text,
@@ -682,9 +702,11 @@ function normalizeWebmentionReply(item) {
 function normalizeWebmentionPerson(item) {
   const author = normalizeWebmentionAuthor(item);
   const url = sanitizeExternalUrl(item.url) || author.authorUrl || null;
+  const authorLink = author.authorUrl || url || null;
 
   return {
     ...author,
+    authorLink,
     url,
   };
 }
@@ -759,6 +781,10 @@ function xmlEscape(s = "") {
     .replace(/>/g, "&gt;")
     .replace(/\"/g, "&quot;")
     .replace(/'/g, "&apos;");
+}
+
+function cdataEscape(s = "") {
+  return String(s).replace(/]]>/g, "]]]]><![CDATA[>");
 }
 
 function rfc2822(dateStr, source = "feed date") {
@@ -933,14 +959,16 @@ function buildLocalizedVariants(attributes, body, fallbackTitle) {
     attributes.languages || attributes.langs,
   );
   const { sections: bodySections, remainder } = parseLocalizedBodySections(body);
-  const fallbackBodyFromSections =
-    bodySections.get(defaultLang)?.body ||
-    (declaredLanguages[0] ? bodySections.get(declaredLanguages[0])?.body : "") ||
-    Array.from(bodySections.values())[0]?.body ||
-    "";
+  const defaultSectionBody = bodySections.get(defaultLang)?.body || "";
+  const declaredSectionBody = declaredLanguages[0]
+    ? bodySections.get(declaredLanguages[0])?.body || ""
+    : "";
+  const firstSectionBody = Array.from(bodySections.values())[0]?.body || "";
   const baseBody =
-    (bodySections.size > 0 ? fallbackBodyFromSections : "") ||
+    defaultSectionBody ||
     remainder ||
+    declaredSectionBody ||
+    firstSectionBody ||
     (typeof body === "string" ? body : "");
   const baseVariant = {
     title: fallbackTitle,
@@ -1042,7 +1070,7 @@ function buildRSS(posts, meta, siteUrl) {
         `    <pubDate>${rfc2822(p.date, `post "${p.title || p.url || "unknown"}"`)}</pubDate>`,
         cats,
         `    <description>${xmlEscape(p.excerpt || "")}</description>`,
-        `    <content:encoded><![CDATA[${p.content || ""}]]></content:encoded>`,
+        `    <content:encoded><![CDATA[${cdataEscape(p.content || "")}]]></content:encoded>`,
         "  </item>",
       ]
         .filter(Boolean)
@@ -1255,6 +1283,7 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
             title: primaryVariant.title,
             author: primaryVariant.author,
             date: normalizedDate,
+            dateIso: toPublishedIso(normalizedDate, parsedDate),
             dateMs: parsedDate.getTime(),
             categories: primaryVariant.categories,
             authorFilterKey: normalizeFilterValue(primaryVariant.author),
