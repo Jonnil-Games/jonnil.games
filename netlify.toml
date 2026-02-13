@@ -68,6 +68,11 @@ status = 301
 
 # Feed aliases
 [[redirects]]
+from = "/blog/index.html"
+to = "/blog/"
+status = 301
+
+[[redirects]]
 from = "/feed.xml"
 to = "/blog/rss.xml"
 status = 301

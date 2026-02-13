@@ -11,6 +11,11 @@ import {
 } from "./lib/site-url.js";
 import { canonicalizeUrl, toAbsoluteUrl } from "./lib/url.js";
 import { sanitizeExternalUrl } from "./lib/sanitize-url.js";
+import {
+  BRIDGY_PUBLISH_TARGETS,
+  normalizeSyndicateTargets,
+  normalizeSyndicationMap,
+} from "./lib/bridgy-syndication.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -58,6 +63,29 @@ const WEBMENTIONS_BUILD_FETCH_ENABLED = (() => {
   return isProductionBuild();
 })();
 
+const DATE_ONLY_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+function parsePostDate(value, source = "blog post") {
+  const raw = String(value || "").trim();
+  if (!raw) {
+    throw new Error(
+      `Missing required blog post date in ${source}. Use YYYY-MM-DD or ISO 8601.`,
+    );
+  }
+
+  const parsed = DATE_ONLY_RE.test(raw)
+    ? new Date(`${raw}T12:00:00Z`)
+    : new Date(raw);
+
+  if (Number.isNaN(parsed.getTime())) {
+    throw new Error(
+      `Invalid blog post date "${raw}" in ${source}. Use YYYY-MM-DD or ISO 8601.`,
+    );
+  }
+
+  return { raw, parsed };
+}
+
 marked.setOptions({
   gfm: true,
   breaks: false,
@@ -67,8 +95,8 @@ marked.setOptions({
 
 Handlebars.registerHelper("formatDate", function (date) {
   const options = { year: "numeric", month: "long", day: "numeric" };
-  const utcDate = new Date(date + "T12:00:00Z");
-  return utcDate.toLocaleDateString("en-US", options);
+  const { parsed } = parsePostDate(date, "template date");
+  return parsed.toLocaleDateString("en-US", options);
 });
 
 Handlebars.registerHelper("formatDateTime", function (date) {
@@ -89,12 +117,6 @@ const SYNDICATION_SITES = {
   mastodon: { label: "Mastodon" },
   fediverse: { label: "Mastodon" },
 };
-
-const BRIDGY_PUBLISH_TARGETS = {
-  bluesky: "https://brid.gy/publish/bluesky",
-};
-
-const TARGET_ALIASES = {};
 
 function normalizeSyndication(raw) {
   const links = [];
@@ -135,92 +157,6 @@ function normalizeSyndication(raw) {
   }
 
   return links;
-}
-
-function normalizeSyndicateTargets(raw) {
-  const targets = new Set();
-
-  const normalizeTarget = (value) => {
-    if (!value) return "";
-    const key = String(value).trim().toLowerCase();
-    return TARGET_ALIASES[key] || key;
-  };
-
-  const addTarget = (value) => {
-    const key = normalizeTarget(value);
-    if (BRIDGY_PUBLISH_TARGETS[key]) {
-      targets.add(key);
-    }
-  };
-
-  if (Array.isArray(raw)) {
-    raw.forEach((entry) => {
-      if (!entry) return;
-      if (typeof entry === "string") {
-        addTarget(entry);
-        return;
-      }
-      if (typeof entry === "object") {
-        Object.entries(entry).forEach(([key, enabled]) => {
-          if (!enabled) return;
-          addTarget(key);
-        });
-      }
-    });
-  } else if (typeof raw === "object") {
-    Object.entries(raw).forEach(([key, enabled]) => {
-      if (!enabled) return;
-      addTarget(key);
-    });
-  } else if (typeof raw === "string") {
-    addTarget(raw);
-  }
-
-  return Array.from(targets);
-}
-
-function getSyndicatedTargets(raw) {
-  const targets = new Set();
-  if (!raw) return targets;
-
-  const addTarget = (value) => {
-    if (!value) return;
-    const key = String(value).trim().toLowerCase();
-    if (BRIDGY_PUBLISH_TARGETS[key]) targets.add(key);
-  };
-
-  if (Array.isArray(raw)) {
-    raw.forEach((entry) => {
-      if (!entry) return;
-      if (typeof entry === "string") return;
-      if (typeof entry === "object") {
-        const key = entry.site || entry.network || entry.service;
-        const url = entry.url || entry.href;
-        if (key && url) addTarget(key);
-      }
-    });
-    return targets;
-  }
-
-  if (typeof raw === "object") {
-    Object.entries(raw).forEach(([key, value]) => {
-      if (!value) return;
-      if (typeof value === "string") {
-        addTarget(key);
-        return;
-      }
-      if (Array.isArray(value)) {
-        if (value.length > 0) addTarget(key);
-        return;
-      }
-      if (typeof value === "object") {
-        const url = value.url || value.href;
-        if (url) addTarget(key);
-      }
-    });
-  }
-
-  return targets;
 }
 
 async function pathExists(p) {
@@ -825,12 +761,14 @@ function xmlEscape(s = "") {
     .replace(/'/g, "&apos;");
 }
 
-function rfc2822(dateStr) {
-  return new Date(dateStr).toUTCString();
+function rfc2822(dateStr, source = "feed date") {
+  const { parsed } = parsePostDate(dateStr, source);
+  return parsed.toUTCString();
 }
 
-function iso8601(dateStr) {
-  return new Date(dateStr).toISOString();
+function iso8601(dateStr, source = "feed date") {
+  const { parsed } = parsePostDate(dateStr, source);
+  return parsed.toISOString();
 }
 
 function normalizeLanguageKey(value) {
@@ -1086,7 +1024,7 @@ function buildLocalizedVariants(attributes, body, fallbackTitle) {
 
 function buildRSS(posts, meta, siteUrl) {
   const lastBuild = posts[0]?.date
-    ? rfc2822(posts[0].date)
+    ? rfc2822(posts[0].date, "latest post date")
     : new Date().toUTCString();
   const items = posts
     .map((p) => {
@@ -1099,7 +1037,7 @@ function buildRSS(posts, meta, siteUrl) {
         `    <title>${xmlEscape(p.title)}</title>`,
         `    <link>${link}</link>`,
         `    <guid isPermaLink=\"true\">${link}</guid>`,
-        `    <pubDate>${rfc2822(p.date)}</pubDate>`,
+        `    <pubDate>${rfc2822(p.date, `post "${p.title || p.url || "unknown"}"`)}</pubDate>`,
         cats,
         `    <description>${xmlEscape(p.excerpt || "")}</description>`,
         `    <content:encoded><![CDATA[${p.content || ""}]]></content:encoded>`,
@@ -1126,7 +1064,7 @@ ${items}
 
 function buildAtom(posts, meta, siteUrl) {
   const updated = posts[0]?.date
-    ? iso8601(posts[0].date)
+    ? iso8601(posts[0].date, "latest post date")
     : new Date().toISOString();
   const entries = posts
     .map((p) => {
@@ -1139,8 +1077,8 @@ function buildAtom(posts, meta, siteUrl) {
         `    <title>${xmlEscape(p.title)}</title>`,
         `    <id>${link}</id>`,
         `    <link href=\"${link}\"/>`,
-        `    <updated>${iso8601(p.date)}</updated>`,
-        `    <published>${iso8601(p.date)}</published>`,
+        `    <updated>${iso8601(p.date, `post "${p.title || p.url || "unknown"}"`)}</updated>`,
+        `    <published>${iso8601(p.date, `post "${p.title || p.url || "unknown"}"`)}</published>`,
         `    <author><name>${xmlEscape(p.author || meta.author)}</name></author>`,
         cats,
         `    <summary type=\"html\">${xmlEscape(p.excerpt || "")}</summary>`,
@@ -1254,6 +1192,11 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
         if (attributes.draft && process.env.BLOG_INCLUDE_DRAFTS !== "1") {
           return null;
         }
+        const { raw: normalizedDate, parsed: parsedDate } = parsePostDate(
+          attributes.date,
+          `frontmatter in ${filePath}`,
+        );
+        attributes.date = normalizedDate;
 
         const { localizedVariants } = buildLocalizedVariants(
           attributes,
@@ -1293,9 +1236,9 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
         const syndicateTargets = normalizeSyndicateTargets(
           attributes.syndicate,
         );
-        const syndicatedTargets = getSyndicatedTargets(attributes.syndication);
+        const syndicationMap = normalizeSyndicationMap(attributes.syndication);
         const pendingTargets = syndicateTargets.filter(
-          (target) => !syndicatedTargets.has(target),
+          (target) => !syndicationMap[target],
         );
         const bridgyPublishTargets = pendingTargets.map(
           (target) => BRIDGY_PUBLISH_TARGETS[target],
@@ -1306,7 +1249,8 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
           data: {
             title: primaryVariant.title,
             author: primaryVariant.author,
-            date: attributes.date,
+            date: normalizedDate,
+            dateMs: parsedDate.getTime(),
             categories: primaryVariant.categories,
             authorFilterKey: normalizeFilterValue(primaryVariant.author),
             categoryFilterKey: normalizeFilterValue(primaryCategory),
@@ -1337,9 +1281,7 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
     }
   }
 
-  blogIndex.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
+  blogIndex.sort((a, b) => b.dateMs - a.dateMs);
 
   const indexData = {
     posts: blogIndex,

@@ -27,6 +27,11 @@ import { getCanonicalBlogPath, getSiteUrl } from "../../lib/site-url.js";
 const POSTS_DIR = "src/blog/posts";
 const COMMIT_PREFIX = process.env.SYNDICATION_COMMIT_PREFIX || "Syndication:";
 const LEASE_MAX_ATTEMPTS = 4;
+const REQUIRED_GITHUB_ENV = ["GITHUB_TOKEN", "GITHUB_OWNER", "GITHUB_REPO"];
+
+function getMissingEnv(keys) {
+  return keys.filter((key) => !String(process.env[key] || "").trim());
+}
 
 function parseEventBody(event) {
   if (!event || !event.body) return {};
@@ -366,6 +371,20 @@ export const handler = async (event) => {
     };
   }
 
+  const missingEnv = getMissingEnv(REQUIRED_GITHUB_ENV);
+  if (missingEnv.length > 0) {
+    console.error("Syndication missing required env vars", {
+      missingEnv,
+    });
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        error: "Missing required syndication configuration",
+        missingEnv,
+      }),
+    };
+  }
+
   const branch = process.env.GITHUB_BRANCH || "main";
   const now = new Date();
   const report = {
@@ -379,9 +398,15 @@ export const handler = async (event) => {
   try {
     files = await listPostFiles(branch);
   } catch (err) {
+    console.error("Syndication failed to list posts", {
+      error: err?.message || String(err),
+    });
     return {
-      statusCode: 200,
-      body: JSON.stringify({ skipped: true, reason: err.message }),
+      statusCode: 500,
+      body: JSON.stringify({
+        error: "Failed to list posts for syndication",
+        reason: err?.message || String(err),
+      }),
     };
   }
 
@@ -578,47 +603,7 @@ export const handler = async (event) => {
             dirty = true;
             touch(target);
           }
-
-          const result = await sendBridgyWebmention({
-            source: canonicalUrl,
-            target: BRIDGY_PUBLISH_TARGETS[target],
-          });
-
-          if (result.ok && result.syndicatedUrl) {
-            if (!syndicationMap[target]) {
-              syndicationMap[target] = result.syndicatedUrl;
-              dirty = true;
-              touch(target);
-            }
-            const next = pickForwardStatus(statusMap[target], "confirmed");
-            if (next !== statusMap[target]) {
-              statusMap[target] = next;
-              dirty = true;
-              touch(target);
-            }
-            if (requestedAtMap[target]) {
-              delete requestedAtMap[target];
-            }
-            if (checkedAtMap[target]) {
-              delete checkedAtMap[target];
-            }
-            if (lastErrorMap[target]) {
-              delete lastErrorMap[target];
-            }
-            dirty = true;
-            touch(target);
-            continue;
-          }
-
-          const next = pickForwardStatus(statusMap[target], "requested");
-          if (next !== statusMap[target]) {
-            statusMap[target] = next;
-            dirty = true;
-            touch(target);
-          }
-          lastErrorMap[target] = summarizeSyndicationResult(result, "confirm");
-          dirty = true;
-          touch(target);
+          // Confirm checks should be side-effect free to avoid duplicate publishes.
           continue;
         }
 

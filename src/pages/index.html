@@ -385,9 +385,9 @@
         postGrid.innerHTML = posts
           .map(
             (post) => `
-              <article class="post-card">
+              <article class="post-card h-entry">
                   <div class="post-meta">
-                      <time datetime="${post.date}">${new Date(
+                      <time class="dt-published" datetime="${post.date}">${new Date(
               post.date + "T12:00:00Z"
             ).toLocaleDateString(locale, {
               year: "numeric",
@@ -396,14 +396,18 @@
             })}</time>
                       <span class="post-category">${post.category}</span>
                   </div>
-                  <h2><a href="${post.url}" class="post-title">${
+                  <h2 class="p-name"><a href="${post.url}" class="post-title u-url">${
               post.title
             }</a></h2>
-                  <p>${post.excerpt}</p>
+                  <p class="p-summary">${post.excerpt}</p>
                   <div class="post-footer">
-                      <span class="post-author">${byLabel} ${
-              post.author || authorFallback
-            }</span>
+                      <span class="post-author">
+                        ${byLabel}
+                        <span class="p-author h-card">
+                          <span class="p-name">${post.author || authorFallback}</span>
+                          <a class="u-url u-uid" href="/" aria-hidden="true" tabindex="-1"></a>
+                        </span>
+                      </span>
                       <a href="${post.url}" class="read-more-link">${readMoreLabel}</a>
                   </div>
               </article>
