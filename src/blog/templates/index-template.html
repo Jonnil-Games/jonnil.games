@@ -84,9 +84,12 @@
     <!-- Header (capsule markup) -->
     <drop capsule="header"></drop>
 
-    <main>
+    <main class="h-feed">
       <section class="blog-header">
-        <h1 data-i18n="blog.header.title">Blog</h1>
+        <h1 class="p-name" data-i18n="blog.header.title">Blog</h1>
+        <a class="u-url" href="{{siteUrl}}/blog/" hidden aria-hidden="true" tabindex="-1"
+          >Blog</a
+        >
         <p data-i18n="blog.header.subtitle">
           Latest updates, insights, and announcements from the Jonnil&nbsp;Games
           team

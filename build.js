@@ -1023,6 +1023,8 @@ function buildLocalizedVariants(attributes, body, fallbackTitle) {
 }
 
 function buildRSS(posts, meta, siteUrl) {
+  const channelUrl = toAbsoluteUrl(siteUrl, "/blog/");
+  const selfUrl = toAbsoluteUrl(siteUrl, "/blog/rss.xml");
   const lastBuild = posts[0]?.date
     ? rfc2822(posts[0].date, "latest post date")
     : new Date().toUTCString();
@@ -1035,8 +1037,8 @@ function buildRSS(posts, meta, siteUrl) {
       return [
         "  <item>",
         `    <title>${xmlEscape(p.title)}</title>`,
-        `    <link>${link}</link>`,
-        `    <guid isPermaLink=\"true\">${link}</guid>`,
+        `    <link>${xmlEscape(link)}</link>`,
+        `    <guid isPermaLink=\"true\">${xmlEscape(link)}</guid>`,
         `    <pubDate>${rfc2822(p.date, `post "${p.title || p.url || "unknown"}"`)}</pubDate>`,
         cats,
         `    <description>${xmlEscape(p.excerpt || "")}</description>`,
@@ -1049,10 +1051,11 @@ function buildRSS(posts, meta, siteUrl) {
     .join("\n");
 
   return `<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<rss version=\"2.0\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\">
+<rss version=\"2.0\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\" xmlns:atom=\"http://www.w3.org/2005/Atom\">
 <channel>
   <title>${xmlEscape(meta.title)}</title>
-  <link>${toAbsoluteUrl(siteUrl, "/blog/")}</link>
+  <link>${xmlEscape(channelUrl)}</link>
+  <atom:link href=\"${xmlEscape(selfUrl)}\" rel=\"self\" type=\"application/rss+xml\" />
   <description>${xmlEscape(meta.description)}</description>
   <language>${xmlEscape(meta.language)}</language>
   <lastBuildDate>${lastBuild}</lastBuildDate>
@@ -1063,6 +1066,8 @@ ${items}
 }
 
 function buildAtom(posts, meta, siteUrl) {
+  const channelUrl = toAbsoluteUrl(siteUrl, "/blog/");
+  const selfUrl = toAbsoluteUrl(siteUrl, "/blog/atom.xml");
   const updated = posts[0]?.date
     ? iso8601(posts[0].date, "latest post date")
     : new Date().toISOString();
@@ -1075,8 +1080,8 @@ function buildAtom(posts, meta, siteUrl) {
       return [
         "  <entry>",
         `    <title>${xmlEscape(p.title)}</title>`,
-        `    <id>${link}</id>`,
-        `    <link href=\"${link}\"/>`,
+        `    <id>${xmlEscape(link)}</id>`,
+        `    <link href=\"${xmlEscape(link)}\"/>`,
         `    <updated>${iso8601(p.date, `post "${p.title || p.url || "unknown"}"`)}</updated>`,
         `    <published>${iso8601(p.date, `post "${p.title || p.url || "unknown"}"`)}</published>`,
         `    <author><name>${xmlEscape(p.author || meta.author)}</name></author>`,
@@ -1093,10 +1098,10 @@ function buildAtom(posts, meta, siteUrl) {
   return `<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <feed xmlns=\"http://www.w3.org/2005/Atom\">
   <title>${xmlEscape(meta.title)}</title>
-  <id>${toAbsoluteUrl(siteUrl, "/blog/")}</id>
+  <id>${xmlEscape(channelUrl)}</id>
   <updated>${updated}</updated>
-  <link href=\"${toAbsoluteUrl(siteUrl, "/blog/atom.xml")}\" rel=\"self\"/>
-  <link href=\"${toAbsoluteUrl(siteUrl, "/blog/")}\"/>
+  <link href=\"${xmlEscape(selfUrl)}\" rel=\"self\"/>
+  <link href=\"${xmlEscape(channelUrl)}\"/>
   <author><name>${xmlEscape(meta.author)}</name></author>
 ${entries}
 </feed>
