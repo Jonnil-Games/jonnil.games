@@ -7,7 +7,6 @@ import Handlebars from "handlebars";
 import {
   getSiteUrl,
   getCanonicalBlogPath,
-  isProductionBuild,
 } from "./lib/site-url.js";
 import { canonicalizeUrl, toAbsoluteUrl } from "./lib/url.js";
 import { sanitizeExternalUrl } from "./lib/sanitize-url.js";
@@ -27,6 +26,7 @@ const ASSETS_DIR = path.join(SRC_DIR, "assets");
 const SCRIPTS_DIR = path.join(ASSETS_DIR, "scripts");
 const PUBLIC_DIR = path.join(__dirname, "public");
 const CONFIG_PATH = path.join(SRC_DIR, "config.json");
+const STANDALONE_SCRIPTS = new Set(["i18n-init.js"]);
 
 const BLOG_DIR = path.join(SRC_DIR, "blog");
 const BLOG_POSTS_DIR = path.join(BLOG_DIR, "posts");
@@ -54,16 +54,11 @@ const WEBMENTION_FETCH_CONCURRENCY = (() => {
     ? raw
     : DEFAULT_WEBMENTION_FETCH_CONCURRENCY;
 })();
-const WEBMENTIONS_BUILD_FETCH_ENABLED = (() => {
-  const raw = String(process.env.WEBMENTIONS_BUILD_FETCH || "")
-    .trim()
-    .toLowerCase();
-  if (["0", "false", "off", "no"].includes(raw)) return false;
-  if (["1", "true", "on", "yes"].includes(raw)) return true;
-  return isProductionBuild();
-})();
+// Keep build output deterministic from repository content.
+const WEBMENTIONS_BUILD_FETCH_ENABLED = false;
 
 const DATE_ONLY_RE = /^\d{4}-\d{2}-\d{2}$/;
+const DEFAULT_EMPTY_FEED_UPDATED_ISO = "1970-01-01T00:00:00Z";
 
 function parsePostDate(value, source = "blog post") {
   let raw = "";
@@ -97,6 +92,28 @@ function parsePostDate(value, source = "blog post") {
   return { raw, parsed };
 }
 
+function resolveEmptyFeedUpdatedDate() {
+  const configured = String(
+    process.env.BLOG_EMPTY_FEED_UPDATED || DEFAULT_EMPTY_FEED_UPDATED_ISO,
+  ).trim();
+
+  try {
+    const { parsed } = parsePostDate(configured, "BLOG_EMPTY_FEED_UPDATED");
+    return parsed;
+  } catch (err) {
+    const { parsed } = parsePostDate(
+      DEFAULT_EMPTY_FEED_UPDATED_ISO,
+      "default empty feed date",
+    );
+    console.warn(
+      `${err?.message || "Invalid BLOG_EMPTY_FEED_UPDATED value."} Falling back to ${DEFAULT_EMPTY_FEED_UPDATED_ISO}.`,
+    );
+    return parsed;
+  }
+}
+
+const EMPTY_FEED_UPDATED_DATE = resolveEmptyFeedUpdatedDate();
+
 function toPublishedIso(rawDate, parsedDate) {
   if (DATE_ONLY_RE.test(rawDate)) {
     return `${rawDate}T00:00:00Z`;
@@ -112,7 +129,12 @@ marked.setOptions({
 });
 
 Handlebars.registerHelper("formatDate", function (date) {
-  const options = { year: "numeric", month: "long", day: "numeric" };
+  const options = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  };
   const { parsed } = parsePostDate(date, "template date");
   return parsed.toLocaleDateString("en-US", options);
 });
@@ -127,6 +149,7 @@ Handlebars.registerHelper("formatDateTime", function (date) {
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "UTC",
   });
 });
 
@@ -144,10 +167,12 @@ function normalizeSyndication(raw) {
     if (!url || typeof url !== "string") return;
     const trimmed = url.trim();
     if (!trimmed) return;
+    const safeUrl = sanitizeExternalUrl(trimmed);
+    if (!safeUrl) return;
     const meta = site ? SYNDICATION_SITES[site] : null;
     const label = labelOverride || (meta && meta.label);
     if (!label) return;
-    links.push({ site, label, url: trimmed });
+    links.push({ site, label, url: safeUrl });
   }
 
   if (Array.isArray(raw)) {
@@ -175,6 +200,42 @@ function normalizeSyndication(raw) {
   }
 
   return links;
+}
+
+function resolveWebmentionTarget(attributes, canonicalUrl, syndicationMap) {
+  if (!attributes || typeof attributes !== "object") return canonicalUrl;
+
+  const directCandidates = [
+    attributes.webmentionTarget,
+    attributes.socialUrl,
+    attributes.socialURL,
+    attributes.social,
+    attributes.linkedSocialUrl,
+    attributes.linkedSocialURL,
+    attributes.linkedSocial,
+    attributes.socialPost,
+    attributes.syndicationUrl,
+    attributes.syndicationURL,
+  ];
+
+  for (const candidate of directCandidates) {
+    const safe = sanitizeExternalUrl(candidate);
+    if (safe) return safe;
+  }
+
+  if (syndicationMap && typeof syndicationMap === "object") {
+    for (const key of Object.keys(BRIDGY_PUBLISH_TARGETS)) {
+      const safe = sanitizeExternalUrl(syndicationMap[key]);
+      if (safe) return safe;
+    }
+
+    for (const value of Object.values(syndicationMap)) {
+      const safe = sanitizeExternalUrl(value);
+      if (safe) return safe;
+    }
+  }
+
+  return canonicalUrl;
 }
 
 async function pathExists(p) {
@@ -385,6 +446,27 @@ function ensureCanonicalLink(html, canonicalUrl) {
   );
 }
 
+function ensureI18nInitScript(html) {
+  if (/<script\s+[^>]*src=["']\/scripts\/i18n-init\.js["'][^>]*>/i.test(html)) {
+    return html;
+  }
+
+  const initTag = `    <script src="/scripts/i18n-init.js"></script>`;
+
+  if (/<script\s+[^>]*src=["']\/scripts\/theme-init\.js["'][^>]*>/i.test(html)) {
+    return html.replace(
+      /(<script\s+[^>]*src=["']\/scripts\/theme-init\.js["'][^>]*>)/i,
+      `${initTag}\n    $1`,
+    );
+  }
+
+  if (/<\/head>/i.test(html)) {
+    return html.replace(/<\/head>/i, `${initTag}\n  </head>`);
+  }
+
+  return `${initTag}\n${html}`;
+}
+
 function ensureSiteBundleScript(html) {
   if (/<script\s+[^>]*src=["']\/scripts\.js["']/i.test(html)) {
     return html;
@@ -541,6 +623,7 @@ async function buildPages(capsules, config, globalUsed, siteUrl) {
       let content = await fs.readFile(fullPath, "utf-8");
 
       content = injectResources(content, resourcesHTML, config);
+      content = ensureI18nInitScript(content);
       const canonicalPath =
         normalizedRelPath === "index.html"
           ? "/"
@@ -601,10 +684,28 @@ async function bundleScripts(usedCapsules, capsules) {
 
   if (await pathExists(SCRIPTS_DIR)) {
     const files = (await fs.readdir(SCRIPTS_DIR)).sort();
+    const standalone = [];
     for (const file of files) {
       if (!file.endsWith(".js")) continue;
+      if (STANDALONE_SCRIPTS.has(file)) {
+        standalone.push(file);
+        continue;
+      }
       const js = await fs.readFile(path.join(SCRIPTS_DIR, file), "utf-8");
       output += `\n// === ${file} ===\n${js}`;
+    }
+
+    if (standalone.length > 0) {
+      const scriptsOutDir = path.join(PUBLIC_DIR, "scripts");
+      await fs.mkdir(scriptsOutDir, { recursive: true });
+      await Promise.all(
+        standalone.map((file) =>
+          fs.copyFile(
+            path.join(SCRIPTS_DIR, file),
+            path.join(scriptsOutDir, file),
+          ),
+        ),
+      );
     }
   }
 
@@ -634,6 +735,25 @@ async function copyStatic() {
   const scriptsOutDir = path.join(PUBLIC_DIR, "scripts");
   if (await pathExists(scriptsOutDir)) {
     await fs.rm(scriptsOutDir, { recursive: true, force: true });
+  }
+  if (await pathExists(SCRIPTS_DIR)) {
+    const standaloneFiles = [];
+    for (const file of STANDALONE_SCRIPTS) {
+      if (await pathExists(path.join(SCRIPTS_DIR, file))) {
+        standaloneFiles.push(file);
+      }
+    }
+    if (standaloneFiles.length > 0) {
+      await fs.mkdir(scriptsOutDir, { recursive: true });
+      await Promise.all(
+        standaloneFiles.map((file) =>
+          fs.copyFile(
+            path.join(SCRIPTS_DIR, file),
+            path.join(scriptsOutDir, file),
+          ),
+        ),
+      );
+    }
   }
   await copyDir(
     path.join(SRC_DIR, ".well-known"),
@@ -901,7 +1021,7 @@ function parseTranslationEntry(entry) {
   };
 }
 
-function parseLocalizedBodySections(markdown) {
+function parseLocalizedBodySections(markdown, source = "blog post content") {
   const sections = new Map();
   const lines = String(markdown || "").split("\n");
   const remainder = [];
@@ -941,8 +1061,9 @@ function parseLocalizedBodySections(markdown) {
   }
 
   if (activeLang) {
-    remainder.push(`:::lang ${activeLang}`);
-    remainder.push(...sectionLines);
+    throw new Error(
+      `Unclosed :::lang block for "${activeLang}" in ${source}. Add a closing ":::" line.`,
+    );
   }
 
   return {
@@ -951,14 +1072,17 @@ function parseLocalizedBodySections(markdown) {
   };
 }
 
-function buildLocalizedVariants(attributes, body, fallbackTitle) {
+function buildLocalizedVariants(attributes, body, fallbackTitle, source) {
   const defaultLang = normalizeLanguageKey(
     attributes.defaultLanguage || attributes.defaultLang || "en",
   );
   const declaredLanguages = normalizeLanguageList(
     attributes.languages || attributes.langs,
   );
-  const { sections: bodySections, remainder } = parseLocalizedBodySections(body);
+  const { sections: bodySections, remainder } = parseLocalizedBodySections(
+    body,
+    source || fallbackTitle || "blog post content",
+  );
   const defaultSectionBody = bodySections.get(defaultLang)?.body || "";
   const declaredSectionBody = declaredLanguages[0]
     ? bodySections.get(declaredLanguages[0])?.body || ""
@@ -1055,10 +1179,10 @@ function buildRSS(posts, meta, siteUrl) {
   const selfUrl = toAbsoluteUrl(siteUrl, "/blog/rss.xml");
   const lastBuild = posts[0]?.date
     ? rfc2822(posts[0].date, "latest post date")
-    : new Date().toUTCString();
+    : EMPTY_FEED_UPDATED_DATE.toUTCString();
   const items = posts
     .map((p) => {
-      const link = toAbsoluteUrl(siteUrl, p.url);
+      const link = p.canonicalUrl || toAbsoluteUrl(siteUrl, p.url);
       const cats = (p.categories || [])
         .map((c) => `    <category>${xmlEscape(c)}</category>`)
         .join("\n");
@@ -1098,10 +1222,10 @@ function buildAtom(posts, meta, siteUrl) {
   const selfUrl = toAbsoluteUrl(siteUrl, "/blog/atom.xml");
   const updated = posts[0]?.date
     ? iso8601(posts[0].date, "latest post date")
-    : new Date().toISOString();
+    : EMPTY_FEED_UPDATED_DATE.toISOString();
   const entries = posts
     .map((p) => {
-      const link = toAbsoluteUrl(siteUrl, p.url);
+      const link = p.canonicalUrl || toAbsoluteUrl(siteUrl, p.url);
       const cats = (p.categories || [])
         .map((c) => `    <category term=\"${xmlEscape(c)}\"/>`)
         .join("\n");
@@ -1162,15 +1286,19 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
   const postTemplateRaw = await fs.readFile(postTemplatePath, "utf-8");
 
   const resourcesHTML = generateResourcesHTML(config, siteUrl);
-  const indexWithResources = injectResources(
-    indexTemplateRaw,
-    resourcesHTML,
-    config,
+  const indexWithResources = ensureI18nInitScript(
+    injectResources(
+      indexTemplateRaw,
+      resourcesHTML,
+      config,
+    ),
   );
-  const postWithResources = injectResources(
-    postTemplateRaw,
-    resourcesHTML,
-    config,
+  const postWithResources = ensureI18nInitScript(
+    injectResources(
+      postTemplateRaw,
+      resourcesHTML,
+      config,
+    ),
   );
 
   const indexUsedCapsules = new Set();
@@ -1235,6 +1363,7 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
           attributes,
           body,
           attributes.title,
+          filePath,
         );
         const primaryVariant = localizedVariants[0];
         const primaryCategory = primaryVariant.categories[0] || "";
@@ -1248,18 +1377,16 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
         );
         const canonicalUrl = canonicalOverride || defaultCanonical;
 
-        let url = canonicalUrl;
-        try {
-          const parsed = new URL(canonicalUrl);
-          if (parsed.origin === siteUrl) {
-            url = parsed.pathname;
-          }
-        } catch {
-          url = canonicalUrl;
-        }
+        const url = defaultPath;
+        const syndicationMap = normalizeSyndicationMap(attributes.syndication);
+        const webmentionTarget = resolveWebmentionTarget(
+          attributes,
+          canonicalUrl,
+          syndicationMap,
+        );
 
         const webmentionPayload = await fetchWebmentions(
-          canonicalUrl,
+          webmentionTarget,
           functionsBaseUrl,
         );
         const webmentions = buildWebmentionBuckets(webmentionPayload);
@@ -1269,7 +1396,6 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
         const syndicateTargets = normalizeSyndicateTargets(
           attributes.syndicate,
         );
-        const syndicationMap = normalizeSyndicationMap(attributes.syndication);
         const pendingTargets = syndicateTargets.filter(
           (target) => !syndicationMap[target],
         );
@@ -1294,6 +1420,7 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
             url,
             siteUrl,
             canonicalUrl,
+            webmentionTarget,
             syndicationLinks: normalizeSyndication(attributes.syndication),
             webmentions,
             hasWebmentions,

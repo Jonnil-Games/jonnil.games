@@ -375,6 +375,39 @@
         return "en-US";
       }
 
+      function normalizeRecentPostUrl(value) {
+        const raw = String(value || "").trim();
+        if (!raw) return "/blog/";
+        try {
+          const parsed = new URL(raw, window.location.origin);
+          if (!["http:", "https:"].includes(parsed.protocol)) {
+            return "/blog/";
+          }
+          if (parsed.origin === window.location.origin) {
+            const localPath = `${parsed.pathname}${parsed.search}${parsed.hash}`;
+            return localPath || "/blog/";
+          }
+          return parsed.toString();
+        } catch {
+          return "/blog/";
+        }
+      }
+
+      function formatRecentPostDate(raw, locale) {
+        const value = String(raw || "").trim();
+        if (!value) return "";
+        const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(value);
+        const parsed = isDateOnly
+          ? new Date(`${value}T12:00:00Z`)
+          : new Date(value);
+        if (Number.isNaN(parsed.getTime())) return value;
+        return parsed.toLocaleDateString(locale, {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      }
+
       function renderRecentPosts(posts) {
         const postGrid = document.querySelector(".post-grid");
         if (!postGrid) return;
@@ -382,38 +415,78 @@
         const authorFallback = t("home.latest.byDefault", "Team Jonnil");
         const readMoreLabel = t("home.latest.readMore", "Read More →");
         const locale = getLocale();
-        postGrid.innerHTML = posts
-          .map(
-            (post) => `
-              <article class="post-card h-entry">
-                  <div class="post-meta">
-                      <time class="dt-published" datetime="${post.date}">${new Date(
-              post.date + "T12:00:00Z"
-            ).toLocaleDateString(locale, {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}</time>
-                      <span class="post-category">${post.category}</span>
-                  </div>
-                  <h2 class="p-name"><a href="${post.url}" class="post-title u-url">${
-              post.title
-            }</a></h2>
-                  <p class="p-summary">${post.excerpt}</p>
-                  <div class="post-footer">
-                      <span class="post-author">
-                        ${byLabel}
-                        <span class="p-author h-card">
-                          <span class="p-name">${post.author || authorFallback}</span>
-                          <a class="u-url u-uid" href="/" aria-hidden="true" tabindex="-1"></a>
-                        </span>
-                      </span>
-                      <a href="${post.url}" class="read-more-link">${readMoreLabel}</a>
-                  </div>
-              </article>
-          `
-          )
-          .join("");
+        const items = Array.isArray(posts) ? posts : [];
+        const fragment = document.createDocumentFragment();
+
+        items.forEach((post) => {
+          const article = document.createElement("article");
+          article.className = "post-card h-entry";
+
+          const meta = document.createElement("div");
+          meta.className = "post-meta";
+
+          const time = document.createElement("time");
+          const dateRaw = String(post?.date || "").trim();
+          time.className = "dt-published";
+          time.dateTime = dateRaw;
+          time.textContent = formatRecentPostDate(dateRaw, locale);
+          meta.appendChild(time);
+
+          const category = document.createElement("span");
+          category.className = "post-category";
+          category.textContent = String(post?.category || "");
+          meta.appendChild(category);
+
+          const heading = document.createElement("h2");
+          heading.className = "p-name";
+          const postUrl = normalizeRecentPostUrl(post?.url);
+          const titleLink = document.createElement("a");
+          titleLink.className = "post-title u-url";
+          titleLink.href = postUrl;
+          titleLink.textContent = String(post?.title || "");
+          heading.appendChild(titleLink);
+
+          const summary = document.createElement("p");
+          summary.className = "p-summary";
+          summary.textContent = String(post?.excerpt || "");
+
+          const footer = document.createElement("div");
+          footer.className = "post-footer";
+
+          const authorWrap = document.createElement("span");
+          authorWrap.className = "post-author";
+          authorWrap.appendChild(document.createTextNode(`${byLabel} `));
+
+          const authorCard = document.createElement("span");
+          authorCard.className = "p-author h-card";
+          const authorName = document.createElement("span");
+          authorName.className = "p-name";
+          authorName.textContent = String(post?.author || authorFallback);
+          const authorUid = document.createElement("a");
+          authorUid.className = "u-url u-uid";
+          authorUid.href = "/";
+          authorUid.setAttribute("aria-hidden", "true");
+          authorUid.tabIndex = -1;
+          authorCard.appendChild(authorName);
+          authorCard.appendChild(authorUid);
+          authorWrap.appendChild(authorCard);
+
+          const readMore = document.createElement("a");
+          readMore.className = "read-more-link";
+          readMore.href = postUrl;
+          readMore.textContent = readMoreLabel;
+
+          footer.appendChild(authorWrap);
+          footer.appendChild(readMore);
+          article.appendChild(meta);
+          article.appendChild(heading);
+          article.appendChild(summary);
+          article.appendChild(footer);
+          fragment.appendChild(article);
+        });
+
+        postGrid.textContent = "";
+        postGrid.appendChild(fragment);
         if (window.JG_EMOJI) {
           window.JG_EMOJI.process(postGrid);
         }

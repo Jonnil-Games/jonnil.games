@@ -1,15 +1,31 @@
 document.addEventListener("DOMContentLoaded", function () {
+  const DATE_ONLY_RE = /^\d{4}-\d{2}-\d{2}$/;
+  const MIDNIGHT_UTC_RE = /T00:00:00(?:\.000)?Z$/i;
+
   function formatDates() {
     const locale = window.JG_I18N ? window.JG_I18N.getState().locale : undefined;
     document.querySelectorAll("time[datetime]").forEach((el) => {
       const raw = el.getAttribute("datetime");
       if (!raw) return;
-      const date = new Date(`${raw}T12:00:00Z`);
+      const isDateOnly = DATE_ONLY_RE.test(raw) || MIDNIGHT_UTC_RE.test(raw);
+      const date = isDateOnly ? new Date(`${raw.slice(0, 10)}T12:00:00Z`) : new Date(raw);
       if (Number.isNaN(date.getTime())) return;
-      el.textContent = date.toLocaleDateString(locale, {
+
+      if (isDateOnly) {
+        el.textContent = date.toLocaleDateString(locale, {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+        return;
+      }
+
+      el.textContent = date.toLocaleString(locale, {
         year: "numeric",
-        month: "long",
+        month: "short",
         day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
       });
     });
   }

@@ -7,6 +7,9 @@ command = "npm run build"
 [build.environment]
 NODE_VERSION = "24"
 
+[[plugins]]
+package = "./netlify/plugins/post-deploy-syndication"
+
 [[edge_functions]]
 path = "/*"
 function = "bots"
@@ -87,6 +90,27 @@ from = "/atom.xml"
 to = "/blog/atom.xml"
 status = 301
 
+# Legal page aliases
+[[redirects]]
+from = "/privacy-policy"
+to = "/privacy-policy.html"
+status = 301
+
+[[redirects]]
+from = "/privacy-policy/"
+to = "/privacy-policy.html"
+status = 301
+
+[[redirects]]
+from = "/terms-of-service"
+to = "/terms-of-service.html"
+status = 301
+
+[[redirects]]
+from = "/terms-of-service/"
+to = "/terms-of-service.html"
+status = 301
+
 # SPA-style fallback for the root site
 [[redirects]]
 from = "/*"
@@ -163,8 +187,10 @@ Cache-Control = "public, max-age=600, must-revalidate"
 for = "/blog/rss.xml"
 [headers.values]
 Cache-Control = "public, max-age=300, must-revalidate"
+Content-Type = "application/rss+xml; charset=UTF-8"
 
 [[headers]]
 for = "/blog/atom.xml"
 [headers.values]
 Cache-Control = "public, max-age=300, must-revalidate"
+Content-Type = "application/atom+xml; charset=UTF-8"

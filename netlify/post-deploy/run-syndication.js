@@ -1,4 +1,7 @@
 import fm from "front-matter";
+import fs from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   BRIDGY_PUBLISH_TARGETS,
   getSyndicationUrl,
@@ -21,6 +24,7 @@ import {
   pickForwardStatus,
   shouldMarkRequested,
 } from "../../lib/syndication-policy.js";
+import { sanitizeExternalUrl } from "../../lib/sanitize-url.js";
 import { canonicalizeUrl } from "../../lib/url.js";
 import { getCanonicalBlogPath, getSiteUrl } from "../../lib/site-url.js";
 
@@ -28,53 +32,155 @@ const POSTS_DIR = "src/blog/posts";
 const COMMIT_PREFIX = process.env.SYNDICATION_COMMIT_PREFIX || "Syndication:";
 const LEASE_MAX_ATTEMPTS = 4;
 const REQUIRED_GITHUB_ENV = ["GITHUB_TOKEN", "GITHUB_OWNER", "GITHUB_REPO"];
+const BLUESKY_HOST_PATTERNS = [
+  ".bsky.app",
+  ".bsky.social",
+  ".brid.gy",
+];
+
+function toSkipCiMessage(message) {
+  if (/\[(?:skip ci|ci skip)\]/i.test(message)) {
+    return message;
+  }
+  return `${message} [skip ci]`;
+}
 
 function getMissingEnv(keys) {
   return keys.filter((key) => !String(process.env[key] || "").trim());
 }
 
-function parseEventBody(event) {
-  if (!event || !event.body) return {};
+async function hasLocalMarkdownPosts() {
   try {
-    return JSON.parse(event.body);
-  } catch {
-    return {};
+    const entries = await fs.readdir(POSTS_DIR, { withFileTypes: true });
+    return entries.some((entry) => entry.isFile() && entry.name.endsWith(".md"));
+  } catch (err) {
+    if (err && err.code === "ENOENT") {
+      return false;
+    }
+    throw err;
   }
 }
 
-function getDeployContext(payload) {
-  return (
-    payload?.context ||
-    payload?.deploy_context ||
-    payload?.deploy?.context ||
-    payload?.deploy?.deploy_context ||
-    payload?.context_name ||
-    ""
-  );
+function hasHostSuffix(hostname, suffixes) {
+  const host = `.${String(hostname || "").trim().toLowerCase()}`;
+  if (!host || host === ".") return false;
+  return suffixes.some((suffix) => host.endsWith(suffix));
 }
 
-function isProductionDeploy(payload) {
-  const context = getDeployContext(payload);
-  if (context && context !== "production") return false;
+function getLegacySyndicationCandidates(attributes = {}) {
+  const directCandidates = [
+    attributes.socialUrl,
+    attributes.socialURL,
+    attributes.social,
+    attributes.linkedSocialUrl,
+    attributes.linkedSocialURL,
+    attributes.linkedSocial,
+    attributes.socialPost,
+    attributes.syndicationUrl,
+    attributes.syndicationURL,
+  ];
 
+  const unique = new Set();
+  for (const candidate of directCandidates) {
+    const safe = sanitizeExternalUrl(candidate);
+    if (safe) unique.add(safe);
+  }
+  return Array.from(unique);
+}
+
+function isTargetUrl(urlValue, target) {
+  if (!urlValue || !target) return false;
+  if (target === "bluesky") {
+    try {
+      const parsed = new URL(urlValue);
+      return hasHostSuffix(parsed.hostname, BLUESKY_HOST_PATTERNS);
+    } catch {
+      return false;
+    }
+  }
+  return false;
+}
+
+function inferLegacySyndicationUrl(attributes, target) {
+  const candidates = getLegacySyndicationCandidates(attributes);
+  for (const candidate of candidates) {
+    if (isTargetUrl(candidate, target)) {
+      return candidate;
+    }
+  }
+  return "";
+}
+
+async function scanLocalPostsForWork() {
+  const summary = { pendingTotal: 0, syncNeeded: false };
+  let entries;
+  try {
+    entries = await fs.readdir(POSTS_DIR, { withFileTypes: true });
+  } catch (err) {
+    if (err && err.code === "ENOENT") {
+      return summary;
+    }
+    throw err;
+  }
+
+  const files = entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".md"))
+    .map((entry) => entry.name)
+    .sort();
+
+  for (const file of files) {
+    const filePath = path.join(POSTS_DIR, file);
+    let attributes = {};
+    try {
+      const raw = await fs.readFile(filePath, "utf-8");
+      attributes = fm(raw).attributes || {};
+    } catch (err) {
+      throw new Error(
+        `Failed to scan local post ${filePath}: ${err?.message || String(err)}`,
+      );
+    }
+
+    const syndicationMap = normalizeSyndicationMap(attributes.syndication);
+    const syndicateTargets = normalizeSyndicateTargets(attributes.syndicate);
+    const statusMap = normalizeStatusMap(attributes.syndicationStatus);
+    const effectiveSyndicationMap = { ...syndicationMap };
+    for (const target of syndicateTargets) {
+      if (!BRIDGY_PUBLISH_TARGETS[target]) continue;
+      if (getSyndicationUrl(effectiveSyndicationMap, target)) continue;
+      const legacyUrl = inferLegacySyndicationUrl(attributes, target);
+      if (legacyUrl) {
+        effectiveSyndicationMap[target] = legacyUrl;
+      }
+    }
+
+    const pendingTargets = syndicateTargets.filter(
+      (target) =>
+        BRIDGY_PUBLISH_TARGETS[target] &&
+        !getSyndicationUrl(effectiveSyndicationMap, target),
+    );
+    summary.pendingTotal += pendingTargets.length;
+    if (!summary.syncNeeded) {
+      const needsSyndicateCleanup = syndicateTargets.some((target) =>
+        getSyndicationUrl(effectiveSyndicationMap, target),
+      );
+      const needsStatusConfirm = Object.keys(effectiveSyndicationMap).some(
+        (target) =>
+          BRIDGY_PUBLISH_TARGETS[target] && statusMap[target] !== "confirmed",
+      );
+      summary.syncNeeded = needsSyndicateCleanup || needsStatusConfirm;
+    }
+  }
+
+  return summary;
+}
+
+function isProductionDeploy() {
   const envContext =
     process.env.CONTEXT ||
     process.env.DEPLOY_CONTEXT ||
     process.env.NETLIFY_CONTEXT ||
     "";
-  if (envContext && envContext !== "production") return false;
-
-  if (!context && !envContext) return false;
-  return true;
-}
-
-function getCommitMessage(payload) {
-  return (
-    payload?.commit_message ||
-    payload?.commitMessage ||
-    payload?.commit?.message ||
-    ""
-  );
+  return String(envContext).trim().toLowerCase() === "production";
 }
 
 async function githubRequest(path, options = {}) {
@@ -103,6 +209,9 @@ async function listPostFiles(branch) {
   const res = await githubRequest(
     `/contents/${POSTS_DIR}?ref=${encodeURIComponent(branch)}`,
   );
+  if (res.status === 404) {
+    return [];
+  }
   if (!res.ok) {
     throw new Error(`Failed to list posts (status ${res.status})`);
   }
@@ -238,7 +347,9 @@ function canAttemptPublishNow({ target, state, now }) {
 async function acquirePublishLease({ filePath, branch, target, now }) {
   const nowIso = now.toISOString();
   const slug = filePath.split("/").pop()?.replace(/\.md$/, "") || filePath;
-  const message = `${COMMIT_PREFIX} lease publish ${slug} ${target}`;
+  const message = toSkipCiMessage(
+    `${COMMIT_PREFIX} lease publish ${slug} ${target}`,
+  );
 
   for (let attempt = 0; attempt < LEASE_MAX_ATTEMPTS; attempt += 1) {
     const fetched = await getFileContent(filePath, branch);
@@ -291,7 +402,9 @@ async function acquirePublishLease({ filePath, branch, target, now }) {
 async function acquireConfirmLease({ filePath, branch, target, now }) {
   const nowIso = now.toISOString();
   const slug = filePath.split("/").pop()?.replace(/\.md$/, "") || filePath;
-  const message = `${COMMIT_PREFIX} lease confirm ${slug} ${target}`;
+  const message = toSkipCiMessage(
+    `${COMMIT_PREFIX} lease confirm ${slug} ${target}`,
+  );
 
   for (let attempt = 0; attempt < LEASE_MAX_ATTEMPTS; attempt += 1) {
     const fetched = await getFileContent(filePath, branch);
@@ -346,43 +459,25 @@ async function acquireConfirmLease({ filePath, branch, target, now }) {
   return { acquired: false, reason: "lease-conflict" };
 }
 
-export const handler = async (event) => {
-  if (event?.httpMethod) {
-    return { statusCode: 404, body: "Not Found" };
+export async function runSyndicationPostDeploy() {
+  if (!isProductionDeploy()) {
+    return { skipped: true, reason: "non-production" };
   }
 
-  const parsed = parseEventBody(event);
-  const payload = parsed.payload || parsed.deploy || parsed || {};
-
-  if (!isProductionDeploy(payload)) {
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ skipped: true, reason: "non-production" }),
-    };
+  if (!(await hasLocalMarkdownPosts())) {
+    return { skipped: true, reason: "no-local-posts" };
   }
 
-  const commitMessage = getCommitMessage(payload);
-  const isBotCommit = commitMessage.startsWith(COMMIT_PREFIX);
-
-  if (isBotCommit) {
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ skipped: true, reason: "bot-commit" }),
-    };
+  const localScan = await scanLocalPostsForWork();
+  if (localScan.pendingTotal === 0 && !localScan.syncNeeded) {
+    return { skipped: true, reason: "no-pending" };
   }
 
   const missingEnv = getMissingEnv(REQUIRED_GITHUB_ENV);
   if (missingEnv.length > 0) {
-    console.error("Syndication missing required env vars", {
-      missingEnv,
-    });
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        error: "Missing required syndication configuration",
-        missingEnv,
-      }),
-    };
+    throw new Error(
+      `Missing required syndication configuration: ${missingEnv.join(", ")}`,
+    );
   }
 
   const branch = process.env.GITHUB_BRANCH || "main";
@@ -391,23 +486,16 @@ export const handler = async (event) => {
     skipped: [],
     updated: [],
     errors: [],
-    botCommit: isBotCommit,
   };
+  let committedWriteback = false;
 
   let files;
   try {
     files = await listPostFiles(branch);
   } catch (err) {
-    console.error("Syndication failed to list posts", {
-      error: err?.message || String(err),
-    });
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        error: "Failed to list posts for syndication",
-        reason: err?.message || String(err),
-      }),
-    };
+    throw new Error(
+      `Failed to list posts for syndication: ${err?.message || String(err)}`,
+    );
   }
 
   const posts = [];
@@ -454,16 +542,17 @@ export const handler = async (event) => {
   }
 
   if (pendingTotal === 0 && !syncNeeded) {
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ skipped: true, reason: "no-pending" }),
-    };
+    return { skipped: true, reason: "no-pending" };
   }
 
   const siteUrl = getSiteUrl();
 
   for (const post of posts) {
     const { filePath, attributes, body } = post;
+    if (committedWriteback) {
+      report.skipped.push({ file: filePath, reason: "deferred-after-writeback" });
+      continue;
+    }
     let currentSha = post.sha;
     const slug = post.filePath.split("/").pop()?.replace(/\.md$/, "") || "";
     const syndicateTargets = normalizeSyndicateTargets(attributes.syndicate);
@@ -482,6 +571,22 @@ export const handler = async (event) => {
     let dirty = false;
     const canonicalUrl = buildCanonicalUrl(attributes, slug, siteUrl);
     const nowIso = now.toISOString();
+    for (const target of syndicateTargets) {
+      if (!BRIDGY_PUBLISH_TARGETS[target]) continue;
+      if (getSyndicationUrl(syndicationMap, target)) continue;
+      const legacyUrl = inferLegacySyndicationUrl(attributes, target);
+      if (!legacyUrl) continue;
+      syndicationMap[target] = legacyUrl;
+      const next = pickForwardStatus(statusMap[target], "confirmed");
+      if (next !== statusMap[target]) {
+        statusMap[target] = next || "confirmed";
+      }
+      delete requestedAtMap[target];
+      delete checkedAtMap[target];
+      delete lastErrorMap[target];
+      dirty = true;
+      touch(target);
+    }
 
     for (const target of Object.keys(syndicationMap)) {
       if (!BRIDGY_PUBLISH_TARGETS[target]) continue;
@@ -966,10 +1071,27 @@ export const handler = async (event) => {
         (key) => BRIDGY_PUBLISH_TARGETS[key],
       ),
     });
+    committedWriteback = true;
   }
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify(report, null, 2),
-  };
-};
+  return report;
+}
+
+function isDirectInvocation() {
+  const entry = process.argv[1];
+  if (!entry) return false;
+  return path.resolve(entry) === fileURLToPath(import.meta.url);
+}
+
+if (isDirectInvocation()) {
+  runSyndicationPostDeploy()
+    .then((result) => {
+      console.log(JSON.stringify(result, null, 2));
+    })
+    .catch((err) => {
+      console.error(
+        `Post-deploy syndication failed: ${err?.message || String(err)}`,
+      );
+      process.exit(1);
+    });
+}

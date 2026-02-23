@@ -7,25 +7,56 @@ import { sanitizeExternalUrl } from "/lib/sanitize-url.js";
   const target = sanitizeExternalUrl(container.dataset.target);
   if (!target) return;
 
-  const refreshSeconds = Number.parseInt(
-    container.dataset.refreshSeconds || "60",
-    10,
-  );
+  const DEFAULT_REFRESH_SECONDS = 180;
+  const MIN_REFRESH_SECONDS = 60;
+  const MAX_REFRESH_SECONDS = 900;
+  const RESUME_BACKOFF_MS = 2000;
+  const FAILURE_BACKOFF_BASE_MS = 15000;
+  const FAILURE_BACKOFF_MAX_MS = 10 * 60 * 1000;
+  const POLL_JITTER_MS = 5000;
+
+  function parseRefreshSeconds(value) {
+    const parsed = Number.parseInt(value || "", 10);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      return DEFAULT_REFRESH_SECONDS;
+    }
+    return Math.max(MIN_REFRESH_SECONDS, Math.min(MAX_REFRESH_SECONDS, parsed));
+  }
+
+  const refreshSeconds = parseRefreshSeconds(container.dataset.refreshSeconds);
 
   let controller = null;
   let timer = null;
   let paused = false;
-  const resumeBackoffMs = 2000;
-
-  const createBuckets = () => ({
-    replies: [],
-    likes: [],
-    reposts: [],
-    mentions: [],
-    bookmarks: [],
-  });
-  let latestBuckets = createBuckets();
   let hasFetchedBuckets = false;
+  let latestBuckets = createBuckets();
+  let lastKnownCount = null;
+  let consecutiveFailures = 0;
+
+  function createBuckets() {
+    return {
+      replies: [],
+      likes: [],
+      reposts: [],
+      mentions: [],
+      bookmarks: [],
+    };
+  }
+
+  function bucketCount(buckets) {
+    return Object.values(buckets).reduce(
+      (total, items) => total + (Array.isArray(items) ? items.length : 0),
+      0,
+    );
+  }
+
+  function endpoint({ countOnly = false } = {}) {
+    const params = new URLSearchParams({ target });
+    if (countOnly) {
+      params.set("mode", "count");
+    }
+    return `/.netlify/functions/webmentions?${params.toString()}`;
+  }
 
   const t = (key, fallback) => {
     if (window.JG_I18N && typeof window.JG_I18N.t === "function") {
@@ -284,62 +315,128 @@ import { sanitizeExternalUrl } from "/lib/sanitize-url.js";
     }
   };
 
-  const refresh = async () => {
-    if (controller) controller.abort();
-    controller = new AbortController();
+  function isAbortError(err) {
+    return Boolean(err && typeof err === "object" && err.name === "AbortError");
+  }
+
+  async function fetchJson({ countOnly = false } = {}) {
+    if (controller) {
+      controller.abort();
+    }
+
+    const currentController = new AbortController();
+    controller = currentController;
 
     try {
-      const res = await fetch(
-        `/.netlify/functions/webmentions?target=${encodeURIComponent(target)}`,
-        { signal: controller.signal, headers: { Accept: "application/json" } },
-      );
-      if (!res.ok) return;
-      const payload = await res.json();
-      const buckets = groupMentions(payload);
-      latestBuckets = buckets;
-      hasFetchedBuckets = true;
-      render(buckets);
-    } catch (err) {
-      if (err.name !== "AbortError") {
-        return;
-      }
-    } finally {
-      controller = null;
-    }
-  };
+      const res = await fetch(endpoint({ countOnly }), {
+        signal: currentController.signal,
+        headers: { Accept: "application/json" },
+      });
 
-  const clearTimer = () => {
+      if (!res.ok) {
+        throw new Error(`webmentions-http-${res.status}`);
+      }
+
+      return await res.json();
+    } finally {
+      if (controller === currentController) {
+        controller = null;
+      }
+    }
+  }
+
+  async function refreshFull() {
+    const payload = await fetchJson({ countOnly: false });
+    const buckets = groupMentions(payload);
+    latestBuckets = buckets;
+    hasFetchedBuckets = true;
+    lastKnownCount = bucketCount(buckets);
+    render(buckets);
+  }
+
+  async function fetchCount() {
+    const payload = await fetchJson({ countOnly: true });
+    const count = Number(payload?.count);
+    if (!Number.isFinite(count) || count < 0) {
+      throw new Error("webmentions-invalid-count");
+    }
+    return count;
+  }
+
+  function clearTimer() {
     if (timer) {
       window.clearTimeout(timer);
       timer = null;
     }
-  };
+  }
 
-  const schedule = (delayMs) => {
-    if (!Number.isFinite(refreshSeconds) || refreshSeconds <= 0) return;
+  function withJitter(delayMs) {
+    const jitter = Math.floor(Math.random() * POLL_JITTER_MS);
+    return delayMs + jitter;
+  }
+
+  function computeDelay(baseDelayMs) {
+    if (consecutiveFailures <= 0) {
+      return withJitter(baseDelayMs);
+    }
+
+    const failureDelay = Math.min(
+      FAILURE_BACKOFF_MAX_MS,
+      FAILURE_BACKOFF_BASE_MS * 2 ** (consecutiveFailures - 1),
+    );
+
+    return withJitter(Math.max(baseDelayMs, failureDelay));
+  }
+
+  function schedule(delayMs) {
     if (paused || document.visibilityState === "hidden") return;
-    clearTimer();
-    const delay = typeof delayMs === "number" ? delayMs : refreshSeconds * 1000;
-    timer = window.setTimeout(async () => {
-      await refresh();
-      schedule();
-    }, delay);
-  };
 
-  const pause = () => {
+    clearTimer();
+    const base =
+      typeof delayMs === "number" ? delayMs : refreshSeconds * 1000;
+    timer = window.setTimeout(() => {
+      void poll();
+    }, computeDelay(base));
+  }
+
+  async function poll() {
+    if (paused || document.visibilityState === "hidden") return;
+
+    try {
+      if (!hasFetchedBuckets) {
+        await refreshFull();
+      } else {
+        const remoteCount = await fetchCount();
+        if (lastKnownCount === null || remoteCount !== lastKnownCount) {
+          await refreshFull();
+        }
+      }
+
+      consecutiveFailures = 0;
+    } catch (err) {
+      if (isAbortError(err)) {
+        return;
+      }
+      consecutiveFailures += 1;
+    }
+
+    schedule();
+  }
+
+  function pause() {
     paused = true;
     if (controller) controller.abort();
     clearTimer();
-  };
+  }
 
-  const resume = () => {
+  function resume() {
     if (!paused && timer) return;
     paused = false;
-    schedule(resumeBackoffMs);
-  };
+    schedule(RESUME_BACKOFF_MS);
+  }
 
-  refresh();
-  schedule();
+  void poll();
+
   document.addEventListener("jg-i18n-ready", () => {
     if (!hasFetchedBuckets) return;
     render(latestBuckets);

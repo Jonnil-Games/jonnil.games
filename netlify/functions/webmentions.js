@@ -1,4 +1,16 @@
-const ALLOWED_HOST = "jonnil.games";
+const MAX_TARGET_LENGTH = 2048;
+const FULL_CACHE_CONTROL = "public, max-age=30";
+const COUNT_CACHE_CONTROL = "public, max-age=120";
+const ALLOWED_TARGET_HOST_SUFFIXES = [
+  ".jonnil.games",
+  ".jonnil-games.netlify.app",
+];
+
+function hasAllowedHost(hostname) {
+  const host = `.${String(hostname || "").trim().toLowerCase()}`;
+  if (!host || host === ".") return false;
+  return ALLOWED_TARGET_HOST_SUFFIXES.some((suffix) => host.endsWith(suffix));
+}
 
 function isPrivateMention(item) {
   if (!item) return false;
@@ -36,16 +48,21 @@ function countMentions(payload) {
 }
 
 function isAllowedTarget(target) {
+  const raw = String(target || "").trim();
+  if (!raw || raw.length > MAX_TARGET_LENGTH) return false;
+
   let url;
   try {
-    url = new URL(target);
+    url = new URL(raw);
   } catch {
     return false;
   }
 
   if (!["http:", "https:"].includes(url.protocol)) return false;
-  const host = url.hostname.toLowerCase();
-  return host === ALLOWED_HOST || host.endsWith(`.${ALLOWED_HOST}`);
+  if (url.username || url.password) return false;
+  if (url.port) return false;
+  if (!hasAllowedHost(url.hostname)) return false;
+  return Boolean(url.hostname);
 }
 
 export const handler = async (event) => {
@@ -91,7 +108,7 @@ export const handler = async (event) => {
         statusCode: res.status,
         headers: {
           "Content-Type": "application/json",
-          "Cache-Control": "public, max-age=30",
+          "Cache-Control": FULL_CACHE_CONTROL,
         },
         body: JSON.stringify({ error: "Webmention upstream request failed" }),
       };
@@ -104,7 +121,7 @@ export const handler = async (event) => {
         statusCode: 200,
         headers: {
           "Content-Type": "application/json",
-          "Cache-Control": "public, max-age=30",
+          "Cache-Control": FULL_CACHE_CONTROL,
         },
         body: JSON.stringify(sanitizedPayload),
       };
@@ -114,7 +131,7 @@ export const handler = async (event) => {
       statusCode: 200,
       headers: {
         "Content-Type": "application/json",
-        "Cache-Control": "public, max-age=30",
+        "Cache-Control": COUNT_CACHE_CONTROL,
       },
       body: JSON.stringify({ count: countMentions(sanitizedPayload) }),
     };

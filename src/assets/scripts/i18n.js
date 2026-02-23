@@ -26,6 +26,7 @@
     en: "English",
     sv: "Svenska",
   };
+  const I18N_HTML_ALLOWED_TAGS = new Set(["b", "br", "em", "i", "strong"]);
   const cache = new Map();
 
   let setting = null; // auto | en | sv
@@ -116,6 +117,37 @@
     });
   }
 
+  function sanitizeI18nHtml(rawHtml) {
+    const template = document.createElement("template");
+    template.innerHTML = String(rawHtml || "");
+
+    const walker = document.createTreeWalker(
+      template.content,
+      NodeFilter.SHOW_ELEMENT,
+    );
+    const elements = [];
+    let node = walker.nextNode();
+    while (node) {
+      elements.push(node);
+      node = walker.nextNode();
+    }
+
+    elements.forEach((element) => {
+      const tag = element.tagName.toLowerCase();
+      if (!I18N_HTML_ALLOWED_TAGS.has(tag)) {
+        const text = document.createTextNode(element.textContent || "");
+        element.replaceWith(text);
+        return;
+      }
+
+      while (element.attributes.length > 0) {
+        element.removeAttribute(element.attributes[0].name);
+      }
+    });
+
+    return template.innerHTML;
+  }
+
   function applyTranslations(root) {
     const scope = root || document;
 
@@ -134,7 +166,9 @@
         el.dataset.i18nHtmlDefault = el.innerHTML || "";
       }
       const value = translate(key);
-      el.innerHTML = value != null ? value : el.dataset.i18nHtmlDefault;
+      const fallbackHtml = sanitizeI18nHtml(el.dataset.i18nHtmlDefault);
+      el.innerHTML =
+        value != null ? sanitizeI18nHtml(value) : fallbackHtml;
     });
 
     scope.querySelectorAll("[data-i18n-attr]").forEach((el) => {
@@ -203,6 +237,8 @@
 
     applyTranslations(document);
     updateLangSwitcher();
+    document.documentElement.removeAttribute("data-i18n-pending");
+    document.documentElement.setAttribute("data-i18n-ready", "true");
 
     const event = new CustomEvent("jg-i18n-ready", {
       detail: {

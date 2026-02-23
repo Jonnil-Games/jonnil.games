@@ -9,6 +9,11 @@
   box-sizing: border-box;
 }
 
+html[data-i18n-pending="true"] [data-i18n],
+html[data-i18n-pending="true"] [data-i18n-html] {
+  visibility: hidden;
+}
+
 /* Body Styling */
 body {
   font-family: "Poppins", Arial, sans-serif;

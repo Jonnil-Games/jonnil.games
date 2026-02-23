@@ -28,9 +28,15 @@
         const linkBase = normalizePath(linkPath);
         const currentBase = normalizePath(currentPath);
         if (!linkBase || linkBase === "/") return false;
+        if (
+            linkBase === "/games" &&
+            (currentBase === "/games" || currentBase.startsWith("/games/"))
+        ) {
+            return true;
+        }
         return (
             currentBase === linkBase ||
-            currentPath.startsWith(`${linkBase}/`)
+            currentBase.startsWith(`${linkBase}/`)
         );
     }
     const desktopLinks = root.querySelectorAll(".nav-links a");
