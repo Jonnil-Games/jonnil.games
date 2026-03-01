@@ -375,6 +375,9 @@
     },
     "hero": {
       "titleAlt": "Sticky Paws"
+    },
+    "changelog": {
+      "cta": "Senaste changelog"
     }
   },
   "asylum": {
@@ -426,10 +429,11 @@
     "contact": "Kontakt",
     "fromSweden": "Med 💖 från Sverige!",
     "emailLabel": "E-post:",
-    "rights": "Jonnil Games. Alla rättigheter förbehållna.",
+    "rights": "Jonnil Games. Licensierad under CC BY-NC-SA 4.0.",
     "privacy": "Integritetspolicy",
     "terms": "Användarvillkor",
-    "copyright": "Upphovsrätt"
+    "copyright": "Upphovsrätt",
+    "licenseAria": "Creative Commons Erkännande-IckeKommersiell-DelaLika 4.0 Internationell"
   },
   "nav": {
     "home": "Hem",
