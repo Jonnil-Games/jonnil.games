@@ -8,7 +8,7 @@ categories:
   - "Site Update"
 syndicationComplete: true
 syndication:
-  bluesky: "https://bsky.app/profile/jonnil.games/post/3mfzs4i7rdy2m"
+  bluesky: "https://bsky.app/profile/jonnil.games/post/3mfzsj3sdyk2t"
 syndicationStatus:
   bluesky: "confirmed"
 ---
