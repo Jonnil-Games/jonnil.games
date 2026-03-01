@@ -1422,6 +1422,7 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
             canonicalUrl,
             webmentionTarget,
             syndicationLinks: normalizeSyndication(attributes.syndication),
+            blueskyDiscussionUrl: syndicationMap["bluesky"] || "https://bsky.app/profile/jonnil.games",
             webmentions,
             hasWebmentions,
             bridgyPublishTargets,

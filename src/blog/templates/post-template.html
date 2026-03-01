@@ -289,22 +289,9 @@
         </div>
         {{/if}}
 
-        {{#if syndicationLinks.length}}
-        <div class="blog-syndication">
-          <span class="blog-syndication-label" data-i18n="blog.alsoOn"
-            >Also on:</span
-          >
-          <div class="blog-syndication-links">
-            {{#each syndicationLinks}}
-            <a class="u-syndication" href="{{url}}" rel="noopener noreferrer"
-              >{{label}}</a
-            >
-            {{/each}}
-          </div>
-        </div>
-        {{/if}}
+        {{#if syndicationLinks.length}}{{#each syndicationLinks}}<a class="u-syndication" href="{{url}}" rel="noopener noreferrer" hidden></a>{{/each}}{{/if}}
 
-        <drop capsule="continue-discussion"></drop>
+        <drop capsule="continue-discussion" data-bluesky-url="{{blueskyDiscussionUrl}}"></drop>
       </article>
     </main>
 
