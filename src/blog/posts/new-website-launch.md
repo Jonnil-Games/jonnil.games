@@ -1,14 +1,21 @@
 ---
 title: "New Website!"
-date: 2026-03-01
-author: Cyan
+date: "2026-03-01"
+author: "Cyan"
 excerpt: "We've had a new website for a few weeks. Here's what happened to the old one."
 categories:
-  - News
-  - Site Update
-syndicate: bluesky
+  - "News"
+  - "Site Update"
+syndicate: "bluesky"
+syndication:
+  {}
+syndicationStatus:
+  bluesky: "requested"
+syndicationRequestedAt:
+  bluesky: "2026-03-01T22:30:31.372Z"
+syndicationCheckedAt:
+  bluesky: "2026-03-01T22:30:31.372Z"
 ---
-
 Hey! 👋
 
 We have a new website! It's actually been live for a few weeks already, I just haven't gotten around to posting about it as I've been busy fixing things on the backend.
