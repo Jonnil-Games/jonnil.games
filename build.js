@@ -1475,6 +1475,19 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
     JSON.stringify(recentPosts, null, 2),
   );
 
+  const stickyChangelogPost = blogIndex.find((post) => {
+    const cats = post.categories.map((c) => c.toLowerCase());
+    return cats.includes("sticky paws") && cats.includes("changelog");
+  });
+  await fs.writeFile(
+    path.join(BLOG_OUTPUT_DIR, "sticky-paws-changelog.json"),
+    JSON.stringify(
+      stickyChangelogPost ? { url: stickyChangelogPost.url } : {},
+      null,
+      2,
+    ),
+  );
+
   const meta = {
     title: process.env.BLOG_TITLE || "Jonnil Games Blog",
     description:

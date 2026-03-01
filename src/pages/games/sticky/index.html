@@ -133,6 +133,16 @@
         </p>
       </div>
 
+      <div class="sticky-changelog-cta" id="sticky-changelog-cta" hidden>
+        <a
+          id="sticky-changelog-link"
+          href="#"
+          class="button secondary-button"
+        >
+          <span data-i18n="sticky.changelog.cta">Latest Changelog</span>
+        </a>
+      </div>
+
       <section class="steam-embed" aria-labelledby="steam-widget">
         <h2
           id="steam-widget"
@@ -388,6 +398,23 @@
             closeLightbox();
           }
         });
+      })();
+    </script>
+    <script>
+      (function () {
+        fetch("/blog/sticky-paws-changelog.json")
+          .then(function (res) {
+            return res.ok ? res.json() : null;
+          })
+          .then(function (data) {
+            if (!data || !data.url) return;
+            var cta = document.getElementById("sticky-changelog-cta");
+            var link = document.getElementById("sticky-changelog-link");
+            if (!cta || !link) return;
+            link.href = data.url;
+            cta.hidden = false;
+          })
+          .catch(function () {});
       })();
     </script>
   </body>
