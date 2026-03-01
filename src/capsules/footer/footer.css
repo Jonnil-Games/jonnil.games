@@ -1,2 +1,28 @@
 /* Footer capsule styles are defined in base.css.
    Keep this file for small, targeted overrides if needed. */
+
+.footer-bottom-copy {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25em;
+}
+
+.footer-license-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  border-radius: 3px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.footer-license-link:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.7);
+  outline-offset: 2px;
+}
+
+.cc-icon {
+  display: inline-block;
+  border-radius: 50%;
+}
