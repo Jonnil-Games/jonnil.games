@@ -1421,6 +1421,9 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
             siteUrl,
             canonicalUrl,
             webmentionTarget,
+            ogImage: attributes.image
+              ? toAbsoluteUrl(siteUrl, attributes.image)
+              : `${siteUrl}/images/og-preview.png`,
             syndicationLinks: normalizeSyndication(attributes.syndication),
             blueskyDiscussionUrl: syndicationMap["bluesky"] || "https://bsky.app/profile/jonnil.games",
             webmentions,

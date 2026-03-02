@@ -25,7 +25,11 @@ import {
   shouldMarkRequested,
 } from "../../lib/syndication-policy.js";
 import { sanitizeExternalUrl } from "../../lib/sanitize-url.js";
-import { canonicalizeUrl } from "../../lib/url.js";
+import { canonicalizeUrl, toAbsoluteUrl } from "../../lib/url.js";
+import {
+  DISCORD_TARGETS,
+  sendDiscordWebhook,
+} from "../../lib/discord-syndication.js";
 import { getCanonicalBlogPath, getSiteUrl } from "../../lib/site-url.js";
 
 const POSTS_DIR = "src/blog/posts";
@@ -141,7 +145,7 @@ async function scanLocalPostsForWork() {
     }
 
     const syndicationMap = normalizeSyndicationMap(attributes.syndication);
-    const syndicateTargets = normalizeSyndicateTargets(attributes.syndicate);
+    const syndicateTargets = normalizeSyndicateTargets(attributes.syndicate, DISCORD_TARGETS);
     const statusMap = normalizeStatusMap(attributes.syndicationStatus);
     const effectiveSyndicationMap = { ...syndicationMap };
     for (const target of syndicateTargets) {
@@ -155,7 +159,7 @@ async function scanLocalPostsForWork() {
 
     const pendingTargets = syndicateTargets.filter(
       (target) =>
-        BRIDGY_PUBLISH_TARGETS[target] &&
+        (BRIDGY_PUBLISH_TARGETS[target] || DISCORD_TARGETS[target]) &&
         !getSyndicationUrl(effectiveSyndicationMap, target),
     );
     summary.pendingTotal += pendingTargets.length;
@@ -165,7 +169,8 @@ async function scanLocalPostsForWork() {
       );
       const needsStatusConfirm = Object.keys(effectiveSyndicationMap).some(
         (target) =>
-          BRIDGY_PUBLISH_TARGETS[target] && statusMap[target] !== "confirmed",
+          (BRIDGY_PUBLISH_TARGETS[target] || DISCORD_TARGETS[target]) &&
+          statusMap[target] !== "confirmed",
       );
       summary.syncNeeded = needsSyndicateCleanup || needsStatusConfirm;
     }
@@ -509,11 +514,11 @@ export async function runSyndicationPostDeploy() {
       const parsedPost = fm(fetched.content);
       const attributes = parsedPost.attributes || {};
       const syndicationMap = normalizeSyndicationMap(attributes.syndication);
-      const syndicateTargets = normalizeSyndicateTargets(attributes.syndicate);
+      const syndicateTargets = normalizeSyndicateTargets(attributes.syndicate, DISCORD_TARGETS);
       const statusMap = normalizeStatusMap(attributes.syndicationStatus);
       const pendingTargets = syndicateTargets.filter(
         (target) =>
-          BRIDGY_PUBLISH_TARGETS[target] &&
+          (BRIDGY_PUBLISH_TARGETS[target] || DISCORD_TARGETS[target]) &&
           !getSyndicationUrl(syndicationMap, target),
       );
       pendingTotal += pendingTargets.length;
@@ -523,7 +528,8 @@ export async function runSyndicationPostDeploy() {
         );
         const needsStatusConfirm = Object.keys(syndicationMap).some(
           (target) =>
-            BRIDGY_PUBLISH_TARGETS[target] && statusMap[target] !== "confirmed",
+            (BRIDGY_PUBLISH_TARGETS[target] || DISCORD_TARGETS[target]) &&
+            statusMap[target] !== "confirmed",
         );
         syncNeeded = needsSyndicateCleanup || needsStatusConfirm;
       }
@@ -555,7 +561,7 @@ export async function runSyndicationPostDeploy() {
     }
     let currentSha = post.sha;
     const slug = post.filePath.split("/").pop()?.replace(/\.md$/, "") || "";
-    const syndicateTargets = normalizeSyndicateTargets(attributes.syndicate);
+    const syndicateTargets = normalizeSyndicateTargets(attributes.syndicate, DISCORD_TARGETS);
     const syndicationMap = normalizeSyndicationMap(attributes.syndication);
     const statusMap = normalizeStatusMap(attributes.syndicationStatus);
     const requestedAtMap = normalizeTimestampMap(
@@ -589,7 +595,7 @@ export async function runSyndicationPostDeploy() {
     }
 
     for (const target of Object.keys(syndicationMap)) {
-      if (!BRIDGY_PUBLISH_TARGETS[target]) continue;
+      if (!BRIDGY_PUBLISH_TARGETS[target] && !DISCORD_TARGETS[target]) continue;
       if (statusMap[target] !== "confirmed") {
         const next = pickForwardStatus(statusMap[target], "confirmed");
         if (next !== statusMap[target]) {
@@ -616,6 +622,7 @@ export async function runSyndicationPostDeploy() {
     }
 
     const pendingTargets = [];
+    const discordPendingTargets = [];
     for (const target of syndicateTargets) {
       const syndicatedUrl = getSyndicationUrl(syndicationMap, target);
       const currentStatus = normalizeStatusValue(statusMap[target]);
@@ -693,6 +700,11 @@ export async function runSyndicationPostDeploy() {
         }
 
         if (requestedAction.action === "confirm") {
+          if (DISCORD_TARGETS[target]) {
+            // Discord resolves synchronously — re-queue as pending for a direct retry
+            discordPendingTargets.push(target);
+            continue;
+          }
           const lease = await acquireConfirmLease({
             filePath,
             branch,
@@ -774,6 +786,8 @@ export async function runSyndicationPostDeploy() {
       }
       if (BRIDGY_PUBLISH_TARGETS[target]) {
         pendingTargets.push(target);
+      } else if (DISCORD_TARGETS[target]) {
+        discordPendingTargets.push(target);
       }
     }
 
@@ -876,6 +890,111 @@ export async function runSyndicationPostDeploy() {
           );
           dirty = true;
           touch(targetKey);
+        }
+      }
+    }
+
+    if (discordPendingTargets.length > 0) {
+      if (!process.env.DISCORD_WEBHOOK_URL) {
+        console.warn("Discord syndication: DISCORD_WEBHOOK_URL not set, skipping");
+      } else {
+        const postImageUrl = attributes.image
+          ? toAbsoluteUrl(siteUrl, attributes.image)
+          : null;
+        for (const targetKey of discordPendingTargets) {
+          const status = normalizeStatusValue(statusMap[targetKey]) || "pending";
+          const requestedAt = requestedAtMap[targetKey];
+          const ageHours = hoursSince(requestedAt, now);
+
+          if (status === "failed" && ageHours < FAILED_BACKOFF_HOURS) {
+            continue;
+          }
+
+          const lease = await acquirePublishLease({
+            filePath,
+            branch,
+            target: targetKey,
+            now,
+          });
+          if (!lease.acquired) {
+            continue;
+          }
+          currentSha = lease.sha;
+
+          const leasedStatus =
+            pickForwardStatus(statusMap[targetKey], "requested") || "requested";
+          if (leasedStatus !== statusMap[targetKey]) {
+            statusMap[targetKey] = leasedStatus;
+            dirty = true;
+            touch(targetKey);
+          }
+          if (requestedAtMap[targetKey] !== lease.nowIso) {
+            requestedAtMap[targetKey] = lease.nowIso;
+            dirty = true;
+            touch(targetKey);
+          }
+          if (checkedAtMap[targetKey] !== lease.nowIso) {
+            checkedAtMap[targetKey] = lease.nowIso;
+            dirty = true;
+            touch(targetKey);
+          }
+          if (lastErrorMap[targetKey]) {
+            delete lastErrorMap[targetKey];
+            dirty = true;
+            touch(targetKey);
+          }
+
+          const result = await sendDiscordWebhook({
+            title: attributes.title || slug,
+            excerpt: attributes.excerpt || "",
+            url: canonicalUrl,
+            imageUrl: postImageUrl,
+          });
+
+          if (result.ok) {
+            if (!syndicationMap[targetKey]) {
+              syndicationMap[targetKey] = result.syndicatedUrl || "https://discord.com/";
+              dirty = true;
+              touch(targetKey);
+            }
+            const next = pickForwardStatus(statusMap[targetKey], "confirmed");
+            if (next !== statusMap[targetKey]) {
+              statusMap[targetKey] = next;
+              dirty = true;
+              touch(targetKey);
+            }
+            delete requestedAtMap[targetKey];
+            delete checkedAtMap[targetKey];
+            delete lastErrorMap[targetKey];
+            touch(targetKey);
+            continue;
+          }
+
+          if (shouldMarkRequested(result)) {
+            const next = pickForwardStatus(statusMap[targetKey], "requested");
+            if (next !== statusMap[targetKey]) {
+              statusMap[targetKey] = next;
+              dirty = true;
+              touch(targetKey);
+            }
+            requestedAtMap[targetKey] = lease.nowIso;
+            checkedAtMap[targetKey] = lease.nowIso;
+            lastErrorMap[targetKey] = summarizeSyndicationResult(result, "publish");
+            dirty = true;
+            touch(targetKey);
+          } else {
+            const next = pickForwardStatus(statusMap[targetKey], "failed");
+            if (next !== statusMap[targetKey]) {
+              statusMap[targetKey] = next;
+              dirty = true;
+              touch(targetKey);
+            }
+            requestedAtMap[targetKey] = lease.nowIso;
+            delete checkedAtMap[targetKey];
+            lastErrorMap[targetKey] = summarizeSyndicationResult(result, "publish");
+            dirty = true;
+            touch(targetKey);
+          }
         }
       }
     }
@@ -1068,7 +1187,7 @@ export async function runSyndicationPostDeploy() {
     report.updated.push({
       file: filePath,
       updatedTargets: Object.keys(syndicationMap).filter(
-        (key) => BRIDGY_PUBLISH_TARGETS[key],
+        (key) => BRIDGY_PUBLISH_TARGETS[key] || DISCORD_TARGETS[key],
       ),
     });
     committedWriteback = true;

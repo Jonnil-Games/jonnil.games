@@ -124,10 +124,11 @@
 }
 
 .post-content img {
+  display: block;
   max-width: 100%;
   height: auto;
   border-radius: var(--radius-md);
-  margin: var(--spacing-xl) 0;
+  margin: var(--spacing-xl) auto;
   box-shadow: var(--shadow-md);
 }
 
@@ -144,6 +145,15 @@
   padding: 0.2em 0.4em;
   border-radius: var(--radius-sm);
   font-size: 0.9em;
+}
+
+.post-content hr {
+  border: none;
+  width: 60px;
+  height: 4px;
+  background-color: var(--primary);
+  border-radius: var(--radius-full);
+  margin: var(--spacing-2xl) 0;
 }
 
 .post-content blockquote {
