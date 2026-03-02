@@ -13,6 +13,11 @@ syndication:
   bluesky: "https://bsky.app/profile/jonnil.games/post/3mfzsj3sdyk2t"
 syndicationStatus:
   bluesky: "confirmed"
+  discord: "requested"
+syndicationRequestedAt:
+  discord: "2026-03-02T02:20:44.150Z"
+syndicationCheckedAt:
+  discord: "2026-03-02T02:20:44.150Z"
 ---
 Hey! 👋
 
