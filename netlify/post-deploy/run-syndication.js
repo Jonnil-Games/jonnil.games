@@ -900,7 +900,7 @@ export async function runSyndicationPostDeploy() {
       } else {
         const postImageUrl = attributes.image
           ? toAbsoluteUrl(siteUrl, attributes.image)
-          : null;
+          : `${siteUrl}/images/og-preview.png`;
         for (const targetKey of discordPendingTargets) {
           const status = normalizeStatusValue(statusMap[targetKey]) || "pending";
           const requestedAt = requestedAtMap[targetKey];
