@@ -6,18 +6,13 @@ excerpt: "We've had a new website for a few weeks. Here's what happened to the o
 categories:
   - "News"
   - "Site Update"
-syndicate:
-  - "discord"
 syndicationComplete: true
 syndication:
   bluesky: "https://bsky.app/profile/jonnil.games/post/3mfzsj3sdyk2t"
+  discord: "https://discord.com/"
 syndicationStatus:
   bluesky: "confirmed"
-  discord: "requested"
-syndicationRequestedAt:
-  discord: "2026-03-02T02:20:44.150Z"
-syndicationCheckedAt:
-  discord: "2026-03-02T02:20:44.150Z"
+  discord: "confirmed"
 ---
 Hey! 👋
 
