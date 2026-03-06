@@ -4,8 +4,8 @@ date: "2026-03-05"
 author: "Jonnil"
 excerpt: "A new version of Sticky Paws is here with bug fixes, online improvements, quality of life changes, and more!"
 categories:
-  - "News"
   - "Sticky Paws"
+  - "Changelog"
 syndicate:
   - "bluesky"
 syndication:
