@@ -13,10 +13,13 @@ syndication:
   {}
 syndicationStatus:
   bluesky: "requested"
+  discord: "requested"
 syndicationRequestedAt:
   bluesky: "2026-03-06T02:47:01.288Z"
+  discord: "2026-03-06T02:47:01.288Z"
 syndicationCheckedAt:
   bluesky: "2026-03-06T02:47:01.288Z"
+  discord: "2026-03-06T02:47:01.288Z"
 ---
 <div style="text-align:center"><iframe src="https://store.steampowered.com/widget/1129090/" title="Sticky Paws on Steam" loading="lazy" frameborder="0" width="600" height="190"></iframe></div>
 
