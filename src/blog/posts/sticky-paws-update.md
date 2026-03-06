@@ -7,17 +7,13 @@ image: "/images/sticky-paws-q1-2026.png"
 categories:
   - "Sticky Paws"
   - "Changelog"
-syndicate:
-  - "bluesky"
+syndicationComplete: true
 syndication:
+  bluesky: "https://bsky.app/profile/jonnil.games/post/3mgedud3x5k25"
   discord: "https://discord.com/"
 syndicationStatus:
-  bluesky: "requested"
+  bluesky: "confirmed"
   discord: "confirmed"
-syndicationRequestedAt:
-  bluesky: "2026-03-06T03:12:28.776Z"
-syndicationLastError:
-  bluesky: "confirm-status-400"
 ---
 <div style="text-align:center"><iframe src="https://store.steampowered.com/widget/1129090/" title="Sticky Paws on Steam" loading="lazy" frameborder="0" width="600" height="190"></iframe></div>
 
