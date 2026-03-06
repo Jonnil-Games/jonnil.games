@@ -18,6 +18,8 @@ syndicationRequestedAt:
   bluesky: "2026-03-06T02:59:58.131Z"
 syndicationLastError:
   bluesky: "confirm-status-400"
+syndicationCheckedAt:
+  bluesky: "2026-03-06T03:00:33.495Z"
 ---
 <div style="text-align:center"><iframe src="https://store.steampowered.com/widget/1129090/" title="Sticky Paws on Steam" loading="lazy" frameborder="0" width="600" height="190"></iframe></div>
 
