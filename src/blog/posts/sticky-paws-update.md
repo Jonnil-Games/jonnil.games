@@ -3,22 +3,13 @@ title: "What's new: Q1 2026"
 date: "2026-03-05"
 author: "Jonnil"
 excerpt: "A new version of Sticky Paws is here with bug fixes, online improvements, quality of life changes, and more!"
+image: "/images/sticky-paws-q1-2026.png"
 categories:
   - "Sticky Paws"
   - "Changelog"
 syndicate:
   - "bluesky"
-syndication:
-  discord: "https://discord.com/"
-syndicationStatus:
-  bluesky: "requested"
-  discord: "confirmed"
-syndicationRequestedAt:
-  bluesky: "2026-03-06T02:47:01.288Z"
-syndicationCheckedAt:
-  bluesky: "2026-03-06T02:47:01.288Z"
-syndicationLastError:
-  bluesky: "publish-timeout"
+  - "discord"
 ---
 <div style="text-align:center"><iframe src="https://store.steampowered.com/widget/1129090/" title="Sticky Paws on Steam" loading="lazy" frameborder="0" width="600" height="190"></iframe></div>
 
