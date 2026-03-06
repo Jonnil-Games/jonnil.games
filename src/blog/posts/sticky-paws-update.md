@@ -15,11 +15,9 @@ syndicationStatus:
   bluesky: "requested"
   discord: "confirmed"
 syndicationRequestedAt:
-  bluesky: "2026-03-06T03:09:27.806Z"
+  bluesky: "2026-03-06T03:10:03.397Z"
 syndicationLastError:
   bluesky: "confirm-status-400"
-syndicationCheckedAt:
-  bluesky: "2026-03-06T03:10:03.397Z"
 ---
 <div style="text-align:center"><iframe src="https://store.steampowered.com/widget/1129090/" title="Sticky Paws on Steam" loading="lazy" frameborder="0" width="600" height="190"></iframe></div>
 
