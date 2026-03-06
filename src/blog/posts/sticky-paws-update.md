@@ -46,7 +46,7 @@ Here is the changelog for the latest Sticky Paws version:
 - Simplified login/token validation logic.
 - Optimized effects to improve thumbnail transparency.
 - Standardized online debug logging.
-- Updated external links for upcoming website rebuild. (ETA: soon™)
+- Updated external links for upcoming website rebuild.
 - Updated Demo version so it's up-to-date. (The old version hadn't been updated since 2022!)
 - Updated project for latest GMS2 beta (replaced deprecated functions, updated camera/data usage)
 
@@ -93,7 +93,7 @@ Här är ändringsloggen för den senaste Sticky Paws versionen:
 - Förenklad logg-in/tokenvalideringslogik.
 - Optimerade effekter för att förbättra miniatyrbildens transparens.
 - Standardiserade online-felsökningsloggning.
-- Uppdaterade externa länkar inför kommande ombbyggnad av webbplatsen. (Beräknad ankomsttid: snart™)
+- Uppdaterade externa länkar inför kommande ombbyggnad av webbplatsen.
 - Uppdaterad demoversion så att den är aktuell. (Den gamla versionen hade inte uppdaterats sedan 2022!)
 - Uppdaterade projektet för senaste GMS2 beta (ersatte föråldrade funktioner, uppdaterad kamera/dataanvändning)
 
