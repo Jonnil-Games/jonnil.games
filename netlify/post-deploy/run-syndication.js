@@ -1058,7 +1058,7 @@ export async function runSyndicationPostDeploy() {
     }
 
     const updated = buildFrontmatter(attributes, body);
-    const message = `${COMMIT_PREFIX} update ${slug}`;
+    const message = toSkipCiMessage(`${COMMIT_PREFIX} update ${slug}`);
     const res = await updateFileContent(
       filePath,
       branch,
