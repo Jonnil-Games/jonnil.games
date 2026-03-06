@@ -6,6 +6,9 @@ excerpt: "A new version of Sticky Paws is here with bug fixes, online improvemen
 categories:
   - "News"
   - "Sticky Paws"
+syndicate:
+  - "bluesky"
+  - "discord"
 ---
 <div style="text-align:center"><iframe src="https://store.steampowered.com/widget/1129090/" title="Sticky Paws on Steam" loading="lazy" frameborder="0" width="600" height="190"></iframe></div>
 
