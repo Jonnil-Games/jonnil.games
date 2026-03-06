@@ -973,6 +973,7 @@ function stripMarkdown(markdown = "") {
   return String(markdown)
     .replace(/```[\s\S]*?```/g, "")
     .replace(/`[^`]*`/g, "")
+    .replace(/<[^>]+>/g, "")
     .replace(/!\[[^\]]*\]\([^\)]+\)/g, "")
     .replace(/\[[^\]]+\]\([^\)]+\)/g, "")
     .replace(/[#>*_~\-]+/g, " ")
