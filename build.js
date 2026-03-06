@@ -1151,6 +1151,7 @@ function buildLocalizedVariants(attributes, body, fallbackTitle, source) {
       content: marked(markdownBody),
       excerpt: toExcerpt(
         (parsedTranslation && parsedTranslation.excerpt) ||
+          attributes.excerpt ||
           "",
         markdownBody,
       ),
