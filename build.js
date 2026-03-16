@@ -202,7 +202,7 @@ function normalizeSyndication(raw) {
   return links;
 }
 
-function resolveWebmentionTarget(attributes, canonicalUrl, syndicationMap) {
+function resolveWebmentionTarget(attributes, canonicalUrl) {
   if (!attributes || typeof attributes !== "object") return canonicalUrl;
 
   const directCandidates = [
@@ -221,18 +221,6 @@ function resolveWebmentionTarget(attributes, canonicalUrl, syndicationMap) {
   for (const candidate of directCandidates) {
     const safe = sanitizeExternalUrl(candidate);
     if (safe) return safe;
-  }
-
-  if (syndicationMap && typeof syndicationMap === "object") {
-    for (const key of Object.keys(BRIDGY_PUBLISH_TARGETS)) {
-      const safe = sanitizeExternalUrl(syndicationMap[key]);
-      if (safe) return safe;
-    }
-
-    for (const value of Object.values(syndicationMap)) {
-      const safe = sanitizeExternalUrl(value);
-      if (safe) return safe;
-    }
   }
 
   return canonicalUrl;
@@ -1384,7 +1372,6 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
         const webmentionTarget = resolveWebmentionTarget(
           attributes,
           canonicalUrl,
-          syndicationMap,
         );
 
         const webmentionPayload = await fetchWebmentions(
