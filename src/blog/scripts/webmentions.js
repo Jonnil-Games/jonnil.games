@@ -7,6 +7,8 @@ import { sanitizeExternalUrl } from "/lib/sanitize-url.js";
   const target = sanitizeExternalUrl(container.dataset.target);
   if (!target) return;
 
+  const reactionsContainer = document.getElementById("post-reactions");
+
   const DEFAULT_REFRESH_SECONDS = 180;
   const MIN_REFRESH_SECONDS = 60;
   const MAX_REFRESH_SECONDS = 900;
@@ -149,53 +151,62 @@ import { sanitizeExternalUrl } from "/lib/sanitize-url.js";
     return buckets;
   };
 
-  const renderPeopleGroup = (labelKey, labelFallback, items, className) => {
-    const group = document.createElement("div");
-    group.className = `webmentions-group ${className}`;
+  const REACTION_TYPES = [
+    { key: "likes", iconClass: "ri-heart-3-fill", iconColor: "#e11d48", labelKey: "blog.webmentions.likes", labelFallback: "Likes" },
+    { key: "reposts", iconClass: "ri-repeat-fill", iconColor: "#16a34a", labelKey: "blog.webmentions.reposts", labelFallback: "Reposts" },
+    { key: "mentions", iconClass: "ri-at-line", iconColor: "#2563eb", labelKey: "blog.webmentions.mentions", labelFallback: "Mentions" },
+    { key: "bookmarks", iconClass: "ri-bookmark-fill", iconColor: "#d97706", labelKey: "blog.webmentions.bookmarks", labelFallback: "Bookmarks" },
+  ];
 
-    const heading = document.createElement("h3");
-    heading.textContent = `${t(labelKey, labelFallback)} (${items.length})`;
-    group.appendChild(heading);
+  const renderReactions = (buckets) => {
+    if (!reactionsContainer) return;
+    reactionsContainer.textContent = "";
 
-    const list = document.createElement("ul");
-    list.className = "webmentions-people";
-
-    for (const item of items) {
-      const li = document.createElement("li");
-      const linkUrl = item.authorLink;
-      const hasLink = Boolean(linkUrl);
-      const wrapper = hasLink
-        ? document.createElement("a")
-        : document.createElement("span");
-      if (hasLink) {
-        wrapper.href = linkUrl;
-        wrapper.rel = "nofollow ugc";
-      }
-
-      const name = document.createElement("span");
-      name.textContent = item.authorName || "Someone";
-      wrapper.appendChild(name);
-
-      li.appendChild(wrapper);
-      list.appendChild(li);
+    const active = REACTION_TYPES.filter(({ key }) => buckets[key]?.length > 0);
+    if (active.length === 0) {
+      reactionsContainer.hidden = true;
+      return;
     }
 
-    group.appendChild(list);
-    return group;
+    reactionsContainer.hidden = false;
+    for (const { key, iconClass, iconColor, labelKey, labelFallback } of active) {
+      const count = buckets[key].length;
+      const pill = document.createElement("span");
+      pill.className = "post-reaction";
+      pill.setAttribute("aria-label", `${count} ${t(labelKey, labelFallback)}`);
+
+      const icon = document.createElement("i");
+      icon.className = iconClass;
+      icon.style.color = iconColor;
+      icon.setAttribute("aria-hidden", "true");
+      pill.appendChild(icon);
+      pill.appendChild(document.createTextNode(` ${count}`));
+
+      reactionsContainer.appendChild(pill);
+    }
   };
 
-  const renderRepliesGroup = (items) => {
-    const group = document.createElement("div");
-    group.className = "webmentions-group webmentions-replies";
+  const render = (buckets) => {
+    renderReactions(buckets);
 
-    const heading = document.createElement("h3");
-    heading.textContent = `${t("blog.webmentions.replies", "Replies")} (${items.length})`;
-    group.appendChild(heading);
+    container.textContent = "";
+
+    const title = document.createElement("h2");
+    title.textContent = t("blog.webmentions.title", "Comments");
+    container.appendChild(title);
+
+    if (buckets.replies.length === 0) {
+      const empty = document.createElement("p");
+      empty.className = "webmentions-empty";
+      empty.textContent = t("blog.webmentions.empty", "No comments yet.");
+      container.appendChild(empty);
+      return;
+    }
 
     const list = document.createElement("ul");
     list.className = "webmentions-replies";
 
-    for (const item of items) {
+    for (const item of buckets.replies) {
       const li = document.createElement("li");
       li.className = "webmention-reply";
 
@@ -250,69 +261,7 @@ import { sanitizeExternalUrl } from "/lib/sanitize-url.js";
       list.appendChild(li);
     }
 
-    group.appendChild(list);
-    return group;
-  };
-
-  const render = (buckets) => {
-    container.textContent = "";
-
-    const title = document.createElement("h2");
-    title.textContent = t("blog.webmentions.title", "Webmentions");
-    container.appendChild(title);
-
-    const hasAny = Object.values(buckets).some((items) => items.length > 0);
-    if (!hasAny) {
-      const empty = document.createElement("p");
-      empty.className = "webmentions-empty";
-      empty.textContent = t("blog.webmentions.empty", "No webmentions yet.");
-      container.appendChild(empty);
-      return;
-    }
-
-    if (buckets.likes.length > 0) {
-      container.appendChild(
-        renderPeopleGroup(
-          "blog.webmentions.likes",
-          "Likes",
-          buckets.likes,
-          "webmentions-likes",
-        ),
-      );
-    }
-    if (buckets.reposts.length > 0) {
-      container.appendChild(
-        renderPeopleGroup(
-          "blog.webmentions.reposts",
-          "Reposts",
-          buckets.reposts,
-          "webmentions-reposts",
-        ),
-      );
-    }
-    if (buckets.mentions.length > 0) {
-      container.appendChild(
-        renderPeopleGroup(
-          "blog.webmentions.mentions",
-          "Mentions",
-          buckets.mentions,
-          "webmentions-mentions",
-        ),
-      );
-    }
-    if (buckets.bookmarks.length > 0) {
-      container.appendChild(
-        renderPeopleGroup(
-          "blog.webmentions.bookmarks",
-          "Bookmarks",
-          buckets.bookmarks,
-          "webmentions-bookmarks",
-        ),
-      );
-    }
-    if (buckets.replies.length > 0) {
-      container.appendChild(renderRepliesGroup(buckets.replies));
-    }
+    container.appendChild(list);
   };
 
   function isAbortError(err) {
