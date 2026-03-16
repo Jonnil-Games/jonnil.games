@@ -66,6 +66,7 @@
   background: transparent;
   border: none;
   padding: 0;
+  margin-bottom: 0;
   gap: var(--spacing-sm);
   font-size: 0.9rem;
 }
