@@ -15,7 +15,7 @@ syndicationStatus:
   bluesky: "confirmed"
   discord: "confirmed"
 ---
-<div style="text-align:center"><iframe src="https://store.steampowered.com/widget/1129090/" title="Sticky Paws on Steam" loading="lazy" frameborder="0" width="600" height="190"></iframe></div>
+<div style="text-align:center"><iframe src="https://store.steampowered.com/widget/1129090/" title="Sticky Paws on Steam" loading="lazy" frameborder="0" width="600" height="190" style="max-width:100%"></iframe></div>
 
 Hello! This is Jonnil. We are introducing a new version of Sticky Paws, fixing a lot of things!
 Here is the changelog for the latest Sticky Paws version:
@@ -62,7 +62,7 @@ I hope that you all will enjoy this updated version of Sticky Paws! We've been w
 
 :::lang sv
 
-<div style="text-align:center"><iframe src="https://store.steampowered.com/widget/1129090/" title="Sticky Paws on Steam" loading="lazy" frameborder="0" width="600" height="190"></iframe></div>
+<div style="text-align:center"><iframe src="https://store.steampowered.com/widget/1129090/" title="Sticky Paws on Steam" loading="lazy" frameborder="0" width="600" height="190" style="max-width:100%"></iframe></div>
 
 Hejsan! Detta är Jonnil. Vi introducerar en ny version av Sticky Paws, som fixar många saker!
 Här är ändringsloggen för den senaste Sticky Paws versionen:
