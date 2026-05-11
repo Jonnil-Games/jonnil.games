@@ -10,25 +10,18 @@ languages:
 categories:
   - "Anniversary"
   - "Juni"
-syndicate:
-  - "bluesky"
-  - "discord"
 image: "/images/juni-10yr-social.png"
 translations:
   sv:
     title: "Grattis (försenad) födelsedag till Juni!"
     excerpt: "Den 5 maj 2016 kom Spook: the Clinic ut. Det var första gången någon såg den grönhåriga tjejen jag kom på som så småningom blev Juni."
+syndicationComplete: true
 syndication:
-  {}
+  bluesky: "https://bsky.app/profile/jonnil.games/post/3mlmbirub2q2f"
+  discord: "https://discord.com/"
 syndicationStatus:
-  bluesky: "requested"
-  discord: "requested"
-syndicationRequestedAt:
-  bluesky: "2026-05-11T21:59:40.415Z"
-  discord: "2026-05-11T21:59:40.415Z"
-syndicationCheckedAt:
-  bluesky: "2026-05-11T21:59:40.415Z"
-  discord: "2026-05-11T21:59:40.415Z"
+  bluesky: "confirmed"
+  discord: "confirmed"
 ---
 On 5 May, 2016, [Spook: the Clinic](https://jonnil.games/games#spook-the-clinic) came out. It was the first time anyone saw the green haired girl I came up with that eventually became Juni.
 
