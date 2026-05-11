@@ -18,8 +18,15 @@ translations:
   sv:
     title: "Grattis (försenad) födelsedag till Juni!"
     excerpt: "Den 5 maj 2016 kom Spook: the Clinic ut. Det var första gången någon såg den grönhåriga tjejen jag kom på som så småningom blev Juni."
+syndication:
+  {}
+syndicationStatus:
+  bluesky: "requested"
+syndicationRequestedAt:
+  bluesky: "2026-05-11T21:59:40.415Z"
+syndicationCheckedAt:
+  bluesky: "2026-05-11T21:59:40.415Z"
 ---
-
 On 5 May, 2016, [Spook: the Clinic](https://jonnil.games/games#spook-the-clinic) came out. It was the first time anyone saw the green haired girl I came up with that eventually became Juni.
 
 I think the project shaped a lot of what I did later. The artstyle was more hand-drawn, which reminds me of [Sticky Paws](https://jonnil.games/games/sticky/) now. Everything still had a pixelated look because of the app I was using to draw the sprites. The roughness became part of my style, and I still use the same hand-drawn and pixelated mix today.
