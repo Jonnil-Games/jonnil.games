@@ -22,10 +22,13 @@ syndication:
   {}
 syndicationStatus:
   bluesky: "requested"
+  discord: "requested"
 syndicationRequestedAt:
   bluesky: "2026-05-11T21:59:40.415Z"
+  discord: "2026-05-11T21:59:40.415Z"
 syndicationCheckedAt:
   bluesky: "2026-05-11T21:59:40.415Z"
+  discord: "2026-05-11T21:59:40.415Z"
 ---
 On 5 May, 2016, [Spook: the Clinic](https://jonnil.games/games#spook-the-clinic) came out. It was the first time anyone saw the green haired girl I came up with that eventually became Juni.
 
