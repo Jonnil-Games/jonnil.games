@@ -17,7 +17,7 @@ translations:
     excerpt: "Den 5 maj 2016 kom Spook: the Clinic ut. Det var första gången någon såg den grönhåriga tjejen jag kom på som så småningom blev Juni."
 syndicationComplete: true
 syndication:
-  bluesky: "https://bsky.app/profile/jonnil.games/post/3mlmbnfnq6s2d
+  bluesky: "https://bsky.app/profile/jonnil.games/post/3mlmbnfnq6s2d"
   discord: "https://discord.com/"
 syndicationStatus:
   bluesky: "confirmed"
