@@ -125,10 +125,14 @@
       </section>
 
       <article class="blog-post h-entry">
-        <header class="h-entry-meta" hidden>
-          <a class="u-url" href="{{canonicalUrl}}">{{title}}</a>
+        <header class="h-entry-meta visually-hidden" aria-hidden="true">
+          <a class="u-url" href="{{canonicalUrl}}" tabindex="-1">{{title}}</a>
           <span class="p-name">{{title}}</span>
           {{#if excerpt}}<span class="p-summary">{{title}}<br><br>{{excerpt}}<br><br>{{canonicalUrl}}</span>{{/if}}
+          <div class="e-content">
+            {{{syndicationContentHtml}}}
+          </div>
+          {{#if postImageUrl}}<img class="u-photo" src="{{postImageUrl}}" alt="" />{{/if}}
           <time class="dt-published" datetime="{{dateIso}}"
             >{{formatDate date}}</time
           >
@@ -144,7 +148,7 @@
           </span>
         </header>
 
-        <div class="post-content e-content" data-blog-l10n-group>
+        <div class="post-content" data-blog-l10n-group>
           {{#each localizedVariants}}
           <div data-blog-lang="{{lang}}" {{#unless isDefault}}hidden{{/unless}}>
             {{{content}}}

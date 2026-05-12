@@ -976,6 +976,14 @@ function toExcerpt(rawExcerpt, markdownBody) {
   return /[.!?…]$/.test(candidate) ? candidate : `${candidate}…`;
 }
 
+function buildSyndicationContentHtml({ title, excerpt, canonicalUrl }) {
+  return [title, excerpt, canonicalUrl]
+    .map((part) => String(part || "").trim())
+    .filter(Boolean)
+    .map((part) => `<p>${xmlEscape(part)}</p>`)
+    .join("\n");
+}
+
 function parseTranslationEntry(entry) {
   if (typeof entry === "string") {
     return { body: entry };
@@ -1369,6 +1377,9 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
 
         const url = defaultPath;
         const syndicationMap = normalizeSyndicationMap(attributes.syndication);
+        const postImageUrl = attributes.image
+          ? toAbsoluteUrl(siteUrl, attributes.image)
+          : `${siteUrl}/images/og-preview.png`;
         const webmentionTarget = resolveWebmentionTarget(
           attributes,
           canonicalUrl,
@@ -1410,9 +1421,13 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
             siteUrl,
             canonicalUrl,
             webmentionTarget,
-            ogImage: attributes.image
-              ? toAbsoluteUrl(siteUrl, attributes.image)
-              : `${siteUrl}/images/og-preview.png`,
+            ogImage: postImageUrl,
+            postImageUrl,
+            syndicationContentHtml: buildSyndicationContentHtml({
+              title: primaryVariant.title,
+              excerpt: primaryVariant.excerpt,
+              canonicalUrl,
+            }),
             syndicationLinks: normalizeSyndication(attributes.syndication),
             blueskyDiscussionUrl: syndicationMap["bluesky"] || "https://bsky.app/profile/jonnil.games",
             webmentions,

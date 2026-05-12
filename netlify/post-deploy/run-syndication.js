@@ -36,11 +36,28 @@ const POSTS_DIR = "src/blog/posts";
 const COMMIT_PREFIX = process.env.SYNDICATION_COMMIT_PREFIX || "Syndication:";
 const LEASE_MAX_ATTEMPTS = 4;
 const REQUIRED_GITHUB_ENV = ["GITHUB_TOKEN", "GITHUB_OWNER", "GITHUB_REPO"];
-const BLUESKY_HOST_PATTERNS = [
-  ".bsky.app",
-  ".bsky.social",
-  ".brid.gy",
-];
+const DEFAULT_READY_TIMEOUT_MS = 90000;
+const DEFAULT_READY_INTERVAL_MS = 5000;
+const DEFAULT_READY_FETCH_TIMEOUT_MS = 10000;
+const BLUESKY_HOST_PATTERNS = [".bsky.app", ".bsky.social", ".brid.gy"];
+
+function parsePositiveInteger(value, fallback) {
+  const parsed = Number.parseInt(String(value || ""), 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+const READY_TIMEOUT_MS = parsePositiveInteger(
+  process.env.SYNDICATION_READY_TIMEOUT_MS,
+  DEFAULT_READY_TIMEOUT_MS
+);
+const READY_INTERVAL_MS = parsePositiveInteger(
+  process.env.SYNDICATION_READY_INTERVAL_MS,
+  DEFAULT_READY_INTERVAL_MS
+);
+const READY_FETCH_TIMEOUT_MS = parsePositiveInteger(
+  process.env.SYNDICATION_READY_FETCH_TIMEOUT_MS,
+  DEFAULT_READY_FETCH_TIMEOUT_MS
+);
 
 function toSkipCiMessage(message) {
   if (/\[(?:skip ci|ci skip)\]/i.test(message)) {
@@ -56,7 +73,9 @@ function getMissingEnv(keys) {
 async function hasLocalMarkdownPosts() {
   try {
     const entries = await fs.readdir(POSTS_DIR, { withFileTypes: true });
-    return entries.some((entry) => entry.isFile() && entry.name.endsWith(".md"));
+    return entries.some(
+      (entry) => entry.isFile() && entry.name.endsWith(".md")
+    );
   } catch (err) {
     if (err && err.code === "ENOENT") {
       return false;
@@ -66,7 +85,9 @@ async function hasLocalMarkdownPosts() {
 }
 
 function hasHostSuffix(hostname, suffixes) {
-  const host = `.${String(hostname || "").trim().toLowerCase()}`;
+  const host = `.${String(hostname || "")
+    .trim()
+    .toLowerCase()}`;
   if (!host || host === ".") return false;
   return suffixes.some((suffix) => host.endsWith(suffix));
 }
@@ -140,12 +161,15 @@ async function scanLocalPostsForWork() {
       attributes = fm(raw).attributes || {};
     } catch (err) {
       throw new Error(
-        `Failed to scan local post ${filePath}: ${err?.message || String(err)}`,
+        `Failed to scan local post ${filePath}: ${err?.message || String(err)}`
       );
     }
 
     const syndicationMap = normalizeSyndicationMap(attributes.syndication);
-    const syndicateTargets = normalizeSyndicateTargets(attributes.syndicate, DISCORD_TARGETS);
+    const syndicateTargets = normalizeSyndicateTargets(
+      attributes.syndicate,
+      DISCORD_TARGETS
+    );
     const statusMap = normalizeStatusMap(attributes.syndicationStatus);
     const effectiveSyndicationMap = { ...syndicationMap };
     for (const target of syndicateTargets) {
@@ -160,17 +184,17 @@ async function scanLocalPostsForWork() {
     const pendingTargets = syndicateTargets.filter(
       (target) =>
         (BRIDGY_PUBLISH_TARGETS[target] || DISCORD_TARGETS[target]) &&
-        !getSyndicationUrl(effectiveSyndicationMap, target),
+        !getSyndicationUrl(effectiveSyndicationMap, target)
     );
     summary.pendingTotal += pendingTargets.length;
     if (!summary.syncNeeded) {
       const needsSyndicateCleanup = syndicateTargets.some((target) =>
-        getSyndicationUrl(effectiveSyndicationMap, target),
+        getSyndicationUrl(effectiveSyndicationMap, target)
       );
       const needsStatusConfirm = Object.keys(effectiveSyndicationMap).some(
         (target) =>
           (BRIDGY_PUBLISH_TARGETS[target] || DISCORD_TARGETS[target]) &&
-          statusMap[target] !== "confirmed",
+          statusMap[target] !== "confirmed"
       );
       summary.syncNeeded = needsSyndicateCleanup || needsStatusConfirm;
     }
@@ -212,7 +236,7 @@ async function githubRequest(path, options = {}) {
 
 async function listPostFiles(branch) {
   const res = await githubRequest(
-    `/contents/${POSTS_DIR}?ref=${encodeURIComponent(branch)}`,
+    `/contents/${POSTS_DIR}?ref=${encodeURIComponent(branch)}`
   );
   if (res.status === 404) {
     return [];
@@ -222,13 +246,13 @@ async function listPostFiles(branch) {
   }
   const data = await res.json();
   return (Array.isArray(data) ? data : []).filter(
-    (entry) => entry.type === "file" && entry.name.endsWith(".md"),
+    (entry) => entry.type === "file" && entry.name.endsWith(".md")
   );
 }
 
 async function getFileContent(path, branch) {
   const res = await githubRequest(
-    `/contents/${path}?ref=${encodeURIComponent(branch)}`,
+    `/contents/${path}?ref=${encodeURIComponent(branch)}`
   );
   if (!res.ok) {
     throw new Error(`Failed to fetch ${path} (status ${res.status})`);
@@ -266,6 +290,89 @@ function buildCanonicalUrl(attributes, slug, siteUrl) {
   const canonicalOverride = canonicalizeUrl(siteUrl, attributes.canonical);
   if (canonicalOverride) return canonicalOverride;
   return canonicalizeUrl(siteUrl, getCanonicalBlogPath(slug));
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchWithTimeout(url, options = {}) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), READY_FETCH_TIMEOUT_MS);
+  try {
+    return await fetch(url, {
+      ...options,
+      headers: {
+        ...(options.headers || {}),
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
+      },
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function isUrlReady(url, { requiredText = "" } = {}) {
+  try {
+    const head = await fetchWithTimeout(url, { method: "HEAD" });
+    if (head.ok && !requiredText) return true;
+  } catch {
+    // Some CDNs reject HEAD before GET is ready.
+  }
+
+  try {
+    const res = await fetchWithTimeout(url, { method: "GET" });
+    if (!res.ok) return false;
+    if (!requiredText) return true;
+    const text = await res.text();
+    return text.includes(requiredText);
+  } catch {
+    return false;
+  }
+}
+
+async function waitForUrlReady(url, options = {}) {
+  const deadline = Date.now() + READY_TIMEOUT_MS;
+  let attempts = 0;
+
+  while (Date.now() <= deadline) {
+    attempts += 1;
+    if (await isUrlReady(url, options)) {
+      return { ok: true, attempts };
+    }
+    await sleep(READY_INTERVAL_MS);
+  }
+
+  return { ok: false, attempts };
+}
+
+async function waitForPublishAssets({
+  canonicalUrl,
+  imageUrl,
+  publishTargets = [],
+}) {
+  const bridgyTarget = publishTargets.find(
+    (target) => BRIDGY_PUBLISH_TARGETS[target]
+  );
+  const pageText = bridgyTarget ? BRIDGY_PUBLISH_TARGETS[bridgyTarget] : "";
+
+  const pageReady = await waitForUrlReady(canonicalUrl, {
+    requiredText: pageText,
+  });
+  if (!pageReady.ok) {
+    return { ok: false, reason: "page-not-ready", url: canonicalUrl };
+  }
+
+  if (imageUrl) {
+    const imageReady = await waitForUrlReady(imageUrl);
+    if (!imageReady.ok) {
+      return { ok: false, reason: "image-not-ready", url: imageUrl };
+    }
+  }
+
+  return { ok: true };
 }
 
 async function extractContentSha(response, fallbackSha) {
@@ -353,7 +460,7 @@ async function acquirePublishLease({ filePath, branch, target, now }) {
   const nowIso = now.toISOString();
   const slug = filePath.split("/").pop()?.replace(/\.md$/, "") || filePath;
   const message = toSkipCiMessage(
-    `${COMMIT_PREFIX} lease publish ${slug} ${target}`,
+    `${COMMIT_PREFIX} lease publish ${slug} ${target}`
   );
 
   for (let attempt = 0; attempt < LEASE_MAX_ATTEMPTS; attempt += 1) {
@@ -384,7 +491,7 @@ async function acquirePublishLease({ filePath, branch, target, now }) {
       branch,
       fetched.sha,
       updated,
-      message,
+      message
     );
 
     if (res.ok) {
@@ -397,7 +504,7 @@ async function acquirePublishLease({ filePath, branch, target, now }) {
     }
 
     throw new Error(
-      `Lease publish update failed for ${filePath} -> ${target} (status ${res.status})`,
+      `Lease publish update failed for ${filePath} -> ${target} (status ${res.status})`
     );
   }
 
@@ -408,7 +515,7 @@ async function acquireConfirmLease({ filePath, branch, target, now }) {
   const nowIso = now.toISOString();
   const slug = filePath.split("/").pop()?.replace(/\.md$/, "") || filePath;
   const message = toSkipCiMessage(
-    `${COMMIT_PREFIX} lease confirm ${slug} ${target}`,
+    `${COMMIT_PREFIX} lease confirm ${slug} ${target}`
   );
 
   for (let attempt = 0; attempt < LEASE_MAX_ATTEMPTS; attempt += 1) {
@@ -444,7 +551,7 @@ async function acquireConfirmLease({ filePath, branch, target, now }) {
       branch,
       fetched.sha,
       updated,
-      message,
+      message
     );
 
     if (res.ok) {
@@ -457,7 +564,7 @@ async function acquireConfirmLease({ filePath, branch, target, now }) {
     }
 
     throw new Error(
-      `Lease confirm update failed for ${filePath} -> ${target} (status ${res.status})`,
+      `Lease confirm update failed for ${filePath} -> ${target} (status ${res.status})`
     );
   }
 
@@ -481,7 +588,7 @@ export async function runSyndicationPostDeploy() {
   const missingEnv = getMissingEnv(REQUIRED_GITHUB_ENV);
   if (missingEnv.length > 0) {
     throw new Error(
-      `Missing required syndication configuration: ${missingEnv.join(", ")}`,
+      `Missing required syndication configuration: ${missingEnv.join(", ")}`
     );
   }
 
@@ -499,7 +606,7 @@ export async function runSyndicationPostDeploy() {
     files = await listPostFiles(branch);
   } catch (err) {
     throw new Error(
-      `Failed to list posts for syndication: ${err?.message || String(err)}`,
+      `Failed to list posts for syndication: ${err?.message || String(err)}`
     );
   }
 
@@ -514,22 +621,25 @@ export async function runSyndicationPostDeploy() {
       const parsedPost = fm(fetched.content);
       const attributes = parsedPost.attributes || {};
       const syndicationMap = normalizeSyndicationMap(attributes.syndication);
-      const syndicateTargets = normalizeSyndicateTargets(attributes.syndicate, DISCORD_TARGETS);
+      const syndicateTargets = normalizeSyndicateTargets(
+        attributes.syndicate,
+        DISCORD_TARGETS
+      );
       const statusMap = normalizeStatusMap(attributes.syndicationStatus);
       const pendingTargets = syndicateTargets.filter(
         (target) =>
           (BRIDGY_PUBLISH_TARGETS[target] || DISCORD_TARGETS[target]) &&
-          !getSyndicationUrl(syndicationMap, target),
+          !getSyndicationUrl(syndicationMap, target)
       );
       pendingTotal += pendingTargets.length;
       if (!syncNeeded) {
         const needsSyndicateCleanup = syndicateTargets.some((target) =>
-          getSyndicationUrl(syndicationMap, target),
+          getSyndicationUrl(syndicationMap, target)
         );
         const needsStatusConfirm = Object.keys(syndicationMap).some(
           (target) =>
             (BRIDGY_PUBLISH_TARGETS[target] || DISCORD_TARGETS[target]) &&
-            statusMap[target] !== "confirmed",
+            statusMap[target] !== "confirmed"
         );
         syncNeeded = needsSyndicateCleanup || needsStatusConfirm;
       }
@@ -556,16 +666,22 @@ export async function runSyndicationPostDeploy() {
   for (const post of posts) {
     const { filePath, attributes, body } = post;
     if (committedWriteback) {
-      report.skipped.push({ file: filePath, reason: "deferred-after-writeback" });
+      report.skipped.push({
+        file: filePath,
+        reason: "deferred-after-writeback",
+      });
       continue;
     }
     let currentSha = post.sha;
     const slug = post.filePath.split("/").pop()?.replace(/\.md$/, "") || "";
-    const syndicateTargets = normalizeSyndicateTargets(attributes.syndicate, DISCORD_TARGETS);
+    const syndicateTargets = normalizeSyndicateTargets(
+      attributes.syndicate,
+      DISCORD_TARGETS
+    );
     const syndicationMap = normalizeSyndicationMap(attributes.syndication);
     const statusMap = normalizeStatusMap(attributes.syndicationStatus);
     const requestedAtMap = normalizeTimestampMap(
-      attributes.syndicationRequestedAt,
+      attributes.syndicationRequestedAt
     );
     const checkedAtMap = normalizeTimestampMap(attributes.syndicationCheckedAt);
     const lastErrorMap = normalizeErrorMap(attributes.syndicationLastError);
@@ -576,6 +692,9 @@ export async function runSyndicationPostDeploy() {
 
     let dirty = false;
     const canonicalUrl = buildCanonicalUrl(attributes, slug, siteUrl);
+    const postImageUrl = attributes.image
+      ? toAbsoluteUrl(siteUrl, attributes.image)
+      : `${siteUrl}/images/og-preview.png`;
     const nowIso = now.toISOString();
     for (const target of syndicateTargets) {
       if (!BRIDGY_PUBLISH_TARGETS[target]) continue;
@@ -762,7 +881,10 @@ export async function runSyndicationPostDeploy() {
               touch(target);
             }
             checkedAtMap[target] = lease.nowIso;
-            lastErrorMap[target] = summarizeSyndicationResult(result, "confirm");
+            lastErrorMap[target] = summarizeSyndicationResult(
+              result,
+              "confirm"
+            );
             dirty = true;
             touch(target);
             continue;
@@ -788,6 +910,23 @@ export async function runSyndicationPostDeploy() {
         pendingTargets.push(target);
       } else if (DISCORD_TARGETS[target]) {
         discordPendingTargets.push(target);
+      }
+    }
+
+    const allPublishTargets = [...pendingTargets, ...discordPendingTargets];
+    if (allPublishTargets.length > 0) {
+      const ready = await waitForPublishAssets({
+        canonicalUrl,
+        imageUrl: postImageUrl,
+        publishTargets: allPublishTargets,
+      });
+      if (!ready.ok) {
+        report.skipped.push({
+          file: filePath,
+          reason: ready.reason,
+          url: ready.url,
+        });
+        continue;
       }
     }
 
@@ -871,7 +1010,7 @@ export async function runSyndicationPostDeploy() {
           checkedAtMap[targetKey] = lease.nowIso;
           lastErrorMap[targetKey] = summarizeSyndicationResult(
             result,
-            "publish",
+            "publish"
           );
           dirty = true;
           touch(targetKey);
@@ -886,7 +1025,7 @@ export async function runSyndicationPostDeploy() {
           delete checkedAtMap[targetKey];
           lastErrorMap[targetKey] = summarizeSyndicationResult(
             result,
-            "publish",
+            "publish"
           );
           dirty = true;
           touch(targetKey);
@@ -896,13 +1035,13 @@ export async function runSyndicationPostDeploy() {
 
     if (discordPendingTargets.length > 0) {
       if (!process.env.DISCORD_WEBHOOK_URL) {
-        console.warn("Discord syndication: DISCORD_WEBHOOK_URL not set, skipping");
+        console.warn(
+          "Discord syndication: DISCORD_WEBHOOK_URL not set, skipping"
+        );
       } else {
-        const postImageUrl = attributes.image
-          ? toAbsoluteUrl(siteUrl, attributes.image)
-          : `${siteUrl}/images/og-preview.png`;
         for (const targetKey of discordPendingTargets) {
-          const status = normalizeStatusValue(statusMap[targetKey]) || "pending";
+          const status =
+            normalizeStatusValue(statusMap[targetKey]) || "pending";
           const requestedAt = requestedAtMap[targetKey];
           const ageHours = hoursSince(requestedAt, now);
 
@@ -953,7 +1092,8 @@ export async function runSyndicationPostDeploy() {
 
           if (result.ok) {
             if (!syndicationMap[targetKey]) {
-              syndicationMap[targetKey] = result.syndicatedUrl || "https://discord.com/";
+              syndicationMap[targetKey] =
+                result.syndicatedUrl || "https://discord.com/";
               dirty = true;
               touch(targetKey);
             }
@@ -979,7 +1119,10 @@ export async function runSyndicationPostDeploy() {
             }
             requestedAtMap[targetKey] = lease.nowIso;
             checkedAtMap[targetKey] = lease.nowIso;
-            lastErrorMap[targetKey] = summarizeSyndicationResult(result, "publish");
+            lastErrorMap[targetKey] = summarizeSyndicationResult(
+              result,
+              "publish"
+            );
             dirty = true;
             touch(targetKey);
           } else {
@@ -991,7 +1134,10 @@ export async function runSyndicationPostDeploy() {
             }
             requestedAtMap[targetKey] = lease.nowIso;
             delete checkedAtMap[targetKey];
-            lastErrorMap[targetKey] = summarizeSyndicationResult(result, "publish");
+            lastErrorMap[targetKey] = summarizeSyndicationResult(
+              result,
+              "publish"
+            );
             dirty = true;
             touch(targetKey);
           }
@@ -1000,7 +1146,7 @@ export async function runSyndicationPostDeploy() {
     }
 
     const remainingSyndicate = syndicateTargets.filter(
-      (target) => !getSyndicationUrl(syndicationMap, target),
+      (target) => !getSyndicationUrl(syndicationMap, target)
     );
     const hadSyndicate =
       syndicateTargets.length > 0 || attributes.syndicate !== undefined;
@@ -1064,7 +1210,7 @@ export async function runSyndicationPostDeploy() {
       branch,
       currentSha,
       updated,
-      message,
+      message
     );
 
     if (!res.ok && res.status === 409) {
@@ -1077,31 +1223,31 @@ export async function runSyndicationPostDeploy() {
       // Merge-on-retry keeps concurrent writes from other invocations while
       // applying only this run's touched keys.
       const retrySyndicationMap = normalizeSyndicationMap(
-        retryAttrs.syndication,
+        retryAttrs.syndication
       );
       const retryStatusMap = normalizeStatusMap(retryAttrs.syndicationStatus);
       const retryRequestedAtMap = normalizeTimestampMap(
-        retryAttrs.syndicationRequestedAt,
+        retryAttrs.syndicationRequestedAt
       );
       const retryCheckedAtMap = normalizeTimestampMap(
-        retryAttrs.syndicationCheckedAt,
+        retryAttrs.syndicationCheckedAt
       );
       const retryLastErrorMap = normalizeErrorMap(
-        retryAttrs.syndicationLastError,
+        retryAttrs.syndicationLastError
       );
 
       const localSyndicationMap = normalizeSyndicationMap(
-        attributes.syndication,
+        attributes.syndication
       );
       const localStatusMap = normalizeStatusMap(attributes.syndicationStatus);
       const localRequestedAtMap = normalizeTimestampMap(
-        attributes.syndicationRequestedAt,
+        attributes.syndicationRequestedAt
       );
       const localCheckedAtMap = normalizeTimestampMap(
-        attributes.syndicationCheckedAt,
+        attributes.syndicationCheckedAt
       );
       const localLastErrorMap = normalizeErrorMap(
-        attributes.syndicationLastError,
+        attributes.syndicationLastError
       );
 
       for (const target of touchedTargets) {
@@ -1113,7 +1259,7 @@ export async function runSyndicationPostDeploy() {
 
         const mergedStatus = pickForwardStatus(
           retryStatusMap[target],
-          localStatusMap[target],
+          localStatusMap[target]
         );
         if (mergedStatus) {
           retryStatusMap[target] = mergedStatus;
@@ -1167,7 +1313,7 @@ export async function runSyndicationPostDeploy() {
         branch,
         retry.sha,
         retryUpdated,
-        message,
+        message
       );
       if (!retryRes.ok) {
         report.errors.push({
@@ -1187,7 +1333,7 @@ export async function runSyndicationPostDeploy() {
     report.updated.push({
       file: filePath,
       updatedTargets: Object.keys(syndicationMap).filter(
-        (key) => BRIDGY_PUBLISH_TARGETS[key] || DISCORD_TARGETS[key],
+        (key) => BRIDGY_PUBLISH_TARGETS[key] || DISCORD_TARGETS[key]
       ),
     });
     committedWriteback = true;
@@ -1209,7 +1355,7 @@ if (isDirectInvocation()) {
     })
     .catch((err) => {
       console.error(
-        `Post-deploy syndication failed: ${err?.message || String(err)}`,
+        `Post-deploy syndication failed: ${err?.message || String(err)}`
       );
       process.exit(1);
     });
