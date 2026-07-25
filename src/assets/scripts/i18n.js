@@ -13,8 +13,8 @@
   };
   const ICONS = {
     auto: { type: "emoji", value: "🌐" },
-    en: { type: "emoji", value: "🇺🇸" },
-    sv: { type: "emoji", value: "🇸🇪" },
+    en: { type: "svg", value: "/emoji/flag-us.svg" },
+    sv: { type: "svg", value: "/emoji/flag-se.svg" },
   };
   const LABEL_KEYS = {
     auto: "lang.auto",
