@@ -411,7 +411,7 @@ function injectResources(content, resourcesHTML, config) {
     : content.replace(/<\/head>/i, `${resourcesHTML}\n  </head>`);
 
   if (config.meta && config.meta.title) {
-    const hasTitle = /<title>[\s\S]*?<\/title>/i.test(output);
+    const hasTitle = /<title(\s[^>]*)?>[\s\S]*?<\/title>/i.test(output);
     if (!hasTitle) {
       output = output.replace(
         /<\/head>/i,
