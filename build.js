@@ -900,6 +900,46 @@ function cdataEscape(s = "") {
   return String(s).replace(/]]>/g, "]]]]><![CDATA[>");
 }
 
+async function readPngSize(filePath) {
+  try {
+    const header = Buffer.alloc(24);
+    const handle = await fs.open(filePath, "r");
+    try {
+      await handle.read(header, 0, 24, 0);
+    } finally {
+      await handle.close();
+    }
+    if (header.readUInt32BE(0) !== 0x89504e47) return null;
+    return { width: header.readUInt32BE(16), height: header.readUInt32BE(20) };
+  } catch {
+    return null;
+  }
+}
+
+async function buildOgImageMeta(imagePath, alt) {
+  const lines = [];
+  const ext = path.extname(imagePath).toLowerCase();
+  const mime = {
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".webp": "image/webp",
+    ".gif": "image/gif",
+  }[ext];
+  if (mime) {
+    lines.push(`<meta property="og:image:type" content="${mime}" />`);
+  }
+  if (ext === ".png" && imagePath.startsWith("/")) {
+    const size = await readPngSize(path.join(ASSETS_DIR, imagePath));
+    if (size) {
+      lines.push(`<meta property="og:image:width" content="${size.width}" />`);
+      lines.push(`<meta property="og:image:height" content="${size.height}" />`);
+    }
+  }
+  lines.push(`<meta property="og:image:alt" content="${xmlEscape(alt)}" />`);
+  return lines.join("\n    ");
+}
+
 function rfc2822(dateStr, source = "feed date") {
   const { parsed } = parsePostDate(dateStr, source);
   return parsed.toUTCString();
@@ -1379,6 +1419,10 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
         const postImageUrl = attributes.image
           ? toAbsoluteUrl(siteUrl, attributes.image)
           : `${siteUrl}/images/og-preview.png`;
+        const ogImageMeta = await buildOgImageMeta(
+          attributes.image || "/images/og-preview.png",
+          primaryVariant.title
+        );
         const webmentionTarget = resolveWebmentionTarget(
           attributes,
           canonicalUrl
@@ -1421,6 +1465,7 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
             canonicalUrl,
             webmentionTarget,
             ogImage: postImageUrl,
+            ogImageMeta,
             postImageUrl,
             syndicationContentHtml: buildSyndicationContentHtml({
               title: primaryVariant.title,
