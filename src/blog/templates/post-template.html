@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{title}} - Jonnil Games</title>
+
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="{{title}} - Jonnil Games" />
+    <meta name="description" content="{{excerpt}}" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="{{canonicalUrl}}" />
+    <meta property="og:title" content="{{title}} - Jonnil Games" />
+    <meta property="og:description" content="{{excerpt}}" />
+    <meta
+      property="og:image"
+      content="{{ogImage}}"
+    />
+    {{{ogImageMeta}}}
+    <meta property="article:published_time" content="{{dateIso}}" />
+    <meta property="article:author" content="{{author}}" />
+    {{#each categories}}
+    <meta property="article:tag" content="{{this}}" />
+    {{/each}}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{title}} - Jonnil Games" />
+    <meta name="twitter:description" content="{{excerpt}}" />
+    <meta
+      name="twitter:image"
+      content="{{ogImage}}"
+    />
+
+    <!-- RSS, etc. -->
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="RSS"
+      href="/blog/rss.xml"
+    />
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="Atom"
+      href="/blog/atom.xml"
+    />
+    <link rel="canonical" href="{{canonicalUrl}}" />
+    <!-- EXTERNAL_RESOURCES -->
+
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" media="print" onload="this.media='all'" />
+
+    <noscript>
+
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
+
+    </noscript>
+<link rel="stylesheet" href="/blog/styles.css" />
+    <link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" /></noscript>
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <style>
+      /* Enhanced animation for blog post cards to match homepage */
+      .post-card {
+        will-change: transform;
+        transition: transform var(--motion-duration-medium) var(--motion-ease-standard),
+          box-shadow var(--transition-normal);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header (capsule markup) -->
+    <drop capsule="header"></drop>
+
+    <main>
+      <section class="blog-header">
+        <h1 data-blog-l10n-group>
+          {{#each localizedVariants}}
+          <span data-blog-lang="{{lang}}" {{#unless isDefault}}hidden{{/unless}}
+            >{{title}}</span
+          >
+          {{/each}}
+        </h1>
+        <div class="post-meta">
+          <time class="dt-published" datetime="{{dateIso}}">{{formatDate date}}</time>
+          <p class="post-author">
+            <span data-i18n="blog.post.by">By</span>
+            <span class="p-author h-card" data-blog-l10n-group>
+              {{#each localizedVariants}}
+              <span class="p-name" data-blog-lang="{{lang}}" {{#unless isDefault}}hidden{{/unless}}
+                >{{author}}</span
+              >
+              {{/each}}
+              <a
+                class="u-url u-uid"
+                href="{{siteUrl}}/"
+                aria-hidden="true"
+                tabindex="-1"
+              ></a>
+              <img class="u-photo" src="/images/og-preview.png" alt="" hidden />
+            </span>
+          </p>
+          <div class="post-categories">
+            <span data-blog-l10n-group>
+            {{#each localizedVariants}}
+            <span data-blog-lang="{{lang}}" {{#unless isDefault}}hidden{{/unless}}>
+              {{#each categories}}
+              <span class="post-category">{{this}}</span>
+              {{/each}}
+            </span>
+            {{/each}}
+            </span>
+          </div>
+          <div id="post-reactions" class="post-reactions" hidden></div>
+        </div>
+      </section>
+
+      <article class="blog-post h-entry">
+        <header class="h-entry-meta visually-hidden" aria-hidden="true">
+          <a class="u-url" href="{{canonicalUrl}}" tabindex="-1">{{title}}</a>
+          <span class="p-name">{{title}}</span>
+          {{#if excerpt}}<span class="p-summary">{{title}}<br><br>{{excerpt}}<br><br>{{canonicalUrl}}</span>{{/if}}
+          <div class="e-content">
+            {{{syndicationContentHtml}}}
+          </div>
+          {{#if postImageUrl}}<img class="u-photo" src="{{postImageUrl}}" alt="" />{{/if}}
+          <time class="dt-published" datetime="{{dateIso}}"
+            >{{formatDate date}}</time
+          >
+          <span class="p-author h-card">
+            <span class="p-name">{{author}}</span>
+            <a
+              class="u-url u-uid"
+              href="{{siteUrl}}/"
+              aria-hidden="true"
+              tabindex="-1"
+            ></a>
+            <img class="u-photo" src="/images/og-preview.png" alt="" hidden />
+          </span>
+        </header>
+
+        <div class="post-content" data-blog-l10n-group>
+          {{#each localizedVariants}}
+          <div data-blog-lang="{{lang}}" {{#unless isDefault}}hidden{{/unless}}>
+            {{{content}}}
+          </div>
+          {{/each}}
+        </div>
+
+        <section
+          id="webmentions"
+          class="webmentions"
+          data-target="{{webmentionTarget}}"
+          data-refresh-seconds="180"
+        >
+          <h2 data-i18n="blog.webmentions.title">Comments</h2>
+          <p class="webmentions-empty" data-i18n="blog.webmentions.empty">
+            No comments yet.
+          </p>
+        </section>
+
+        {{#if bridgyPublishTargets.length}}
+        <div class="bridgy-publish-links" aria-hidden="true">
+          {{#each bridgyPublishTargets}}
+          <a href="{{this}}" rel="nofollow">{{this}}</a>
+          {{/each}}
+        </div>
+        {{/if}}
+
+        {{#if syndicationLinks.length}}{{#each syndicationLinks}}<a class="u-syndication" href="{{url}}" rel="noopener noreferrer" hidden></a>{{/each}}{{/if}}
+
+        <drop capsule="continue-discussion" data-bluesky-url="{{blueskyDiscussionUrl}}"></drop>
+      </article>
+    </main>
+
+    <!-- Footer (capsule markup) -->
+    <drop capsule="footer"></drop>
+
+    <!-- JavaScript -->
+    <script src="/blog/scripts/scripts.js" defer></script>
+    <script src="/blog/scripts/localized-content.js" defer></script>
+    <script type="module" src="/blog/scripts/webmentions.js"></script>
+  </body>
+</html>

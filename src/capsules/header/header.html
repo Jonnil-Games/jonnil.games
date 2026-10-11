@@ -1,0 +1,192 @@
+<header class="h-card">
+  <nav class="navbar" aria-label="Primary">
+    <div class="logo">
+      <a
+        class="u-url u-uid"
+        href="/"
+        aria-label="Jonnil Games Home"
+        data-i18n-attr="aria-label:nav.homeAria"
+      >
+        <span class="logo-text p-name">
+          <span class="logo-word logo-word-primary">Jonnil</span>
+          <span class="logo-word logo-word-secondary">Games</span>
+        </span>
+      </a>
+    </div>
+
+    <!-- Desktop Navigation Links -->
+    <ul class="nav-links">
+      <li><a href="/" data-i18n="nav.home">Home</a></li>
+      <li><a href="/games.html" data-i18n="nav.games">Games</a></li>
+      <li><a href="/blog/" data-i18n="nav.blog">Blog</a></li>
+      <li><a href="/team.html" data-i18n="nav.team">Team</a></li>
+      <li><a href="/about.html" data-i18n="nav.about">About</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <div class="lang-switcher">
+        <label class="visually-hidden" data-i18n="lang.label">Language</label>
+        <button
+          class="lang-toggle"
+          type="button"
+          data-lang-toggle
+          aria-haspopup="listbox"
+          aria-expanded="false"
+          aria-controls="lang-menu-desktop"
+          data-i18n-attr="aria-label:lang.label"
+        >
+          <span class="lang-icon" data-lang-icon aria-hidden="true"></span>
+          <span class="lang-label" data-lang-label>Auto</span>
+          <span class="lang-caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="lang-menu" id="lang-menu-desktop" data-lang-menu role="listbox">
+          <button class="lang-option" type="button" role="option" data-lang-option="auto">
+            <span class="lang-icon" data-lang-option-icon="auto" aria-hidden="true"></span>
+            <span data-i18n="lang.auto">Auto</span>
+          </button>
+          <button class="lang-option" type="button" role="option" data-lang-option="en">
+            <span class="lang-icon" data-lang-option-icon="en" aria-hidden="true"></span>
+            <span data-i18n="lang.english">English</span>
+          </button>
+          <button class="lang-option" type="button" role="option" data-lang-option="sv">
+            <span class="lang-icon" data-lang-option-icon="sv" aria-hidden="true"></span>
+            <span data-i18n="lang.swedish">Svenska</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button
+      class="hamburger"
+      type="button"
+      aria-label="Toggle menu"
+      data-i18n-attr="aria-label:nav.toggle"
+      aria-controls="mobile-menu"
+      aria-expanded="false"
+    >
+      <span class="hamburger-bar" aria-hidden="true"></span>
+      <span class="hamburger-bar" aria-hidden="true"></span>
+      <span class="hamburger-bar" aria-hidden="true"></span>
+    </button>
+  </nav>
+  <p class="visually-hidden p-note" data-i18n="footer.blurb">
+    Creating silly little games for people who love silly little games :3
+  </p>
+  <img
+    class="u-photo visually-hidden"
+    src="/images/og-preview.png"
+    alt=""
+    width="1200"
+    height="630"
+  />
+
+  <!-- Mobile Menu Panel -->
+  <div
+    id="mobile-menu"
+    class="mobile-menu"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Mobile Navigation"
+    data-i18n-attr="aria-label:nav.mobile"
+  >
+    <div class="mobile-menu-content">
+      <div class="mobile-nav-card">
+        <ul class="mobile-nav-links" role="menu">
+          <li role="none">
+            <a role="menuitem" href="/" data-i18n="nav.home">Home</a>
+          </li>
+          <li role="none">
+            <a role="menuitem" href="/games.html" data-i18n="nav.games">Games</a>
+          </li>
+          <li role="none">
+            <a role="menuitem" href="/blog/" data-i18n="nav.blog"
+              >Blog</a
+            >
+          </li>
+          <li role="none">
+            <a role="menuitem" href="/team.html" data-i18n="nav.team">Team</a>
+          </li>
+          <li role="none">
+            <a role="menuitem" href="/about.html" data-i18n="nav.about">About</a>
+          </li>
+        </ul>
+
+        <div class="mobile-lang-switcher">
+          <label class="visually-hidden" data-i18n="lang.label">Language</label>
+          <button
+            class="lang-toggle"
+            type="button"
+            data-lang-toggle
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            aria-controls="lang-menu-mobile"
+            data-i18n-attr="aria-label:lang.label"
+          >
+            <span class="lang-icon" data-lang-icon aria-hidden="true"></span>
+            <span class="lang-label" data-lang-label>Auto</span>
+            <span class="lang-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="lang-menu" id="lang-menu-mobile" data-lang-menu role="listbox">
+            <button class="lang-option" type="button" role="option" data-lang-option="auto">
+              <span class="lang-icon" data-lang-option-icon="auto" aria-hidden="true"></span>
+              <span data-i18n="lang.auto">Auto</span>
+            </button>
+            <button class="lang-option" type="button" role="option" data-lang-option="en">
+              <span class="lang-icon" data-lang-option-icon="en" aria-hidden="true"></span>
+              <span data-i18n="lang.english">English</span>
+            </button>
+            <button class="lang-option" type="button" role="option" data-lang-option="sv">
+              <span class="lang-icon" data-lang-option-icon="sv" aria-hidden="true"></span>
+              <span data-i18n="lang.swedish">Svenska</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mobile-mini-footer">
+        <div class="mobile-social-links">
+          <a
+            class="social-icon"
+            href="https://bsky.app/profile/jonnil.games"
+            target="_blank"
+            rel="me atproto authn noopener"
+            aria-label="BlueSky"
+          >
+            <span class="icon" data-icon="bluesky" aria-hidden="true"></span>
+          </a>
+          <a
+            class="social-icon"
+            href="https://github.com/Jonnil-Games/"
+            target="_blank"
+            rel="me atproto noopener"
+            aria-label="GitHub"
+          >
+            <span class="icon" data-icon="github" aria-hidden="true"></span>
+          </a>
+          <a
+            class="social-icon"
+            href="https://discord.gg/GAmTXwqH9V"
+            target="_blank"
+            rel="noopener"
+            aria-label="Discord"
+          >
+            <span class="icon" data-icon="discord" aria-hidden="true"></span>
+          </a>
+        </div>
+
+        <div class="mobile-footer-info">
+          <p>
+            © <span id="current-year"></span>
+            <span data-i18n="footer.brand">Jonnil Games</span>
+          </p>
+          <p>
+            <a href="/about.html" data-i18n="nav.about">About</a> ·
+            <a href="/team.html" data-i18n="nav.team">Team</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>

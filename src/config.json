@@ -1,0 +1,16 @@
+{
+  "fonts": {
+    "primary": {
+      "name": "Poppins",
+      "url": "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
+    }
+  },
+  "externalResources": {},
+  "meta": {
+    "title": "Jonnil Games",
+    "relMe": [
+      "https://bsky.app/profile/jonnil.games",
+      "https://github.com/Jonnil-Games/"
+    ]
+  }
+}

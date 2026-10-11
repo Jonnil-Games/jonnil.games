@@ -1,0 +1,196 @@
+# Netlify configuration file
+
+[build]
+publish = "public"
+command = "npm run build"
+
+[build.environment]
+NODE_VERSION = "24"
+
+[[plugins]]
+package = "./netlify/plugins/post-deploy-syndication"
+
+[[edge_functions]]
+path = "/*"
+function = "bots"
+
+# Discord redirects
+[[redirects]]
+from = "/discord/*"
+to = "https://discord.gg/GAmTXwqH9V"
+status = 301
+
+[[redirects]]
+from = "/Discord/*"
+to = "https://discord.gg/GAmTXwqH9V"
+status = 301
+
+[[redirects]]
+from = "https://discord.jonnil.games/*"
+to = "https://discord.gg/GAmTXwqH9V"
+status = 301
+force = true
+
+# Bluesky redirects
+[[redirects]]
+from = "/bsky/*"
+to = "https://bsky.app/profile/jonnil.games"
+status = 301
+
+[[redirects]]
+from = "/Bsky/*"
+to = "https://bsky.app/profile/jonnil.games"
+status = 301
+
+[[redirects]]
+from = "https://bsky.jonnil.games/*"
+to = "https://bsky.app/profile/jonnil.games"
+status = 301
+force = true
+
+# Well-known convenience redirects
+[[redirects]]
+from = "/code-of-conduct.txt"
+to = "/.well-known/code-of-conduct.txt"
+status = 301
+
+[[redirects]]
+from = "/humans.txt"
+to = "/.well-known/humans.txt"
+status = 301
+
+[[redirects]]
+from = "/robots.txt"
+to = "/.well-known/robots.txt"
+status = 301
+
+[[redirects]]
+from = "/security.txt"
+to = "/.well-known/security.txt"
+status = 301
+
+# Feed aliases
+[[redirects]]
+from = "/blog/index.html"
+to = "/blog/"
+status = 301
+
+[[redirects]]
+from = "/feed.xml"
+to = "/blog/rss.xml"
+status = 301
+
+[[redirects]]
+from = "/rss.xml"
+to = "/blog/rss.xml"
+status = 301
+
+[[redirects]]
+from = "/atom.xml"
+to = "/blog/atom.xml"
+status = 301
+
+# Legal page aliases
+[[redirects]]
+from = "/privacy-policy"
+to = "/privacy-policy.html"
+status = 301
+
+[[redirects]]
+from = "/privacy-policy/"
+to = "/privacy-policy.html"
+status = 301
+
+[[redirects]]
+from = "/terms-of-service"
+to = "/terms-of-service.html"
+status = 301
+
+[[redirects]]
+from = "/terms-of-service/"
+to = "/terms-of-service.html"
+status = 301
+
+# SPA-style fallback for the root site
+[[redirects]]
+from = "/*"
+to = "/404.html"
+status = 404
+
+# Headers (production-friendly cache policy)
+[[headers]]
+for = "/*"
+[headers.values]
+X-Frame-Options = "DENY"
+Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+X-Content-Type-Options = "nosniff"
+X-XSS-Protection = "1; mode=block"
+Content-Security-Policy = "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; connect-src 'self' https:; frame-src 'self' https:;"
+Referrer-Policy = "strict-origin-when-cross-origin"
+Cache-Control = "public, max-age=0, must-revalidate"
+AI-Training = "none"
+X-Robots-Tag = "noai, noimageai"
+
+# Headers for specific paths
+[[headers]]
+for = "/**/*.css"
+[headers.values]
+Cache-Control = "public, max-age=604800, must-revalidate"
+
+[[headers]]
+for = "/**/*.js"
+[headers.values]
+Cache-Control = "public, max-age=604800, must-revalidate"
+
+[[headers]]
+for = "/images/**"
+[headers.values]
+Cache-Control = "public, max-age=604800, must-revalidate"
+
+[[headers]]
+for = "/icons/*"
+[headers.values]
+Cache-Control = "public, max-age=604800, must-revalidate"
+
+[[headers]]
+for = "/emoji/*"
+[headers.values]
+Cache-Control = "public, max-age=604800, must-revalidate"
+
+[[headers]]
+for = "/scripts/*"
+[headers.values]
+Cache-Control = "public, max-age=604800, must-revalidate"
+
+[[headers]]
+for = "/scripts.js"
+[headers.values]
+Cache-Control = "public, max-age=300, must-revalidate"
+
+[[headers]]
+for = "/capsules/*"
+[headers.values]
+Cache-Control = "public, max-age=604800, must-revalidate"
+
+[[headers]]
+for = "/.well-known/*"
+[headers.values]
+Cache-Control = "public, max-age=300, must-revalidate"
+
+# Feeds and sitemap: cache briefly
+[[headers]]
+for = "/sitemap.xml"
+[headers.values]
+Cache-Control = "public, max-age=600, must-revalidate"
+
+[[headers]]
+for = "/blog/rss.xml"
+[headers.values]
+Cache-Control = "public, max-age=300, must-revalidate"
+Content-Type = "application/rss+xml; charset=UTF-8"
+
+[[headers]]
+for = "/blog/atom.xml"
+[headers.values]
+Cache-Control = "public, max-age=300, must-revalidate"
+Content-Type = "application/atom+xml; charset=UTF-8"

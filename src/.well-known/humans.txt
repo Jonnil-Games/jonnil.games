@@ -1,0 +1,15 @@
+/* TEAM */
+  Organization: Jonnil Games
+  Contact: contact@jonnil.games
+  Website: https://jonnil.games
+
+/* SITE */
+  URL: https://jonnil.games
+  Doctype: HTML5
+  Standards: HTML, CSS, JavaScript
+  Hosting: Netlify
+
+/* AI & ROBOTS */
+  Policy: AI scraping not permitted
+  Directives: X-Robots-Tag noai, noimageai; AI-Training none
+  Enforcement: Netlify edge function bots.ts blocks listed crawlers

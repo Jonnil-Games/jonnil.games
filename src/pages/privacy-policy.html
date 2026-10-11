@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title data-i18n="privacy.meta.title">Privacy Policy | Jonnil Games</title>
+
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Privacy Policy | Jonnil Games" />
+    <meta
+      name="description"
+      content="Read the privacy policy for Jonnil Games."
+    />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://jonnil.games/privacy-policy.html" />
+    <meta property="og:title" content="Privacy Policy | Jonnil Games" />
+    <meta
+      property="og:description"
+      content="Read the privacy policy for Jonnil Games."
+    />
+    <meta
+      property="og:image"
+      content="https://jonnil.games/images/og-preview.png"
+    />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Jonnil Games" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Privacy Policy | Jonnil Games" />
+    <meta
+      name="twitter:description"
+      content="Read the privacy policy for Jonnil Games."
+    />
+    <meta
+      name="twitter:image"
+      content="https://jonnil.games/images/og-preview.png"
+    />
+    <link rel="canonical" href="https://jonnil.games/privacy-policy.html" />
+
+    <!-- Styles & Fonts -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" media="print" onload="this.media='all'" />
+
+    <noscript>
+
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
+
+    </noscript>
+<!-- Favicon -->
+    <link rel="icon" href="/favicon.png" />
+</head>
+
+<body>
+    <!-- Header -->
+    <drop capsule="header"></drop>
+
+    <!-- Main Content -->
+    <main class="legal-page">
+        <h1 data-i18n="privacy.title">Privacy Policy</h1>
+        <p>
+            <span data-i18n="privacy.updatedLabel">Last updated:</span>
+            <span data-date="2026-01-24" class="js-local-date">January 24, 2026</span>
+        </p>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 data-i18n="privacy.section1.title">1. Introduction</h2>
+            <p data-i18n="privacy.section1.body">
+                Welcome to Jonnil Games. We respect your privacy and are committed to protecting your personal data.
+                This privacy policy will inform you as to how we look after your personal data when you visit our
+                website
+                and tell you about your privacy rights and how the law protects you.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 data-i18n="privacy.section2.title">2. Data We Collect</h2>
+            <p data-i18n="privacy.section2.body">
+                We currently do not collect any personal data directly through our website.
+                We use local storage only for essential functionality and prefer privacy-focused analytics if any.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 data-i18n="privacy.section3.title">3. Third-Party Links</h2>
+            <p data-i18n="privacy.section3.body">
+                This website may include links to third-party websites, plug-ins, and applications (e.g., Steam,
+                Discord, Bluesky).
+                Clicking on those links or enabling those connections may allow third parties to collect or share data
+                about you.
+                We do not control these third-party websites and are not responsible for their privacy statements.
+                When you leave our website, we encourage you to read the privacy policy of every website you visit.
+            </p>
+        </section>
+
+        <section style="margin-bottom: 2rem;">
+            <h2 data-i18n="privacy.section4.title">4. Contact Us</h2>
+            <p>
+                <span data-i18n="privacy.section4.body">
+                    If you have any questions about this privacy policy or our privacy practices, please contact us at:
+                </span>
+                <a href="mailto:contact@jonnil.games">contact@jonnil.games</a>.
+            </p>
+        </section>
+    </main>
+
+    <script>
+        function formatLocalDates() {
+            const locale = window.JG_I18N ? window.JG_I18N.getState().locale : undefined;
+            document.querySelectorAll(".js-local-date").forEach((el) => {
+                const isoDate = el.getAttribute("data-date");
+                if (!isoDate) {
+                    return;
+                }
+                const parsedDate = new Date(`${isoDate}T00:00:00`);
+                if (Number.isNaN(parsedDate.getTime())) {
+                    return;
+                }
+                el.textContent = parsedDate.toLocaleDateString(locale, {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric"
+                });
+            });
+        }
+        document.addEventListener("DOMContentLoaded", formatLocalDates);
+        document.addEventListener("jg-i18n-ready", formatLocalDates);
+    </script>
+
+    <!-- Footer -->
+    <drop capsule="footer"></drop>
+</body>
+
+</html>

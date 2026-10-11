@@ -1,0 +1,500 @@
+{
+  "team": {
+    "meta": {
+      "title": "Möt teamet - Jonnil Games",
+      "description": "Möt de kreativa hjärnorna bakom Jonnil Games. Vårt mångsidiga team av utvecklare, konstnärer och skapare arbetar tillsammans för att skapa inkluderande spelupplevelser."
+    },
+    "hero": {
+      "title": "Möt teamet",
+      "body": "Det här är personerna som just nu hjälper lilla Jonna att göra vackra spel :3"
+    },
+    "section": {
+      "title": "Vårt team"
+    },
+    "jonna": {
+      "title": "Teamledare",
+      "pronouns": "(Hon/Henne)",
+      "quote": "\"Hewwo jag är Jonna, den stora bossdamen på Jonnil Games! Jag har alltid haft ett intresse för att skapa spel, så jag har lagt ner mycket jobb på att lära mig göra spel i GameMaker. Alla spel som görs av Jonnil Games kommer oftast från mitt eget huvud, men jag har fått många vänner som vill hjälpa mig att göra de här spelen verkliga! Jag är väldigt tacksam för alla som har hjälpt mig längs vägen, och jag hoppas kunna fortsätta göra spel i många år framöver!\"",
+      "alt": "Porträtt av Jonna Nilsson"
+    },
+    "visitSite": "Besök webbplatsen →",
+    "cyan": {
+      "title": "Programmerare",
+      "pronouns": "(Hon/Henne)",
+      "quote": "\"Konst är hur vi ger berättelser liv.\"",
+      "alt": "Porträtt av Cyan Thayn"
+    },
+    "meghan": {
+      "title": "Kreativ assistent",
+      "pronouns": "(Hon/Henne)",
+      "quote": "\"Gameplay är hjärtslaget i varje bra spel.\"",
+      "alt": "Porträtt av Meghan Bledsoe"
+    },
+    "autumn": {
+      "title": "Emotionellt stöd",
+      "pronouns": "(Katt)",
+      "quote": "“t5rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrerdddddddddddddddddddd”",
+      "alt": "Porträtt av katten Autumn"
+    }
+  },
+  "home": {
+    "meta": {
+      "title": "Jonnil Games",
+      "description": "Indiestudio för spelutveckling som skapar inkluderande och innovativa spelupplevelser"
+    },
+    "hero": {
+      "title": "Välkommen till Jonnil Games",
+      "line1": "Insikter och äventyr inom spelutveckling",
+      "line2": "Skapar uppslukande spelupplevelser",
+      "line3": "Bygger världar, en pixel i taget",
+      "line4": "Där kreativitet möter teknik",
+      "line5": "För vi behöver mer galenskap i den här världen",
+      "line6": "🏳️‍⚧️ Transrättigheter är mänskliga rättigheter",
+      "line7": "Gör spel med kärlek och regnbågar 🌈",
+      "line8": "Spel är för alla 💝",
+      "line9": "Puttar pixlar och bryter gränser",
+      "line10": "Skapar inkluderande digitala världar ✨",
+      "line11": "Där fantasin inte har några gränser",
+      "line12": "Kodar med stolthet 🏳️‍🌈",
+      "line13": "Spelglädje från Sverige!"
+    },
+    "featured": {
+      "title": "Utvalda spel",
+      "sticky": {
+        "status": "Släppt",
+        "title": "Sticky Paws",
+        "description": "Hjälp Sticky och vännerna att ta tillbaka sin stulna tårta i det här charmiga plattformsäventyret!",
+        "tag1": "Plattformspel",
+        "tag2": "Flerspelare",
+        "ctaPrimary": "Läs mer",
+        "ctaSecondary": "Steam"
+      },
+      "asylum": {
+        "status": "Under utveckling",
+        "title": "Juni's Asylum",
+        "description": "Ett spännande nytt projekt som just nu är under utveckling. Följ våra framsteg och var först med att få veta när det släpps!",
+        "tag1": "Kommer snart",
+        "tag2": "Enspelare",
+        "ctaPrimary": "Se utvecklingen",
+        "ctaSecondary": "Få uppdateringar"
+      }
+    },
+    "latest": {
+      "title": "Senaste inlägg",
+      "noscriptBefore": "Aktivera JavaScript för att se de senaste inläggen, eller besök",
+      "noscriptLink": "bloggen",
+      "noscriptAfter": ".",
+      "viewAll": "Visa alla inlägg",
+      "by": "Av",
+      "byDefault": "Team Jonnil",
+      "readMore": "Läs mer →"
+    }
+  },
+  "about": {
+    "meta": {
+      "title": "Om - Jonnil Games",
+      "description": "Lär känna Jonnil Games — en indiestudio som skapar inkluderande, innovativa spelupplevelser med fokus på berättande och gemenskap."
+    },
+    "hero": {
+      "title": "Om",
+      "body": "Jonnil Games är en väldigt liten indiestudio där vi förbättrar våra färdigheter ett projekt i taget och försöker göra de bästa spelen vi kan med ett litet team och en stor mängd passion."
+    },
+    "who": {
+      "title": "Vilka vi är",
+      "body": "Jonnil Games är främst Jonna Nilssons verk, och jag är en spelutvecklare som älskar att skapa spel som jag själv älskar att spela. Jag tycker verkligen om plattformsspel, så det är den typen av spel jag oftast gör. Jag har en dröm om att en dag kunna göra mitt eget plattformsmästerverk, och jag arbetar mot det målet med varje spel jag gör. Jag har mina vänner som hjälper mig längs vägen, och jag har varit väldigt tacksam för att de har stöttat mina idéer och hjälpt mig att göra dem verkliga! Jag gillar verkligen samarbete, så jag brukar lyssna på feedback både från mina teammedlemmar och från spelare för att förbättra min förståelse för speldesign och vad som gör ett spel roligt att spela, samtidigt som jag får behålla min egen vision om vilka spel jag personligen vill göra. Vi har också Cyan Thayn, som hjälper till med all komplex programmering, särskilt webbutveckling och backend-system. Och vi har Meghan Bledsoe, som i princip är vår manager, som kommer med idéer och feedback, håller koll på oss och hjälper till med allt sånt där som jag inte ens förstår själv :3"
+    },
+    "principles": {
+      "title": "Vad som är viktigt för oss",
+      "body": "För mig handlar det inte bara om att ha en cool idé när man gör spel, utan om hur spelet faktiskt känns att spela. Jag bryr mig mycket om de små detaljerna, som rörelse, kontroller, ljud och hur lättförståeligt saker är utan att behöva en stor förklaring. Jag bryr mig också om att vara ärlig med var jag är på min resa. Jag lär mig fortfarande och blir bättre hela tiden, och jag försöker inte låtsas som att jag har allt utrett. Men jag vill att varje projekt ska vara ett steg framåt, där jag lär mig något nytt och spelare känner att deras tid respekterades.",
+      "accessibility": {
+        "title": "Tillgänglighet",
+        "body": "Jag brukar göra mina spel med fokus på tillgänglighet och valmöjligheter, så att så många som möjligt kan njuta av dem! Det har varit ett viktigt fokus för mig, eftersom jag har sett vänner kämpa med att spela spel som inte hade de alternativ de behövde för att kunna njuta av dem. Så jag vill se till att mina spel känns så välkomnande som möjligt för alla. Jag minns när jag själv bröt handleden 2019 när jag jobbade på Sticky Paws, och jag var tvungen att spela spel med en hand ett tag. Det fick mig att inse hur viktigt det är med bra tillgänglighetsalternativ i spel, när jag själv hade svårt att spela många spel som inte hade alternativ för enhandsspel. Så jag såg till att implementera bra möjligheter för att anpassa kontrollerna i Sticky Paws, så att jag fortfarande kunde spela det med en hand medan jag återhämtade mig! Sedan dess har jag gjort det till en prioritet att ha omfattande tillgänglighetsalternativ i alla mina spel, eftersom det är något jag har varit djupt passionerad för sedan den upplevelsen. Jag vet att saker inte är perfekta än, och att det definitivt behövs fler alternativ som inte bara gör spelet enklare, utan låter utmaningen vara den som är avsedd för dem som vill ha det så. Det behövs fler alternativ som är inriktade på olika typer av funktionsnedsättningar man kan ha."
+      },
+      "playerCentric": {
+        "title": "Spelarfokuserad design",
+        "body": "Jag försöker designa mina spel utifrån vad spelaren faktiskt upplever, inte bara vad som låter coolt på papper. Ibland blir jag jättepepp på att lägga till funktioner, men jag har lärt mig att fler funktioner inte alltid betyder ett bättre spel. Jag är väldigt stolt över vilka funktioner jag har lyckats lägga till i mina spel, men jag förstår att det i många fall har lett till feature creep. Jag har lärt mig att vara mer kritisk till vilka funktioner som faktiskt tillför något till spelets kärna. Jag försöker fokusera på det spelare känner direkt: rörelse, respons, läsbarhet och hur snabbt spelet lär dig vad det vill. Jag respekterar också spelarens tid. Om en bana är för långsam, för otydlig eller för repetitiv vill jag fixa det. Jag vill att mina spel ska kännas roliga även när du fortfarande lär dig dem."
+      },
+      "community": {
+        "title": "Gemenskap",
+        "body": "Jag vill verkligen höra vad spelare tycker om mina spel — feedback är viktigt för mig! Vi har en Discord-server där spelare kan gå med för att prata med oss och med varandra om våra spel, men jag är också medveten om att jag inte alltid är tillgänglig där, eftersom det kan vara svårt att engagera sig med ett så hektiskt liv som jag lever just nu. Jag vill också verkligen försöka bygga in en känsla av gemenskap i mina spel, så att spelare kan känna sig kopplade till varandra när de spelar, även om jag inte alltid är runt. Saker som banredigerare, egna karaktärer och att dela skapelser i spelet via servrar har varit fantastiska sätt för spelare att knyta an till varandra genom mina spel, och jag vill fortsätta utforska fler sådana sätt i framtida spel också! Jag har haft idéer om att man ska kunna lämna feedback direkt i spelet för att utvecklaren ska kunna läsa senare — det vore ett jättebra sätt för mig att få mer direkt feedback från spelare. Jag vet definitivt att det inte är perfekt än, men det är just därför jag har \"Gemenskap\" som en av mina kärnprinciper, så att jag kan fortsätta jobba på det :3"
+      },
+      "authenticity": {
+        "title": "Äkthet",
+        "body": "Jag vill att mina spel ska kännas som att de är gjorda av en riktig person. Jag försöker inte kopiera det som är populärt bara för att det säljer, även om jag tänker mycket på framgång. Jag gillar att göra spel som speglar det jag genuint älskar — och ibland det jag har kämpat med också. Det betyder också att jag inte är rädd för att vara lite udda, eller överdrivet passionerad kring små detaljer. Om något får mig att känna mig peppad, mysig, rädd, emotionell eller motiverad, så vill jag att den känslan ska finnas i spelet också. Jag tror att spelare kan känna när något är gjort med kärlek, även om det inte är perfekt. Så jag vill hellre göra något ärligt och minnesvärt än något som känns säkert och tomt. Jag är inte perfekt dock. Jag tar absolut inspiration från andra spel, och ibland blir jag helt besatt av en mekanik jag precis spelat och vill direkt prova min egen version av den. Jag tycker att det är helt okej, så länge jag får det att passa spelet jag gör och lägger till min egen twist. Till exempel är Koopa Troopas i Mario så dynamiska fiender att jag minns att jag verkligen ville lära mig att programmera något liknande. Så ja... de små bowlingklots-mössen i Sticky Paws är definitivt inspirerade av dem :3 I slutändan är mina spel ett resultat av det jag älskar, det jag bryr mig om och det som känns äkta för mig som utvecklare."
+      }
+    },
+    "vision": {
+      "title": "Vår vision",
+      "body": "Min vision för Jonnil Games är att fortsätta växa till en studio som spelare kan lita på. Jag vill vara känd för spel som känns bra att spela, har massor av kreativitet och ger spelare verklig frihet. Jag älskar särskilt spel som låter folk uttrycka sig, som banredigerare, egna karaktärer och skapelser från communityt. Jag vill skapa spel som kan bli en liten värld för sig, där spelare kan komma tillbaka om och om igen och alltid hitta något nytt. Just nu är jag fortfarande liten, men jag tar utveckling på allvar — att bli bättre, lära mig och bygga något långsiktigt. Målet är inte bara att släppa spel, utan att bygga något som håller."
+    },
+    "journey": {
+      "title": "Vår resa framåt",
+      "body": "Framöver vill jag fortsätta göra nya spel, förbättra äldre och lära mig hur man gör saker ordentligt. Jag är inte perfekt på planering, och ibland försvinner jag in i utvecklingsläge ett tag utan att posta uppdateringar. Men jag kommer alltid tillbaka till samma mål: att göra något jag är stolt över, och något som spelare verkligen tycker om. Jag vill fortsätta lyssna på feedback, testa idéer och pressa mina färdigheter lite längre varje gång. Om du spelar mina spel, delar något du gjort, rapporterar en bugg eller bara lämnar ett snällt meddelande så betyder det på riktigt mycket. Jonnil Games finns tack vare passion — och tack vare att folk trodde på mig tillräckligt för att jag skulle fortsätta. Tack för att du är en del av den här resan!"
+    }
+  },
+  "privacy": {
+    "meta": {
+      "title": "Integritetspolicy | Jonnil Games"
+    },
+    "title": "Integritetspolicy",
+    "updatedLabel": "Senast uppdaterad:",
+    "section1": {
+      "title": "1. Introduktion",
+      "body": "Välkommen till Jonnil Games. Vi respekterar din integritet och är engagerade i att skydda dina personuppgifter. Den här integritetspolicyn förklarar hur vi hanterar dina personuppgifter när du besöker vår webbplats och informerar dig om dina integritetsrättigheter och hur lagen skyddar dig."
+    },
+    "section2": {
+      "title": "2. Data vi samlar in",
+      "body": "Vi samlar för närvarande inte in några personuppgifter direkt via vår webbplats. Vi använder lokal lagring endast för nödvändig funktionalitet och föredrar integritetsfokuserad analys om vi använder någon alls."
+    },
+    "section3": {
+      "title": "3. Länkar till tredje part",
+      "body": "Den här webbplatsen kan innehålla länkar till tredje parts webbplatser, plug-ins och applikationer (t.ex. Steam, Discord, Bluesky). Om du klickar på dessa länkar eller aktiverar dessa anslutningar kan det innebära att tredje parter samlar in eller delar data om dig. Vi kontrollerar inte dessa tredje parts webbplatser och ansvarar inte för deras integritetspolicys. När du lämnar vår webbplats uppmanar vi dig att läsa integritetspolicyn för varje webbplats du besöker."
+    },
+    "section4": {
+      "title": "4. Kontakta oss",
+      "body": "Om du har några frågor om den här integritetspolicyn eller vår integritetspraxis, kontakta oss på:"
+    }
+  },
+  "notFound": {
+    "meta": {
+      "title": "404 - Sidan hittades inte | Jonnil Games"
+    },
+    "title": "Sidan hittades inte",
+    "message": "Hoppsan! Det verkar som att du har hamnat i okänd terräng. Sidan du letar efter verkar ha gett sig ut på ett äventyr utan oss.",
+    "cta": "Till startsidan"
+  },
+  "terms": {
+    "meta": {
+      "title": "Användarvillkor | Jonnil Games"
+    },
+    "title": "Användarvillkor",
+    "updatedLabel": "Senast uppdaterad:",
+    "section1": {
+      "title": "1. Godkännande av villkor",
+      "body": "Genom att besöka och använda den här webbplatsen accepterar du och samtycker till att vara bunden av villkoren i detta avtal."
+    },
+    "section2": {
+      "title": "2. Immateriella rättigheter",
+      "body": "Allt innehåll på denna webbplats, inklusive text, grafik, logotyper och bilder, ägs av Jonnil Games och skyddas av upphovsrättslagar. Du får inte använda något innehåll från denna webbplats utan vårt uttryckliga skriftliga tillstånd."
+    },
+    "section3": {
+      "title": "3. Ansvarsfriskrivning",
+      "body": "Materialet på Jonnil Games webbplats tillhandahålls i befintligt skick (\"as is\"). Jonnil Games lämnar inga garantier, uttryckliga eller underförstådda, och friskriver sig härmed från alla andra garantier, inklusive men inte begränsat till underförstådda garantier eller villkor om säljbarhet, lämplighet för ett visst ändamål eller icke-intrång i immateriella rättigheter eller andra rättighetsintrång."
+    },
+    "section4": {
+      "title": "4. Kontakt",
+      "body": "Om du har några frågor om dessa villkor, kontakta oss på:"
+    }
+  },
+  "games": {
+    "meta": {
+      "title": "Spel - Jonnil Games",
+      "description": "Upptäck vår samling av inkluderande och innovativa spel. Från charmiga plattformare till kusliga äventyr — utforska unika spelupplevelser skapade med omtanke."
+    },
+    "hero": {
+      "title": "Våra spel",
+      "body": "Upptäck våra senaste skapelser och kommande projekt."
+    },
+    "timeline": {
+      "title": "Spelens tidslinje",
+      "upcoming": "Kommande",
+      "junis": {
+        "title": "Juni's Asylum",
+        "tag1": "Skräckäventyr",
+        "tag2": "Under utveckling",
+        "cta": "Läs mer",
+        "body": "Vårt kommande andra stora spel, en andlig efterföljare till <i>Spook</i>-spelen. Återskapat med många års erfarenhet och ett större team."
+      },
+      "stickySwitch": {
+        "title": "Sticky Paws: Switch-uppdatering",
+        "body": "Switch-version med onlinedelning för egna karaktärer och banor.",
+        "tag1": "Uppdatering",
+        "tag2": "Switch",
+        "aria": "Gå till Sticky Paws"
+      },
+      "formalized": {
+        "title": "Formaliserat team",
+        "body": "Vi formaliserade vår teamstruktur internt för att förbättra samarbete och projektledning.",
+        "tag1": "Gemenskap",
+        "cta": "Möt teamet!"
+      },
+      "stickyDx": {
+        "title": "Sticky Paws: DX-uppdatering",
+        "body": "Definitiv uppfräschning: omgjorda banor, QoL-förbättringar och bred polering.",
+        "tag1": "Uppdatering",
+        "tag2": "Steam",
+        "aria": "Gå till Sticky Paws"
+      },
+      "sticky": {
+        "title": "Sticky Paws",
+        "body": "Vår första stora spelsläpp! En charmig plattformare där du spelar som katter som försöker ta tillbaka sin stulna tårta från en busig råtta.",
+        "tag1": "Plattformspel",
+        "tag2": "Steam",
+        "tag3": "Släppt",
+        "ctaPrimary": "Läs mer",
+        "ctaSecondary": "Steam"
+      },
+      "discord": {
+        "title": "Discord-lansering",
+        "body": "Vi lanserade vår officiella Discord-gemenskap för att bättre kunna hålla kontakt med våra spelare.",
+        "tag1": "Gemenskap",
+        "cta": "Gå med i Discord"
+      },
+      "legacyLabel": "Äldre",
+      "goldenCargo": {
+        "title": "Golden Cargo Block",
+        "body": "En kooperativ plattformare för två spelare där den ena spelaren styr karaktären medan den andra styr ett gyllene lastblock för att skapa plattformar. En nytolkning av vårt tidigare spel Golden Lego Block!",
+        "tag1": "Kooperativ plattformare",
+        "tag2": "PC",
+        "tag3": "Släppt",
+        "cta": "Ladda ner"
+      },
+      "vastDungeon": {
+        "title": "Vast Dungeon",
+        "body": "Ett top-down pusseläventyr där du guidar en ensam upptäcktsresande genom en enorm dungeon, på jakt efter en utväg samtidigt som du löser utmanande pussel.",
+        "tag1": "Pusseläventyr",
+        "tag2": "PC",
+        "tag3": "Släppt",
+        "cta": "Ladda ner"
+      },
+      "spookClinic": {
+        "title": "Spook: The Clinic",
+        "body": "En skräckplattformare som följer en grönhårig huvudperson som försöker fly från en skrämmande klinik. Spelet lade grunden för vår kommande stora titel.",
+        "tag1": "Skräckplattformare",
+        "tag2": "PC",
+        "tag3": "Släppt",
+        "cta": "Ladda ner"
+      },
+      "loveBus": {
+        "title": "Love is on the bus",
+        "body": "Ett berättelseäventyr där du lyssnar på olika passagerares kärlekshistorier innan du samlar mod att närma dig din egen crush på bussen. Släppt på alla hjärtans dag!",
+        "tag1": "Berättelseäventyr",
+        "tag2": "PC",
+        "tag3": "Släppt",
+        "cta": "Newgrounds"
+      },
+      "timeTravel": {
+        "title": "Jonnil TimeTravel",
+        "body": "En unik plattformare där du styr flera karaktärer som reser genom tiden och använder deras kombinerade förmågor för att ta dig vidare genom äventyret.",
+        "tag1": "Tidsreseplattformare",
+        "tag2": "PC",
+        "tag3": "Släppt",
+        "cta1": "GameJolt",
+        "cta2": "Newgrounds"
+      },
+      "spook": {
+        "title": "Spook",
+        "body": "Vårt första skräckspel — en spänd top-down överlevnadsupplevelse där du måste fly från en källare fylld med zombier! Början på vår skräckspelserie.",
+        "tag1": "Skräck",
+        "tag2": "PC",
+        "tag3": "Släppt",
+        "cta": "Newgrounds"
+      },
+      "toaster2": {
+        "title": "Toaster 2",
+        "body": "Uppföljaren till Toaster: A Nurikabe Experience. Följ med Toaster när han undersöker vem som låg bakom kidnappningen av hans flickvän i förra spelet — oroa dig inte, hon är säker den här gången!",
+        "tag1": "Pusselplattformare",
+        "tag2": "PC",
+        "tag3": "Släppt",
+        "cta1": "Ladda ner",
+        "cta2": "Källkod"
+      },
+      "goldenLego": {
+        "title": "Golden Lego Block",
+        "body": "Den ursprungliga plattformaren för två spelare som inspirerade Golden Cargo Block. Den ena spelaren styr karaktären medan den andra manipulerar ett gyllene lego-block för att skapa plattformar.",
+        "tag1": "Kooperativ plattformare",
+        "tag2": "PC",
+        "tag3": "Släppt",
+        "cta1": "Ladda ner",
+        "cta2": "Källkod"
+      },
+      "toasterNurikabe": {
+        "title": "Toaster: A Nurikabe Experience",
+        "body": "Vårt allra första spel! En plattformare med Toaster i huvudrollen, en nurikabe-karaktär som måste rädda sin kidnappade flickvän. Starten på Toaster-serien!",
+        "tag1": "Pusselplattformare",
+        "tag2": "PC",
+        "tag3": "Släppt",
+        "cta1": "Ladda ner",
+        "cta2": "Källkod"
+      },
+      "linkLabel": "Länk till det här tidslinjeobjektet"
+    }
+  },
+  "sticky": {
+    "meta": {
+      "title": "Sticky Paws - Jonnil Games",
+      "description": "Ge dig ut på ett klibbigt äventyr i den här charmiga, fysikbaserade plattformaren. Använd dina klibbiga tassar för att klättra, svinga och studsa genom färgstarka banor fulla av utmaningar och skoj!",
+      "status": "Släppt",
+      "genre": "Fysikplattformare"
+    },
+    "subhero": {
+      "body": "Följ med Sticky katten på ett härligt äventyr för att ta tillbaka en stulen tårta från busiga möss! Ta dig igenom 10 charmiga banor fulla av utmaningar och skoj, där du kan klättra på väggar, hoppa genom kartonger och spela med vänner i den här fysikbaserade plattformaren som kombinerar solospel med flerspelarkaos."
+    },
+    "steam": {
+      "title": "Steam-widget",
+      "iframeTitle": "Sticky Paws på Steam"
+    },
+    "videos": {
+      "title": "Spelvideor",
+      "iframeTitle": "Sticky Paws spelvideo"
+    },
+    "features": {
+      "multiplayer": {
+        "title": "Flerspelarglädje",
+        "body": "Spela med upp till 4 spelare lokalt eller online via Steams Remote Play Together! Bara en spelare behöver äga spelet för att bjuda in vänner till flerspelarskoj.",
+        "aria": "Flerspelare"
+      },
+      "characters": {
+        "title": "Spelbara karaktärer",
+        "body": "Välj mellan Sticky och Catlyn, var och en med sin unika charm! Spelet stödjer egna karaktärstillägg för ännu mer variation.",
+        "aria": "Spelbara karaktärer"
+      },
+      "editor": {
+        "title": "Kreativ banredigerare",
+        "body": "Designa och dela dina egna banor! Skapa utmanande nivåer, exportera dem och dela med vänner. Importera nivåer från andra för oändliga spelmöjligheter.",
+        "aria": "Banredigerare"
+      },
+      "competitive": {
+        "title": "Tävlingsfunktioner",
+        "body": "Utmana vänner med poäng och speedruns! Varje nivå sparar din bästa prestation, så att du kan tävla om de snabbaste tiderna och högsta poängen.",
+        "aria": "Tävlingsfunktioner"
+      }
+    },
+    "info": {
+      "title": "Finns nu på Steam!",
+      "body1": "Upplev glädjen i Stickys äventyr, antingen solo eller med vänner! Sticky Paws är främst en precisionplattformare som låter dig klättra på väggar, hoppa genom hinder och ta dig igenom utmaningar precis som du vill, i din egen takt.",
+      "body2": "Med den medföljande banredigeraren är din kreativitet gränslös. Skapa egna utmaningar, dela dem med vänner och upptäck nya banor skapade av communityt. Oavsett om du tävlar om bästa tider, designar banor eller bara har kul med vänner finns det alltid något spännande att göra i Sticky Paws!",
+      "ctaSteam": "Skaffa på Steam",
+      "ctaDiscord": "Gå med i vår Discord"
+    },
+    "screenshots": {
+      "title": "Skärmbilder",
+      "alt1": "Skärmbild av Sticky Paws nivå 1",
+      "alt2": "Skärmbild av Sticky Paws nivå 2",
+      "alt3": "Skärmbild av Sticky Paws nivå 3"
+    },
+    "hero": {
+      "titleAlt": "Sticky Paws"
+    },
+    "changelog": {
+      "cta": "Senaste changelog"
+    }
+  },
+  "asylum": {
+    "meta": {
+      "title": "Juni's Asylum - Jonnil Games",
+      "description": "Kliv in i Juni's Asylum, ett hemsökande skräckäventyr. En andlig efterföljare som återuppfinns med många års erfarenhet och ett större team.",
+      "status": "Under utveckling",
+      "genre": "Skräckäventyr"
+    },
+    "subhero": {
+      "body": "Juni's Asylum är ett planerat skräckäventyrsspel, en andlig efterföljare till en äldre Jonnil Games-titel som heter \"Spook: The Clinic\". Det här nya spelet är tänkt att återuppfinna det ursprungliga konceptet och karaktären. Med mycket mer erfarenhet av spelutveckling och ett större team siktar Juni's Asylum på att bli Jonnil Games mest ambitiösa projekt hittills!"
+    },
+    "features": {
+      "horror": {
+        "title": "Uppslukande skräck",
+        "body": "Varje skugga och varje ljud bygger en isande atmosfär — klassisk indieskräck, förfinad.",
+        "aria": "Uppslukande skräck"
+      },
+      "platforming": {
+        "title": "Utmanande plattformande",
+        "body": "Hoppa, dasha och ta dig igenom förrädiska utrymmen som testar reflexer och nerver.",
+        "aria": "Utmanande plattformande"
+      },
+      "puzzles": {
+        "title": "Pussel och hemligheter",
+        "body": "Dolda ledtrådar, lager på lager av pussel och easter eggs avslöjar asylets djupare sanning.",
+        "aria": "Pussel och hemligheter"
+      },
+      "narrative": {
+        "title": "Förgrenade berättelser",
+        "body": "Dina val spelar roll — flera slut och vägar bjuder in till omspelningar och teorispekulationer.",
+        "aria": "Förgrenade berättelser"
+      }
+    },
+    "status": {
+      "title": "Nuvarande utvecklingsstatus",
+      "body": "Juni's Asylum är just nu i ett mycket tidigt utvecklingsskede. Det är mest prototyper och konceptarbete som görs just nu. Det kommer troligen dröja ett tag innan spelet är redo för en slutgiltig release, men vi är supertaggade på att dela våra framsteg längs vägen! Jag vill se till att det finns gott om demobyggen att testa när utvecklingen fortsätter, så att vi kan samla in feedback från spelare och forma upplevelsen. Vi kommer fortfarande att följa det vi vill uppnå med spelet, men vissa detaljer kan ändras när vi går längre in i utvecklingen."
+    },
+    "hero": {
+      "unmute": "Slå på bakgrundsljud",
+      "mute": "Stäng av bakgrundsljud",
+      "titleAlt": "Juni's Asylum"
+    }
+  },
+  "footer": {
+    "brand": "Jonnil Games",
+    "blurb": "Skapar tokiga små spel för folk som älskar tokiga små spel :3",
+    "quickLinks": "Snabblänkar",
+    "contact": "Kontakt",
+    "fromSweden": "Med 💖 från Sverige!",
+    "emailLabel": "E-post:",
+    "rights": "Jonnil Games. Licensierad under CC BY-NC-SA 4.0.",
+    "privacy": "Integritetspolicy",
+    "terms": "Användarvillkor",
+    "copyright": "Upphovsrätt",
+    "licenseAria": "Creative Commons Erkännande-IckeKommersiell-DelaLika 4.0 Internationell"
+  },
+  "nav": {
+    "home": "Hem",
+    "games": "Spel",
+    "blog": "Blogg",
+    "team": "Team",
+    "about": "Om",
+    "homeAria": "Jonnil Games startsida",
+    "toggle": "Växla meny",
+    "mobile": "Mobilnavigering"
+  },
+  "followUpdates": {
+    "title": "Följ uppdateringar",
+    "subtitle": "Välj hur du vill följa våra uppdateringar.",
+    "rss": "RSS",
+    "bluesky": "Bluesky",
+    "discord": "Discord"
+  },
+  "continueDiscussion": {
+    "title": "Fortsätt diskussionen",
+    "subtitle": "Har du tankar om det här inlägget? Vi vill gärna höra dem!",
+    "bluesky": "Bluesky",
+    "discord": "Discord"
+  },
+  "lang": {
+    "label": "Språk",
+    "auto": "Automatiskt",
+    "english": "Engelska",
+    "swedish": "Svenska"
+  },
+  "blog": {
+    "meta": {
+      "title": "Blogg - Jonnil Games",
+      "description": "De senaste uppdateringarna, insikterna och nyheterna från Jonnil Games-teamet. Läs om spelutveckling, bakom kulisserna och mer."
+    },
+    "header": {
+      "title": "Blogg",
+      "subtitle": "De senaste uppdateringarna, insikterna och nyheterna från Jonnil Games-teamet"
+    },
+    "filters": {
+      "authorLabel": "Filtrera på författare",
+      "authorAll": "Alla författare",
+      "categoryLabel": "Filtrera på kategori",
+      "categoryAll": "Alla kategorier",
+      "searchPlaceholder": "Sök inlägg...",
+      "searchAria": "Sök blogginlägg"
+    },
+    "post": {
+      "by": "Av",
+      "readMore": "Läs mer →"
+    },
+    "alsoOn": "Även på:",
+    "webmentions": {
+      "title": "Kommentarer",
+      "empty": "Inga kommentarer än.",
+      "likes": "Gillar",
+      "reposts": "Reposts",
+      "mentions": "Omnämnanden",
+      "bookmarks": "Bokmärken",
+      "replies": "Svar",
+      "source": "Visa källa"
+    }
+  }
+}

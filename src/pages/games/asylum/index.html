@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title data-i18n="asylum.meta.title">Juni's Asylum - Jonnil Games</title>
+
+    <!-- Primary Meta -->
+    <meta name="title" content="Juni's Asylum - Jonnil Games" data-i18n-attr="content:asylum.meta.title" />
+    <meta
+      name="description"
+      content="Enter Juni's Asylum, a haunting horror adventure. A spiritual successor reimagined with years of experience and a larger team."
+      data-i18n-attr="content:asylum.meta.description"
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://jonnil.games/games/asylum/" />
+    <meta property="og:title" content="Juni's Asylum - Jonnil Games" data-i18n-attr="content:asylum.meta.title" />
+    <meta
+      property="og:description"
+      content="Enter Juni's Asylum, a haunting horror adventure. A spiritual successor reimagined with years of experience and a larger team."
+      data-i18n-attr="content:asylum.meta.description"
+    />
+    <meta
+      property="og:image"
+      content="https://jonnil.games/images/og-preview.png"
+    />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Jonnil Games" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Juni's Asylum - Jonnil Games" data-i18n-attr="content:asylum.meta.title" />
+    <meta
+      name="twitter:description"
+      content="Enter Juni's Asylum, a haunting horror adventure. A spiritual successor reimagined with years of experience and a larger team."
+      data-i18n-attr="content:asylum.meta.description"
+    />
+    <meta
+      name="twitter:image"
+      content="https://jonnil.games/images/og-preview.png"
+    />
+
+    <!-- Game-specific Meta -->
+    <meta property="og:game:status" content="In Development" data-i18n-attr="content:asylum.meta.status" />
+    <meta property="og:game:release_date" content="TBA" />
+    <meta property="og:game:genre" content="Horror Adventure" data-i18n-attr="content:asylum.meta.genre" />
+
+    <!-- Canonical + Feeds -->
+    <link rel="canonical" href="https://jonnil.games/games/asylum/" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="RSS"
+      href="/blog/rss.xml"
+    />
+    <link
+      rel="alternate"
+      type="application/atom+xml"
+      title="Atom"
+      href="/blog/atom.xml"
+    />
+
+    <!-- Styles & Fonts -->
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/games/asylum/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" media="print" onload="this.media='all'" />
+
+    <noscript>
+
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" />
+
+    </noscript>
+<!-- Preload alt title for flicker -->
+    <link rel="preload" as="image" href="/games/asylum/title-dark.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.png" />
+  </head>
+  <body>
+    <!-- Header capsule -->
+    <drop capsule="header"></drop>
+
+    <main>
+      <section class="hero">
+        <!-- Game Title Image with flickering effect -->
+        <h1>
+          <span class="title-flicker">
+            <img
+              src="/games/asylum/title-dark.png"
+              alt="Juni's Asylum"
+              data-i18n-attr="alt:asylum.hero.titleAlt"
+              class="game-title responsive-logo"
+              fetchpriority="high"
+              decoding="async"
+              width="632"
+              height="313"
+            />
+            <img
+              src="/games/asylum/title.png"
+              alt=""
+              class="game-title responsive-logo flicker-layer"
+              aria-hidden="true"
+              decoding="async"
+              width="632"
+              height="313"
+            />
+            <span class="spark-layer" aria-hidden="true"></span>
+          </span>
+        </h1>
+        <button
+          class="sound-toggle"
+          type="button"
+          aria-label="Mute ambient sound"
+          data-i18n-attr="aria-label:asylum.hero.mute"
+        >
+          <span class="icon" data-icon="volume-up" aria-hidden="true"></span>
+        </button>
+      </section>
+
+      <div class="divider large-divider"></div>
+
+      <div class="sub-hero">
+        <p data-i18n="asylum.subhero.body">
+          Juni's Asylum is a planned horror adventure game, a spiritual successor to
+          a older Jonnil Games title called "Spook: The Clinic". This new
+          game is planned to reimagine the original concept and character.
+          With much more experience making games and a larger team, Juni's
+          Asylum aims to be Jonnil Games' most ambitious project yet!
+        </p>
+      </div>
+
+      <div class="game-features">
+        <div class="feature-card">
+          <span
+            class="feature-icon"
+            role="img"
+            aria-label="Immersive horror"
+            data-i18n-attr="aria-label:asylum.features.horror.aria"
+          >
+            👻
+          </span>
+          <h3 data-i18n="asylum.features.horror.title">Immersive Horror</h3>
+          <p data-i18n="asylum.features.horror.body">
+            Every shadow and sound builds a chilling atmosphere—classic indie
+            horror, refined.
+          </p>
+        </div>
+        <div class="feature-card">
+          <span
+            class="feature-icon"
+            role="img"
+            aria-label="Challenging platforming"
+            data-i18n-attr="aria-label:asylum.features.platforming.aria"
+          >
+            🎮
+          </span>
+          <h3 data-i18n="asylum.features.platforming.title">
+            Challenging Platforming
+          </h3>
+          <p data-i18n="asylum.features.platforming.body">
+            Jump, dash, and thread through treacherous spaces that test reflex
+            and nerve.
+          </p>
+        </div>
+        <div class="feature-card">
+          <span
+            class="feature-icon"
+            role="img"
+            aria-label="Puzzles and secrets"
+            data-i18n-attr="aria-label:asylum.features.puzzles.aria"
+          >
+            🔎
+          </span>
+          <h3 data-i18n="asylum.features.puzzles.title">Puzzles & Secrets</h3>
+          <p data-i18n="asylum.features.puzzles.body">
+            Hidden clues, layered puzzles, and easter eggs reveal the asylum’s
+            deeper truth.
+          </p>
+        </div>
+        <div class="feature-card">
+          <span
+            class="feature-icon"
+            role="img"
+            aria-label="Branching narratives"
+            data-i18n-attr="aria-label:asylum.features.narrative.aria"
+          >
+            💬
+          </span>
+          <h3 data-i18n="asylum.features.narrative.title">
+            Branching Narratives
+          </h3>
+          <p data-i18n="asylum.features.narrative.body">
+            Your choices matter—multiple endings and paths invite replays and
+            theorycrafting.
+          </p>
+        </div>
+      </div>
+
+      <div class="divider large-divider"></div>
+
+      <div class="info-duo">
+        <section class="game-info">
+          <h2 data-i18n="asylum.status.title">Current Development Status</h2>
+          <p data-i18n="asylum.status.body">
+            Juni's Asylum is currently in very early development stages. Mostly
+            prototyping and concept work is being done at this time. It will probably
+            be a while before the game is ready for final release, but we are excited to
+            share our progress along the way! I want to make sure there will be plenty of
+            demo builds to try out as developments continues, and able to gather feedback
+            from players to help shape the experience. We are still going to be following
+            what we want to achieve with the game, but some details may change as we
+            progress further into development.
+          </p>
+        </section>
+
+        <drop capsule="follow-updates"></drop>
+      </div>
+    </main>
+
+    <!-- Character sprite with subtle ghost effect -->
+    <div class="character-container" aria-hidden="true">
+      <img
+        src="/games/asylum/Juni.png"
+        alt=""
+        class="character-sprite"
+        loading="lazy"
+        decoding="async"
+        width="1080"
+        height="1080"
+      />
+      <img
+        src="/games/asylum/Juni.png"
+        alt=""
+        class="ghost-sprite"
+        loading="lazy"
+        decoding="async"
+        width="1080"
+        height="1080"
+      />
+    </div>
+
+    <!-- Footer capsule -->
+    <drop capsule="footer"></drop>
+
+    <script>
+      // Respect reduced motion users
+      const prefersReducedMotion =
+        window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      // Title flicker (candle-like)
+      {
+        const flickerLayer = document.querySelector(".flicker-layer");
+        const flickerWrap = document.querySelector(".title-flicker");
+        const sparkLayer = document.querySelector(".spark-layer");
+        const soundToggle = document.querySelector(".sound-toggle");
+        let audioContext;
+        let humOscillator;
+        let humGain;
+        let isMuted = false;
+        let lastLevel = 0;
+        let experienceStarted = false;
+        function getLabel(key, fallback) {
+          return window.JG_I18N ? window.JG_I18N.t(key, fallback) : fallback;
+        }
+
+        function updateSoundLabel() {
+          if (!soundToggle) return;
+          const label = isMuted
+            ? getLabel("asylum.hero.unmute", "Unmute ambient sound")
+            : getLabel("asylum.hero.mute", "Mute ambient sound");
+          soundToggle.setAttribute("aria-label", label);
+        }
+
+        function initAudio() {
+          if (audioContext) return;
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          audioContext = new AudioCtx();
+          humOscillator = audioContext.createOscillator();
+          const humOscillator2 = audioContext.createOscillator();
+          humGain = audioContext.createGain();
+          const humFilter = audioContext.createBiquadFilter();
+          humOscillator.type = "sine";
+          humOscillator.frequency.value = 140;
+          humOscillator2.type = "sine";
+          humOscillator2.frequency.value = 280;
+          humGain.gain.value = 0.006;
+          humFilter.type = "lowpass";
+          humFilter.frequency.value = 800;
+          humOscillator.connect(humGain);
+          humOscillator2.connect(humGain);
+          humGain.connect(humFilter).connect(audioContext.destination);
+          humOscillator.start();
+          humOscillator2.start();
+        }
+
+        function setHumLevel(level) {
+          if (!humGain || !audioContext) return;
+          lastLevel = Math.max(0, Math.min(1, level));
+          if (isMuted) return;
+          const target = 0.006 + lastLevel * 0.012;
+          humGain.gain.setTargetAtTime(target, audioContext.currentTime, 0.06);
+        }
+
+        function triggerSparks(intensity) {
+          if (!sparkLayer || !flickerWrap) return;
+          const rect = flickerWrap.getBoundingClientRect();
+          if (rect.width < 10 || rect.height < 10) return;
+          const clamped = Math.max(0.15, Math.min(1, intensity));
+          const count = Math.max(2, Math.round(clamped * 8));
+          const region = {
+            xStart: rect.width * 0.32,
+            xEnd: rect.width * 0.74,
+            yStart: rect.height * 0.72,
+            yEnd: rect.height * 0.94,
+          };
+
+          for (let i = 0; i < count; i += 1) {
+            const spark = document.createElement("span");
+            spark.className = "spark";
+
+            const x =
+              region.xStart + Math.random() * (region.xEnd - region.xStart);
+            const y =
+              region.yStart + Math.random() * (region.yEnd - region.yStart);
+            const drift = (Math.random() * 40 - 20).toFixed(1);
+            const fall = (18 + Math.random() * 26).toFixed(1);
+            const size = (2 + Math.random() * 3).toFixed(1);
+            const dur = (280 + Math.random() * 420).toFixed(0);
+
+            spark.style.left = `${x}px`;
+            spark.style.top = `${y}px`;
+            spark.style.setProperty("--spark-dx", `${drift}px`);
+            spark.style.setProperty("--spark-dy", `${fall}px`);
+            spark.style.setProperty("--spark-size", `${size}px`);
+            spark.style.animationDuration = `${dur}ms`;
+            spark.style.opacity = String(0.35 + clamped * 0.6);
+
+            spark.addEventListener("animationend", () => {
+              spark.remove();
+            });
+            sparkLayer.appendChild(spark);
+          }
+        }
+
+        function setLightLevel(level) {
+          if (!flickerLayer) return;
+          const clamped = Math.max(0, Math.min(1, level));
+          flickerLayer.style.opacity = String(clamped);
+          setHumLevel(clamped);
+        }
+
+        function pulseFlicker() {
+          if (!flickerLayer) return;
+          const hold = Math.random() < 0.08;
+          if (hold) {
+            const holdOpacity = 0.3 + Math.random() * 0.4;
+            const holdDuration = 1800 + Math.random() * 3200;
+            let holdActive = true;
+            setLightLevel(holdOpacity);
+
+            function microFlicker() {
+              if (!holdActive) return;
+              const micro = holdOpacity + (Math.random() * 0.12 - 0.06);
+              setLightLevel(micro);
+              triggerSparks(micro);
+              setTimeout(microFlicker, 90 + Math.random() * 220);
+            }
+
+            microFlicker();
+            setTimeout(() => {
+              holdActive = false;
+              setLightLevel(0);
+              setTimeout(pulseFlicker, 400 + Math.random() * 1200);
+            }, holdDuration);
+            return;
+          }
+          const burst = Math.random() < 0.12;
+          const steps = burst ? 2 + Math.floor(Math.random() * 3) : 1;
+          const burstMin = 0.2 + Math.random() * 0.2;
+          const burstMax = burstMin + 0.3 + Math.random() * 0.2;
+          let step = 0;
+
+          function doStep() {
+            const opacity =
+              burstMin + Math.random() * Math.max(0.05, burstMax - burstMin);
+            setLightLevel(opacity);
+            triggerSparks(opacity);
+            setTimeout(() => {
+              setLightLevel(0);
+              step += 1;
+              if (step < steps) {
+                setTimeout(doStep, 40 + Math.random() * 120);
+              }
+            }, 60 + Math.random() * 160);
+          }
+
+          doStep();
+          setTimeout(pulseFlicker, 260 + Math.random() * 1400);
+        }
+
+        function startExperience() {
+          if (experienceStarted) return;
+          experienceStarted = true;
+          initAudio();
+          if (audioContext && audioContext.state === "suspended") {
+            audioContext.resume();
+          }
+          if (soundToggle) {
+            soundToggle.classList.add("is-active");
+            updateSoundLabel();
+          }
+          if (!prefersReducedMotion) {
+            pulseFlicker();
+          }
+        }
+
+        ["pointerdown", "keydown", "touchstart", "wheel"].forEach((eventName) => {
+          window.addEventListener(eventName, startExperience, {
+            once: true,
+            passive: true,
+          });
+        });
+
+        if (soundToggle) {
+          soundToggle.addEventListener("click", () => {
+            isMuted = !isMuted;
+            if (!humGain || !audioContext) return;
+            const icon = soundToggle.querySelector(".icon");
+            if (isMuted) {
+              humGain.gain.setTargetAtTime(0, audioContext.currentTime, 0.08);
+              if (icon) icon.setAttribute("data-icon", "volume-mute");
+            } else {
+              const target = 0.006 + lastLevel * 0.012;
+              humGain.gain.setTargetAtTime(target, audioContext.currentTime, 0.08);
+              if (icon) icon.setAttribute("data-icon", "volume-up");
+            }
+            updateSoundLabel();
+          });
+        }
+
+        document.addEventListener("jg-i18n-ready", updateSoundLabel);
+      }
+
+      // Ghost sprite drift
+      if (!prefersReducedMotion) {
+        const ghostSprite = document.querySelector(".ghost-sprite");
+        function moveGhost() {
+          const xShift = Math.random() * 6 - 3;
+          const yShift = Math.random() * 6 - 3;
+          ghostSprite.style.transform = `translate(${xShift}px, ${yShift}px)`;
+          setTimeout(moveGhost, 100 + Math.random() * 200);
+        }
+        moveGhost();
+      }
+    </script>
+  </body>
+</html>

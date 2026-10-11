@@ -1,0 +1,37 @@
+<!--
+  jonnil.games – follow-updates.html
+  Purpose: Reusable follow updates card for the newsletter section.
+  Notes: Used on pages that link to RSS/Bluesky/Discord.
+-->
+<section id="newsletter" class="newsletter-section">
+  <div class="newsletter-container info-card">
+    <h2 data-i18n="followUpdates.title">Follow Updates</h2>
+    <p data-i18n="followUpdates.subtitle">
+      Choose how you'd like to follow our updates.
+    </p>
+    <div class="follow-links action-links">
+      <a class="button secondary-button btn-rss" href="/blog/rss.xml">
+        <span class="icon" data-icon="rss" aria-hidden="true"></span>
+        <span data-i18n="followUpdates.rss">RSS</span>
+      </a>
+      <a
+        class="button secondary-button btn-bluesky"
+        href="https://bsky.app/profile/jonnil.games"
+        target="_blank"
+        rel="me atproto authn noopener noreferrer"
+      >
+        <span class="icon" data-icon="bluesky" aria-hidden="true"></span>
+        <span data-i18n="followUpdates.bluesky">Bluesky</span>
+      </a>
+      <a
+        class="button secondary-button btn-discord"
+        href="https://discord.gg/GAmTXwqH9V"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="icon" data-icon="discord" aria-hidden="true"></span>
+        <span data-i18n="followUpdates.discord">Discord</span>
+      </a>
+    </div>
+  </div>
+</section>
