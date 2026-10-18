@@ -13,10 +13,13 @@ syndication:
   {}
 syndicationStatus:
   bluesky: "requested"
+  discord: "requested"
 syndicationRequestedAt:
   bluesky: "2026-10-18T18:24:56.471Z"
+  discord: "2026-10-18T18:24:56.471Z"
 syndicationCheckedAt:
   bluesky: "2026-10-18T18:24:56.471Z"
+  discord: "2026-10-18T18:24:56.471Z"
 ---
 
 ## Added
