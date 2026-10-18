@@ -70,6 +70,8 @@ test("reports GitHub HTTP status without the request path or credentials", async
   for (const detail of [
     "Failed to list posts for syndication: Failed to list posts (status 403)",
     "Failed to list posts for syndication: Failed to fetch private/path?token=secret (status 404)",
+    "Lease publish update failed for private/path?token=secret -> bluesky (status 403)",
+    "Lease confirm update failed for private/path?token=secret -> discord (status 403)",
   ]) {
     const { message } = await failedMessage(`Post-deploy syndication failed: ${detail}\n`);
     assert.match(message, /GitHub writeback request failed \(HTTP 40[34]\)/);
@@ -95,6 +97,61 @@ test("reports a syntax category without source lines and arbitrary stderr", asyn
 test("does not reflect arbitrary child errors into public metadata", async () => {
   const { message } = await failedMessage("Post-deploy syndication failed: https://user:password@example.test/?token=secret\nprivate stack\n");
   assert.equal(message, "Post-deploy syndication script exited with code 1.");
+});
+
+test("reports missing dependency classes without import paths", async () => {
+  for (const code of ["ERR_MODULE_NOT_FOUND", "MODULE_NOT_FOUND", "ERR_PACKAGE_PATH_NOT_EXPORTED", "ERR_UNKNOWN_FILE_EXTENSION", "ERR_REQUIRE_ESM"]) {
+    const { message } = await failedMessage(`node:internal/modules/example\nError [${code}]: private dependency path\n`);
+    assert.match(message, /required website announcement dependency could not be loaded/);
+    assert.ok(!message.includes("private"));
+  }
+});
+
+test("reports timeout categories without request addresses", async () => {
+  for (const detail of ["TimeoutError: private endpoint", "Error: connect ETIMEDOUT private endpoint", "AbortError: private request"]) {
+    const { message } = await failedMessage(detail + "\n");
+    assert.match(message, /website announcement request timed out/);
+    assert.ok(!message.includes("private"));
+  }
+});
+
+test("reports network failure categories without connection details", async () => {
+  for (const detail of [
+    "Post-deploy syndication failed: Failed to list posts for syndication: fetch failed",
+    "Post-deploy syndication failed: fetch failed",
+    "Error: ENOTFOUND private hostname",
+  ]) {
+    const { message } = await failedMessage(detail + "\n");
+    assert.match(message, /could not reach a required service/);
+    assert.ok(!message.includes("private"));
+  }
+});
+
+test("reports a missing fetch runtime without runtime source", async () => {
+  const { message } = await failedMessage("Post-deploy syndication failed: Failed to list posts for syndication: fetch is not defined\n");
+  assert.match(message, /runtime does not provide fetch/);
+});
+
+test("reports unreadable input files without private filenames", async () => {
+  for (const code of ["ENOENT", "EACCES", "EPERM", "EISDIR", "ENOTDIR"]) {
+    const { message } = await failedMessage(`Post-deploy syndication failed: ${code}: private filename\n`);
+    assert.match(message, /input file could not be read/);
+    assert.ok(!message.includes("private"));
+  }
+});
+
+test("reports response parsing without reflecting response bodies", async () => {
+  const { message } = await failedMessage("Post-deploy syndication failed: Failed to list posts for syndication: Unexpected token '<', private response\n");
+  assert.match(message, /encountered a parsing error/);
+  assert.ok(!message.includes("private"));
+});
+
+test("reports JavaScript error classes without private source values", async () => {
+  for (const code of ["ReferenceError", "TypeError", "RangeError", "EvalError", "URIError"]) {
+    const { message } = await failedMessage(`${code}: private value\nprivate stack\n`);
+    assert.match(message, /JavaScript runtime error/);
+    assert.ok(!message.includes("private"));
+  }
 });
 
 test("captures only a bounded stderr tail while retaining original build output", async () => {

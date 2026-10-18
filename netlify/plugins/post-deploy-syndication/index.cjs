@@ -16,15 +16,40 @@ function publicFailureReason(stderr) {
     }
     return "Required website syndication configuration is missing.";
   }
-  const http = /^(?:Failed to list posts for syndication: )?Failed to (?:list posts|fetch [^\r\n]+) \(status ([1-5]\d{2})\)$/.exec(detail);
+  if (detail === "Missing GitHub configuration") {
+    return "Required website syndication configuration is missing.";
+  }
+  const http = /^(?:(?:Failed to list posts for syndication: )?Failed to (?:list posts|fetch [^\r\n]+)|Lease (?:publish|confirm) update failed for [^\r\n]+) \(status ([1-5]\d{2})\)$/.exec(detail);
   if (http) {
     return `The GitHub writeback request failed (HTTP ${http[1]}).`;
   }
   if (/^Failed to scan local post [^\r\n]+:/.test(detail)) {
     return "A website blog post could not be read or parsed.";
   }
+  if (/\b(?:ERR_MODULE_NOT_FOUND|MODULE_NOT_FOUND|ERR_PACKAGE_PATH_NOT_EXPORTED|ERR_PACKAGE_IMPORT_NOT_DEFINED|ERR_UNKNOWN_FILE_EXTENSION|ERR_REQUIRE_ESM)\b/.test(stderr)) {
+    return "A required website announcement dependency could not be loaded.";
+  }
+  if (/\b(?:TimeoutError|ETIMEDOUT|ESOCKETTIMEDOUT|UND_ERR_CONNECT_TIMEOUT|UND_ERR_HEADERS_TIMEOUT|UND_ERR_BODY_TIMEOUT|AbortError)\b/.test(stderr)) {
+    return "A website announcement request timed out.";
+  }
+  if (/^(?:Failed to list posts for syndication: )?fetch failed$/.test(detail)
+      || /\b(?:ENOTFOUND|EAI_AGAIN|ECONNREFUSED|ECONNRESET|ENETUNREACH|EHOSTUNREACH)\b/.test(stderr)) {
+    return "The website announcement process could not reach a required service.";
+  }
+  if (/^(?:Failed to list posts for syndication: )?fetch is not defined$/.test(detail)) {
+    return "The website announcement runtime does not provide fetch.";
+  }
+  if (/\b(?:ENOENT|EACCES|EPERM|EISDIR|ENOTDIR)\b/.test(stderr)) {
+    return "A website announcement input file could not be read.";
+  }
   if (/^(?:YAMLException|SyntaxError):/m.test(stderr)) {
     return "The website announcement process encountered a parsing error.";
+  }
+  if (/^(?:Failed to list posts for syndication: )?(?:Unexpected token |Unexpected end of JSON input)/.test(detail)) {
+    return "The website announcement process encountered a parsing error.";
+  }
+  if (/^(?:ReferenceError|TypeError|RangeError|EvalError|URIError):/m.test(stderr)) {
+    return "The website announcement process encountered a JavaScript runtime error.";
   }
   return "";
 }
