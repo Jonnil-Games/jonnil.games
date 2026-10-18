@@ -17,6 +17,8 @@ syndicationRequestedAt:
   bluesky: "2026-10-18T18:24:56.471Z"
 syndicationLastError:
   bluesky: "publish-status-400"
+syndicationCheckedAt:
+  bluesky: "2026-10-18T18:44:04.405Z"
 ---
 
 ## Added
