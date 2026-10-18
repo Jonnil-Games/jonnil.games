@@ -6,19 +6,13 @@ excerpt: "Jonnil Online 2026.10.1181758: Find community pages and the studio web
 categories:
   - "JonnilOnline"
   - "Changelog"
-syndicate:
-  - "bluesky"
 syndication:
   discord: "https://discord.com/"
+  bluesky: "https://bsky.app/profile/jonnil.games/post/3my6b6a72mg2p"
 syndicationStatus:
-  bluesky: "requested"
+  bluesky: "confirmed"
   discord: "confirmed"
-syndicationRequestedAt:
-  bluesky: "2026-10-18T18:24:56.471Z"
-syndicationLastError:
-  bluesky: "publish-status-400"
-syndicationCheckedAt:
-  bluesky: "2026-10-18T18:44:04.405Z"
+syndicationComplete: true
 ---
 
 ## Added
