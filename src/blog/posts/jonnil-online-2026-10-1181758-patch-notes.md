@@ -8,18 +8,15 @@ categories:
   - "Changelog"
 syndicate:
   - "bluesky"
-  - "discord"
 syndication:
-  {}
+  discord: "https://discord.com/"
 syndicationStatus:
   bluesky: "requested"
-  discord: "requested"
+  discord: "confirmed"
 syndicationRequestedAt:
   bluesky: "2026-10-18T18:24:56.471Z"
-  discord: "2026-10-18T18:24:56.471Z"
-syndicationCheckedAt:
-  bluesky: "2026-10-18T18:24:56.471Z"
-  discord: "2026-10-18T18:24:56.471Z"
+syndicationLastError:
+  bluesky: "publish-status-400"
 ---
 
 ## Added
