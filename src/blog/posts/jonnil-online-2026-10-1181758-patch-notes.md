@@ -34,4 +34,8 @@ syndicationComplete: true
 - Saving a custom stamp while viewing Built-in now switches to Custom and selects the saved stamp.
 - Stamps whose images fail to load are hidden from the library.
 
+## Play the game
+
+- [Play on Game Jolt](https://gamejolt.com/games/Jonnil-Online/1069371)
+
 <!-- release-id: 51bdf9a0933bdad2b47ca6aabd026cce06fb2af7b44acf6f85573b28c56b4497 -->
