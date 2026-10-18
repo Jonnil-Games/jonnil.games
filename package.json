@@ -10,8 +10,8 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "front-matter": "^4.0.2",
-    "handlebars": "^4.7.8",
+    "handlebars": "^4.7.10",
+    "js-yaml": "^4.3.2",
     "marked": "^4.3.0"
   },
   "engines": {
@@ -20,6 +20,11 @@
   "devDependencies": {
     "eslint": "^8.57.1",
     "prettier": "^3.8.1",
-    "serve": "14.2.4"
+    "serve": "14.2.6"
+  },
+  "overrides": {
+    "serve": {
+      "compression": "1.8.2"
+    }
   }
 }

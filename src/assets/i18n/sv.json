@@ -195,9 +195,20 @@
       "title": "Våra spel",
       "body": "Upptäck våra senaste skapelser och kommande projekt."
     },
+    "code": {
+      "jump": "Se spelens källkod",
+      "title": "Spelens källkod",
+      "body": "Sticky Paws DX innehåller både spelet och ett ramverk för framtida plattformsspel. Läs koden eller föreslå ändringar på GitHub.",
+      "profile": "Jonnil på GitHub"
+    },
     "timeline": {
       "title": "Spelens tidslinje",
       "upcoming": "Kommande",
+      "filters": {
+        "label": "Kategorier i tidslinjen",
+        "all": "Visa alla",
+        "community": "Gemenskap"
+      },
       "junis": {
         "title": "Juni's Asylum",
         "tag1": "Skräckäventyr",

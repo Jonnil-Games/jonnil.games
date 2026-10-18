@@ -119,6 +119,32 @@
 
     <!-- Page-scoped enhancements for the timeline -->
     <style>
+      .timeline-filters {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-xl);
+      }
+      .timeline-filters [aria-current="page"] {
+        background-color: var(--md-primary);
+        color: var(--md-on-primary);
+        border-color: var(--md-primary);
+      }
+      .tag-category:hover,
+      .tag-category:focus-visible {
+        color: #fff;
+        text-decoration: underline;
+      }
+      .tag-category:focus-visible {
+        outline: 2px solid var(--md-primary);
+        outline-offset: 3px;
+      }
+      .timeline-item[hidden],
+      .timeline-year[hidden] {
+        display: none;
+      }
+
       /* Respect reduced motion */
       @media (prefers-reduced-motion: reduce) {
         .timeline-item,
@@ -293,6 +319,8 @@
         <p data-i18n="games.hero.body">
           Discover our latest creations and upcoming projects.
         </p>
+        <a href="#game-code" class="button secondary-button"
+          data-i18n="games.code.jump">Browse game code</a>
       </section>
 
       <div class="divider large-divider"></div>
@@ -306,6 +334,14 @@
         >
           Games Timeline
         </h2>
+
+        <nav class="timeline-filters" aria-label="Timeline categories"
+          data-i18n-attr="aria-label:games.timeline.filters.label">
+          <a href="/games.html#games-timeline" class="button secondary-button"
+            data-timeline-filter="" data-i18n="games.timeline.filters.all">Show all</a>
+          <a href="/games.html?category=community#games-timeline" class="button secondary-button"
+            data-timeline-filter="community" data-i18n="games.timeline.filters.community">Community</a>
+        </nav>
 
         <div class="timeline">
           <!-- Visible in-flow year markers used for grouping + indicator -->
@@ -381,6 +417,7 @@
           <article
             class="timeline-item milestone"
             id="formalized-team"
+            data-timeline-category="community"
             tabindex="0"
           >
             <div class="timeline-content">
@@ -398,8 +435,9 @@
                 collaboration and project management.
               </p>
               <div class="tags">
-                <span class="tag tag-status" data-i18n="games.timeline.formalized.tag1"
-                  >Community</span
+                <a href="/games.html?category=community#games-timeline"
+                  class="tag tag-status tag-category" data-i18n="games.timeline.formalized.tag1"
+                  >Community</a
                 >
               </div>
               <div class="game-links">
@@ -493,6 +531,7 @@
           <article
             class="timeline-item milestone"
             id="discord-launch"
+            data-timeline-category="community"
             tabindex="0"
           >
             <div class="timeline-content">
@@ -510,8 +549,9 @@
                 our players.
               </p>
               <div class="tags">
-                <span class="tag tag-status" data-i18n="games.timeline.discord.tag1"
-                  >Community</span
+                <a href="/games.html?category=community#games-timeline"
+                  class="tag tag-status tag-category" data-i18n="games.timeline.discord.tag1"
+                  >Community</a
                 >
               </div>
               <div class="game-links">
@@ -1068,6 +1108,25 @@
           </article>
         </div>
       </section>
+
+      <section id="game-code" class="newsletter-section" aria-labelledby="game-code-title">
+        <div class="newsletter-container info-card">
+          <h2 id="game-code-title" data-i18n="games.code.title">Game code</h2>
+          <p data-i18n="games.code.body">
+            Sticky Paws DX includes the game and a framework for future platformers.
+            Browse the code or suggest changes on GitHub.
+          </p>
+          <div class="action-links">
+            <a href="https://github.com/Jonnil/Sticky-Paws-DX"
+              class="button primary-button" target="_blank" rel="noopener noreferrer">Sticky Paws DX</a>
+            <a href="https://github.com/Jonnil" class="button secondary-button"
+              target="_blank" rel="noopener noreferrer"
+              data-i18n="games.code.profile">Jonnil on GitHub</a>
+          </div>
+        </div>
+      </section>
+
+      <drop capsule="follow-updates"></drop>
     </main>
 
     <!-- Footer capsule -->
@@ -1082,6 +1141,31 @@
 
       const timeline = document.querySelector(".timeline");
       const items = Array.from(document.querySelectorAll(".timeline-item"));
+      const selectedCategory =
+        new URLSearchParams(window.location.search).get("category") === "community"
+          ? "community"
+          : "";
+
+      items.forEach((item) => {
+        item.hidden = Boolean(selectedCategory) &&
+          item.dataset.timelineCategory !== selectedCategory;
+      });
+      document.querySelectorAll(".timeline-year").forEach((year) => {
+        let entry = year.nextElementSibling;
+        let hasVisibleEntry = false;
+        while (entry && !entry.classList.contains("timeline-year")) {
+          if (entry.classList.contains("timeline-item") && !entry.hidden) {
+            hasVisibleEntry = true;
+          }
+          entry = entry.nextElementSibling;
+        }
+        year.hidden = !hasVisibleEntry;
+      });
+      document.querySelectorAll("[data-timeline-filter]").forEach((link) => {
+        if (link.dataset.timelineFilter === selectedCategory) {
+          link.setAttribute("aria-current", "page");
+        }
+      });
       // No separate year indicator element anymore
 
       // Gentle stagger
@@ -1133,7 +1217,7 @@
       });
 
       // Roving focus with ArrowUp/ArrowDown
-      const focusable = items.filter((el) => el.hasAttribute("tabindex"));
+      const focusable = items.filter((el) => !el.hidden && el.hasAttribute("tabindex"));
       document.addEventListener("keydown", (e) => {
         if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
         const i = focusable.indexOf(document.activeElement);
@@ -1159,7 +1243,7 @@
             side = "left"; // reset at each year marker
             return;
           }
-          if (node.classList.contains("timeline-item")) {
+          if (node.classList.contains("timeline-item") && !node.hidden) {
             node.classList.remove("left", "right");
             node.classList.add(side);
             side = side === "left" ? "right" : "left";
@@ -1168,7 +1252,8 @@
       })();
 
       // Hide timeline-year chips that are fully covered by a later sticky chip
-      const yearChips = Array.from(document.querySelectorAll(".timeline-year"));
+      const yearChips = Array.from(document.querySelectorAll(".timeline-year"))
+        .filter((year) => !year.hidden);
 
       function updateCoveredYears() {
         if (yearChips.length === 0) return;

@@ -195,9 +195,20 @@
       "title": "Our Games",
       "body": "Discover our latest creations and upcoming projects."
     },
+    "code": {
+      "jump": "Browse game code",
+      "title": "Game code",
+      "body": "Sticky Paws DX includes the game and a framework for future platformers. Browse the code or suggest changes on GitHub.",
+      "profile": "Jonnil on GitHub"
+    },
     "timeline": {
       "title": "Games Timeline",
       "upcoming": "Upcoming",
+      "filters": {
+        "label": "Timeline categories",
+        "all": "Show all",
+        "community": "Community"
+      },
       "junis": {
         "title": "Juni's Asylum",
         "tag1": "Horror Adventure",

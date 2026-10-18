@@ -1,4 +1,4 @@
-import fm from "front-matter";
+import fm from "../../lib/front-matter.js";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

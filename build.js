@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
-import fm from "front-matter";
+import fm from "./lib/front-matter.js";
 import { marked } from "marked";
 import Handlebars from "handlebars";
 import { getSiteUrl, getCanonicalBlogPath } from "./lib/site-url.js";
