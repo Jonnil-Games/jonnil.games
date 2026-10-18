@@ -9,6 +9,14 @@ categories:
 syndicate:
   - "bluesky"
   - "discord"
+syndication:
+  {}
+syndicationStatus:
+  bluesky: "requested"
+syndicationRequestedAt:
+  bluesky: "2026-10-18T18:24:56.471Z"
+syndicationCheckedAt:
+  bluesky: "2026-10-18T18:24:56.471Z"
 ---
 
 ## Added
