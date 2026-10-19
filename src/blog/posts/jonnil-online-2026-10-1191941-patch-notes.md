@@ -32,7 +32,7 @@ discordDelivery:
       channelId: "540333462301835264"
       guildId: "255675758381498369"
     -
-      state: "ready"
+      state: "sending"
     -
       state: "ready"
   lease:
