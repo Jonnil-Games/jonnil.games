@@ -2,6 +2,8 @@ import fm from "../../lib/front-matter.js";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { randomUUID } from "node:crypto";
+import { isDeepStrictEqual } from "node:util";
 import {
   BRIDGY_PUBLISH_TARGETS,
   getSyndicationUrl,
@@ -29,6 +31,9 @@ import { canonicalizeUrl, toAbsoluteUrl } from "../../lib/url.js";
 import {
   DISCORD_TARGETS,
   sendDiscordWebhook,
+  sendDiscordRelease,
+  buildDiscordReleaseMessages,
+  discordReleaseDigest,
 } from "../../lib/discord-syndication.js";
 import { getCanonicalBlogPath, getSiteUrl } from "../../lib/site-url.js";
 
@@ -281,8 +286,15 @@ async function updateFileContent(path, branch, sha, content, message) {
   return res;
 }
 
-function buildFrontmatter(attributes, body) {
-  const yaml = serializeYaml(attributes);
+export function buildFrontmatter(attributes, body, originalSource = "") {
+  let yaml = serializeYaml(attributes);
+  // Release metadata is fingerprinted source. Keep its original inline JSON or
+  // YAML spelling when only delivery state changes.
+  const header = String(originalSource).replace(/\r\n/g, "\n").match(/^\uFEFF?---\n([\s\S]*?)\n---(?:\n|$)/)?.[1] || "";
+  const block = header.match(/^discordRelease:[^\n]*(?:\n[ \t][^\n]*)*/m)?.[0];
+  if (block && Object.hasOwn(attributes, "discordRelease")) {
+    yaml = yaml.replace(/^discordRelease:[^\n]*(?:\n[ \t][^\n]*)*/m, () => block);
+  }
   return `---\n${yaml}\n---\n${body}`;
 }
 
@@ -485,7 +497,7 @@ async function acquirePublishLease({ filePath, branch, target, now }) {
     delete state.lastErrorMap[target];
     applySyndicationState(attributes, state);
 
-    const updated = buildFrontmatter(attributes, parsed.body || "");
+    const updated = buildFrontmatter(attributes, parsed.body || "", fetched.content);
     const res = await updateFileContent(
       filePath,
       branch,
@@ -545,7 +557,7 @@ async function acquireConfirmLease({ filePath, branch, target, now }) {
     state.checkedAtMap[target] = nowIso;
     applySyndicationState(attributes, state);
 
-    const updated = buildFrontmatter(attributes, parsed.body || "");
+    const updated = buildFrontmatter(attributes, parsed.body || "", fetched.content);
     const res = await updateFileContent(
       filePath,
       branch,
@@ -569,6 +581,75 @@ async function acquireConfirmLease({ filePath, branch, target, now }) {
   }
 
   return { acquired: false, reason: "lease-conflict" };
+}
+
+export async function deliverDiscordReleasePost({ filePath, branch, title, release, url, now = new Date() }) {
+  const expectedDigest = discordReleaseDigest({ title, release, url });
+  const owner = randomUUID();
+  const lease = { id: owner, expiresAt: new Date(now.getTime() + 15 * 60 * 1000).toISOString() };
+  let latest = null;
+  const identityMatches = (attributes) => {
+    const slug = filePath.split("/").pop().replace(/\.md$/, "");
+    return buildCanonicalUrl(attributes, slug, getSiteUrl()) === url
+      && discordReleaseDigest({ title: attributes.title || slug, release: attributes.discordRelease, url }) === expectedDigest;
+  };
+  for (let attempt = 0; attempt < LEASE_MAX_ATTEMPTS; attempt += 1) {
+    const fetched = await getFileContent(filePath, branch);
+    const parsed = fm(fetched.content);
+    const attributes = parsed.attributes || {};
+    if (!identityMatches(attributes)) throw new Error("Discord release source changed before delivery");
+    const state = collectSyndicationState(attributes);
+    const confirmed = getSyndicationUrl(state.syndicationMap, "discord");
+    if (confirmed || state.statusMap.discord === "confirmed") {
+      return { ok: true, status: 200, syndicatedUrl: confirmed || "https://discord.com/", sha: fetched.sha,
+        delivery: attributes.discordDelivery, alreadyConfirmed: true };
+    }
+    const delivery = attributes.discordDelivery || {
+      schema: 1, payloadDigest: expectedDigest,
+      webhookId: String(process.env.DISCORD_WEBHOOK_URL || "").match(/\/webhooks\/(\d+)\//)?.[1] || "",
+      chunks: buildDiscordReleaseMessages({ title, release, url }).map(() => ({ state: "ready" })),
+    };
+    if (delivery.payloadDigest !== expectedDigest) throw new Error("Discord delivery identity changed. Review the saved receipt before continuing.");
+    const leaseExpiry = new Date(delivery.lease?.expiresAt || 0).getTime();
+    if (Number.isFinite(leaseExpiry) && leaseExpiry > now.getTime()) {
+      return { ok: false, status: 0, syndicatedUrl: "", error: "delivery-lease-active", delivery, sha: fetched.sha };
+    }
+    attributes.discordDelivery = { ...delivery, lease };
+    state.statusMap.discord = "requested";
+    state.requestedAtMap.discord = now.toISOString();
+    state.checkedAtMap.discord = now.toISOString();
+    delete state.lastErrorMap.discord;
+    applySyndicationState(attributes, state);
+    const response = await updateFileContent(filePath, branch, fetched.sha, buildFrontmatter(attributes, parsed.body || "", fetched.content),
+      toSkipCiMessage(`${COMMIT_PREFIX} reserve Discord release delivery`));
+    if (response.status === 409) continue;
+    if (!response.ok) throw new Error(`Discord delivery checkpoint failed (status ${response.status})`);
+    latest = { sha: await extractContentSha(response, fetched.sha), delivery: attributes.discordDelivery };
+    break;
+  }
+  if (!latest) return { ok: false, status: 0, syndicatedUrl: "", error: "delivery-lease-conflict" };
+
+  const checkpoint = async (delivery) => {
+    for (let attempt = 0; attempt < LEASE_MAX_ATTEMPTS; attempt += 1) {
+      const fetched = await getFileContent(filePath, branch);
+      const parsed = fm(fetched.content);
+      const attributes = parsed.attributes || {};
+      if (!identityMatches(attributes) || attributes.discordDelivery?.lease?.id !== owner
+          || !isDeepStrictEqual(attributes.discordDelivery, latest.delivery)) {
+        throw new Error("Discord delivery checkpoint ownership changed");
+      }
+      attributes.discordDelivery = { ...delivery, lease };
+      const response = await updateFileContent(filePath, branch, fetched.sha, buildFrontmatter(attributes, parsed.body || "", fetched.content),
+        toSkipCiMessage(`${COMMIT_PREFIX} checkpoint Discord release delivery`));
+      if (response.status === 409) continue;
+      if (!response.ok) throw new Error(`Discord delivery checkpoint failed (status ${response.status})`);
+      latest = { sha: await extractContentSha(response, fetched.sha), delivery: attributes.discordDelivery };
+      return;
+    }
+    throw new Error("Discord delivery checkpoint kept conflicting");
+  };
+  const result = await sendDiscordRelease({ title, release, url, delivery: latest.delivery, checkpoint });
+  return { ...result, sha: latest.sha, delivery: latest.delivery };
 }
 
 export async function runSyndicationPostDeploy() {
@@ -691,6 +772,8 @@ export async function runSyndicationPostDeploy() {
     };
 
     let dirty = false;
+    let discordLeaseOwner = "";
+    let discordCheckpoint = null;
     const canonicalUrl = buildCanonicalUrl(attributes, slug, siteUrl);
     const postImageUrl = attributes.image
       ? toAbsoluteUrl(siteUrl, attributes.image)
@@ -769,6 +852,10 @@ export async function runSyndicationPostDeploy() {
           dirty = true;
           touch(target);
         }
+        continue;
+      }
+      if (DISCORD_TARGETS[target] && attributes.discordRelease) {
+        discordPendingTargets.push(target);
         continue;
       }
       if (currentStatus === "requested") {
@@ -1040,6 +1127,34 @@ export async function runSyndicationPostDeploy() {
         );
       } else {
         for (const targetKey of discordPendingTargets) {
+          if (attributes.discordRelease) {
+            const result = await deliverDiscordReleasePost({ filePath, branch, title: attributes.title || slug,
+              release: attributes.discordRelease, url: canonicalUrl, now });
+            if (result.error === "delivery-lease-active" || result.error === "delivery-lease-conflict") continue;
+            // Keep the scan SHA so final writeback merges the fresh checkpoint
+            // and concurrent receipts instead of overwriting their state.
+            if (result.delivery) {
+              discordCheckpoint = structuredClone(result.delivery);
+              attributes.discordDelivery = structuredClone(result.delivery);
+              discordLeaseOwner = attributes.discordDelivery.lease?.id || "";
+              delete attributes.discordDelivery.lease;
+            }
+            if (result.ok) {
+              syndicationMap[targetKey] = result.syndicatedUrl;
+              statusMap[targetKey] = "confirmed";
+              delete requestedAtMap[targetKey];
+              delete checkedAtMap[targetKey];
+              delete lastErrorMap[targetKey];
+            } else {
+              statusMap[targetKey] = "requested";
+              requestedAtMap[targetKey] = nowIso;
+              checkedAtMap[targetKey] = nowIso;
+              lastErrorMap[targetKey] = summarizeSyndicationResult(result, "publish");
+            }
+            dirty = true;
+            touch(targetKey);
+            continue;
+          }
           const status =
             normalizeStatusValue(statusMap[targetKey]) || "pending";
           const requestedAt = requestedAtMap[targetKey];
@@ -1203,7 +1318,7 @@ export async function runSyndicationPostDeploy() {
       continue;
     }
 
-    const updated = buildFrontmatter(attributes, body);
+    const updated = buildFrontmatter(attributes, body, post.content);
     const message = toSkipCiMessage(`${COMMIT_PREFIX} update ${slug}`);
     const res = await updateFileContent(
       filePath,
@@ -1217,9 +1332,15 @@ export async function runSyndicationPostDeploy() {
       const retry = await getFileContent(filePath, branch);
       const retryParsed = fm(retry.content);
       const retryAttrs = retryParsed.attributes || {};
-      retryAttrs.syndicate = attributes.syndicate;
-      retryAttrs.syndicationComplete = attributes.syndicationComplete;
-
+      if (touchedTargets.has("discord") && attributes.discordDelivery) {
+        // The last checkpoint is already durable. Preserve any newer receipt
+        // rather than replacing it with this invocation's stale scan.
+        const remoteDelivery = retryAttrs.discordDelivery;
+        if (!remoteDelivery || (remoteDelivery.lease?.id === discordLeaseOwner
+            && isDeepStrictEqual(remoteDelivery, discordCheckpoint))) {
+          retryAttrs.discordDelivery = attributes.discordDelivery;
+        }
+      }
       // Merge-on-retry keeps concurrent writes from other invocations while
       // applying only this run's touched keys.
       const retrySyndicationMap = normalizeSyndicationMap(
@@ -1285,6 +1406,18 @@ export async function runSyndicationPostDeploy() {
         }
       }
 
+      const retryTargets = [...new Set([
+        ...normalizeSyndicateTargets(retryAttrs.syndicate, DISCORD_TARGETS),
+        ...normalizeSyndicateTargets(attributes.syndicate, DISCORD_TARGETS),
+      ])].filter((target) => !getSyndicationUrl(retrySyndicationMap, target));
+      if (retryTargets.length > 0) {
+        retryAttrs.syndicate = retryTargets;
+        delete retryAttrs.syndicationComplete;
+      } else {
+        delete retryAttrs.syndicate;
+        retryAttrs.syndicationComplete = true;
+      }
+
       retryAttrs.syndication = retrySyndicationMap;
       if (Object.keys(retryStatusMap).length > 0) {
         retryAttrs.syndicationStatus = retryStatusMap;
@@ -1307,7 +1440,7 @@ export async function runSyndicationPostDeploy() {
         delete retryAttrs.syndicationLastError;
       }
 
-      const retryUpdated = buildFrontmatter(retryAttrs, retryParsed.body || "");
+      const retryUpdated = buildFrontmatter(retryAttrs, retryParsed.body || "", retry.content);
       const retryRes = await updateFileContent(
         filePath,
         branch,
