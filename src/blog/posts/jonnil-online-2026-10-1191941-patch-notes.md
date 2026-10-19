@@ -32,7 +32,10 @@ discordDelivery:
       channelId: "540333462301835264"
       guildId: "255675758381498369"
     -
-      state: "sending"
+      state: "confirmed"
+      messageId: "1561803118465777849"
+      channelId: "540333462301835264"
+      guildId: "255675758381498369"
     -
       state: "ready"
   lease:
