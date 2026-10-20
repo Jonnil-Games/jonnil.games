@@ -10,6 +10,14 @@ syndicate:
   - "bluesky"
   - "discord"
 discordRelease: {"schema": 1, "body": "## Fixed\n\n- Fixed character portraits and standing sprites appearing in the wrong position when changing skins.", "moreInformation": "Playing with custom characters? Share a screenshot of your character and skin choices! If something looks wrong, tell us which character and skin you used, along with your game version and how to reproduce the problem", "playLinks": [{"label": "Play on Game Jolt", "url": "https://gamejolt.com/games/Sticky-Paws/384036"}, {"label": "Play on Steam", "url": "https://store.steampowered.com/app/1129090/"}]}
+syndication:
+  {}
+syndicationStatus:
+  bluesky: "requested"
+syndicationRequestedAt:
+  bluesky: "2026-10-20T00:05:17.589Z"
+syndicationCheckedAt:
+  bluesky: "2026-10-20T00:05:17.589Z"
 ---
 
 ## Fixed
