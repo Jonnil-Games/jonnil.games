@@ -6,21 +6,13 @@ excerpt: "Sticky Paws 2026.10.1192308: Fixed character portraits and standing sp
 categories:
   - "Sticky Paws"
   - "Changelog"
-syndicate:
-  - "bluesky"
-  - "discord"
 discordRelease: {"schema": 1, "body": "## Fixed\n\n- Fixed character portraits and standing sprites appearing in the wrong position when changing skins.", "moreInformation": "Playing with custom characters? Share a screenshot of your character and skin choices! If something looks wrong, tell us which character and skin you used, along with your game version and how to reproduce the problem", "playLinks": [{"label": "Play on Game Jolt", "url": "https://gamejolt.com/games/Sticky-Paws/384036"}, {"label": "Play on Steam", "url": "https://store.steampowered.com/app/1129090/"}]}
 syndication:
-  {}
+  bluesky: "https://bsky.app/profile/jonnil.games/post/3mybdllxygb2d"
+  discord: "https://discord.com/channels/255675758381498369/540333462301835264/1561893076786610206"
 syndicationStatus:
-  bluesky: "requested"
-  discord: "requested"
-syndicationRequestedAt:
-  bluesky: "2026-10-20T00:05:17.589Z"
-  discord: "2026-10-20T00:05:17.589Z"
-syndicationCheckedAt:
-  bluesky: "2026-10-20T00:05:17.589Z"
-  discord: "2026-10-20T00:05:17.589Z"
+  bluesky: "confirmed"
+  discord: "confirmed"
 discordDelivery:
   schema: 1
   payloadDigest: "487fbf284602e58ace95ce09637faa030c59c3f8af828d6cea3d736a0b7e2f64"
@@ -31,11 +23,9 @@ discordDelivery:
       messageId: "1561893076786610206"
       channelId: "540333462301835264"
       guildId: "255675758381498369"
-  lease:
-    id: "75d96a35-81a9-4f70-b401-ccce7bc14c54"
-    expiresAt: "2026-10-20T00:20:17.589Z"
   guildId: "255675758381498369"
   channelId: "540333462301835264"
+syndicationComplete: true
 ---
 
 ## Fixed
