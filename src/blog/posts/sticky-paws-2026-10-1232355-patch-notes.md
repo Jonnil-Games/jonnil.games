@@ -10,6 +10,14 @@ syndicate:
   - "bluesky"
   - "discord"
 discordRelease: {"schema": 1, "body": "## Added\n\n- Desktop launch shortcuts to the world map (-world-map), Level Editor level list (-level-editor), online levels (-online-levels), and character selection (-characters). Add one to the game's launch options.\n- Open Options > Video at startup with -options -options-page=video. Audio, Accessibility, and other available pages can also be selected.\n- Open an existing local custom level with -edit-level=FOLDER or -play-level=FOLDER. Replace FOLDER with its folder name, not a path. When editing, add -editor-grid=show or -editor-grid=hide to show or hide the grid.\n- Start a built-in level with -official-level=ID, using its level ID. Demo limits still apply.\n- With gameplay shortcuts, add -character=CHARACTER_FOLDER to choose Player 1's character and -players=2, -players=3, or -players=4 to join more players automatically.\n- Shortcuts run once per launch. Invalid launch requests fall back to the title screen. Online levels and Options pages keep their usual access requirements.", "moreInformation": "Working on a custom level or character? Share what you're making here. If you run into a problem, tell us what you were trying to do and what happened", "playLinks": [{"label": "Play on Game Jolt", "url": "https://gamejolt.com/games/Sticky-Paws/384036"}, {"label": "Play on Steam", "url": "https://store.steampowered.com/app/1129090/"}]}
+syndication:
+  {}
+syndicationStatus:
+  bluesky: "requested"
+syndicationRequestedAt:
+  bluesky: "2026-10-23T22:38:59.248Z"
+syndicationCheckedAt:
+  bluesky: "2026-10-23T22:38:59.248Z"
 ---
 
 ## Added
