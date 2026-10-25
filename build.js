@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 import fm from "./lib/front-matter.js";
+import { postOrderTime } from "./lib/post-order.js";
 import { marked } from "marked";
 import Handlebars from "handlebars";
 import { getSiteUrl, getCanonicalBlogPath } from "./lib/site-url.js";
@@ -1453,7 +1454,11 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
             author: primaryVariant.author,
             date: normalizedDate,
             dateIso: toPublishedIso(normalizedDate, parsedDate),
-            dateMs: parsedDate.getTime(),
+            publishedMs: postOrderTime(
+              attributes.publishedAt,
+              parsedDate.getTime(),
+              filePath
+            ),
             categories: primaryVariant.categories,
             authorFilterKey: normalizeFilterValue(primaryVariant.author),
             categoryFilterKey: normalizeFilterValue(primaryCategory),
@@ -1496,7 +1501,7 @@ async function buildBlog(capsules, config, globalUsed, siteUrl) {
     }
   }
 
-  blogIndex.sort((a, b) => b.dateMs - a.dateMs);
+  blogIndex.sort((a, b) => b.publishedMs - a.publishedMs);
 
   const indexData = {
     posts: blogIndex,

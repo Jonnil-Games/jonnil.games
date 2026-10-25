@@ -1,6 +1,7 @@
 ---
 title: "Sticky Paws 2026.10.1232355 Patch Notes"
 date: "2026-10-23"
+publishedAt: "2026-10-23T22:38:35Z"
 author: "Jonnil"
 excerpt: "Sticky Paws 2026.10.1232355: Desktop launch shortcuts to the world map (-world-map), Level Editor level list (-level-editor), online levels (-online-levels), and character selection (-characters)."
 categories:

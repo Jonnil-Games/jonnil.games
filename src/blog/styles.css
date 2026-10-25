@@ -457,11 +457,7 @@
   border-color: var(--surface-outline-strong);
 }
 
-.post-card.fade-out {
-  opacity: 0;
-}
-
-.post-card.hidden {
+.post-card[hidden] {
   display: none;
 }
 

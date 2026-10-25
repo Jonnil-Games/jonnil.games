@@ -1,6 +1,7 @@
 ---
 title: "Jonnil Online 2026.10.1231902 Patch Notes"
 date: "2026-10-23"
+publishedAt: "2026-10-23T17:23:43Z"
 author: "Jonnil"
 excerpt: "Jonnil Online 2026.10.1231902: On supported servers, From Canvas in the stamp library now starts a selection when needed."
 categories:

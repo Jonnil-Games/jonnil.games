@@ -127,6 +127,7 @@ Example:
 ---
 title: "Post title"
 date: "2026-05-11"
+publishedAt: "2026-05-11T14:30:00Z"
 author: "Jonnil"
 excerpt: "Short summary for cards, feeds, and social previews."
 image: "/images/example.png"
@@ -139,6 +140,13 @@ categories:
 Required:
 
 - `date`: `YYYY-MM-DD` or ISO 8601
+
+`publishedAt` is the publication instant used for newest-first ordering. Use an
+ISO 8601 datetime with `Z` or an explicit UTC offset. Keep `date` as the date
+readers should see; adding `publishedAt` does not change it. When no publication
+time is known, ordering falls back to `date`, and equal dates keep their existing
+filename order. The older patch-note timestamps were recovered from their first
+publication commits, rather than later announcement-confirmation commits.
 
 Recommended:
 

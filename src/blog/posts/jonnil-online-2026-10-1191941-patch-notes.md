@@ -1,6 +1,7 @@
 ---
 title: "Jonnil Online 2026.10.1191941 Patch Notes"
 date: "2026-10-19"
+publishedAt: "2026-10-19T18:07:20Z"
 author: "Jonnil"
 excerpt: "Jonnil Online 2026.10.1191941: Options > Sharing lets you choose what friends can see and how they join."
 categories:
