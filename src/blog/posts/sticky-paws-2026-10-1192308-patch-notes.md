@@ -1,6 +1,7 @@
 ---
 title: "Sticky Paws 2026.10.1192308 Patch Notes"
 date: "2026-10-19"
+publishedAt: "2026-10-20T00:04:51Z"
 author: "Jonnil"
 excerpt: "Sticky Paws 2026.10.1192308: Fixed character portraits and standing sprites appearing in the wrong position when changing skins."
 categories:

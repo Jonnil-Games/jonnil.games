@@ -88,20 +88,9 @@ document.addEventListener("DOMContentLoaded", function () {
       const matchesCategory =
         !selectedCategory || postCategoryKey === selectedCategory;
 
-      // Use CSS classes for transitions instead of inline styles
-      if (matchesSearch && matchesAuthor && matchesCategory) {
-        post.classList.remove("hidden");
-        requestAnimationFrame(() => post.classList.remove("fade-out"));
-      } else {
-        post.classList.add("fade-out");
-        const onFade = (event) => {
-          if (event.propertyName !== "opacity") return;
-          if (post.classList.contains("fade-out")) {
-            post.classList.add("hidden");
-          }
-        };
-        post.addEventListener("transitionend", onFade, { once: true });
-      }
+      const visible = matchesSearch && matchesAuthor && matchesCategory;
+      post.hidden = !visible;
+      post.inert = !visible;
     });
   }
 
@@ -112,10 +101,6 @@ document.addEventListener("DOMContentLoaded", function () {
   authorFilter?.addEventListener("change", filterPosts);
   categoryFilter?.addEventListener("change", filterPosts);
 
-  // Initialize all posts with proper visibility
-  posts.forEach((post) => {
-    post.classList.remove("hidden", "fade-out");
-  });
   filterPosts();
 
   // Add smooth scrolling for anchor links

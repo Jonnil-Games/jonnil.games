@@ -1,6 +1,7 @@
 ---
 title: "Jonnil Online 2026.10.1181758 Patch Notes"
 date: "2026-10-18"
+publishedAt: "2026-10-18T16:47:55Z"
 author: "Jonnil"
 excerpt: "Jonnil Online 2026.10.1181758: Find community pages and the studio website in Information > Links using a mouse, keyboard or controller."
 categories:
