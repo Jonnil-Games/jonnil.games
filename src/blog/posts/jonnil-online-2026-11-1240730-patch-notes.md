@@ -14,10 +14,25 @@ syndication:
   {}
 syndicationStatus:
   bluesky: "requested"
+  discord: "requested"
 syndicationRequestedAt:
   bluesky: "2026-11-24T06:50:31.898Z"
+  discord: "2026-11-24T06:50:31.898Z"
 syndicationCheckedAt:
   bluesky: "2026-11-24T06:50:31.898Z"
+  discord: "2026-11-24T06:50:31.898Z"
+discordDelivery:
+  schema: 1
+  payloadDigest: "e337b414d5d99a3593e823856b6658fefa99a4d034dc2ccdc7506e45b9ed9a2c"
+  webhookId: "1477849784357486612"
+  chunks:
+    -
+      state: "ready"
+    -
+      state: "ready"
+  lease:
+    id: "8c600ebf-0d71-4a59-861a-422610f7c550"
+    expiresAt: "2026-11-24T07:05:31.898Z"
 ---
 
 ## Added
