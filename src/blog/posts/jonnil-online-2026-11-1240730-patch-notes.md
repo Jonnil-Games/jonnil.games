@@ -32,7 +32,7 @@ discordDelivery:
       channelId: "540333462301835264"
       guildId: "255675758381498369"
     -
-      state: "ready"
+      state: "sending"
   lease:
     id: "8c600ebf-0d71-4a59-861a-422610f7c550"
     expiresAt: "2026-11-24T07:05:31.898Z"
