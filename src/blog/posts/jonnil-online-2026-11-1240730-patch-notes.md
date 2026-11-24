@@ -27,7 +27,10 @@ discordDelivery:
   webhookId: "1477849784357486612"
   chunks:
     -
-      state: "sending"
+      state: "confirmed"
+      messageId: "1574678633711280179"
+      channelId: "540333462301835264"
+      guildId: "255675758381498369"
     -
       state: "ready"
   lease:
