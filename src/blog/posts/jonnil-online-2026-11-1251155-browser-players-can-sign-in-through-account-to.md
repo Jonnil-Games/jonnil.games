@@ -10,6 +10,14 @@ syndicate:
   - "bluesky"
   - "discord"
 discordRelease: {"schema": 1, "body": "## Added\n\n- Browser players can sign in through Account to restore their saved profile on supported HTTPS pages. Guest play remains available. Export your data at Account > Account settings > Export account data > Download account data.\n- Options > Display adds GUI Scale: Auto or 100%-200% in 25% steps. It saves on this device and scales menus, text and information screens without changing camera zoom. Smaller windows may reduce the scale to keep controls visible.\n- Options > Display adds Fullscreen. In browsers, use F10 or Ctrl/Cmd+F on Mac. Escape exits browser fullscreen. Gamepads cannot toggle browser fullscreen.\n\n## Changed\n\n- \"Keep me signed in\" keeps browser sign-in for up to 30 days or until you sign out. Privacy settings or clearing site data can end it sooner. With it off, reloading can still restore sign-in for up to 12 hours. Sign out on shared devices.\n- Account forms now show character counts and input rules, with a Show password option. Correct invalid or overlong entries before submitting. If text was cut off, clear the field and enter it again.\n\n## Fixed\n\n- Fixed pointer alignment for browser menu buttons, drawing controls and tool cursors when the game is resized or fullscreen.\n\n## Security\n\n- Older browser tabs now block profile saves if another tab switches accounts, preventing changes from being saved to the wrong account.", "moreInformation": "If a menu button or cursor looks out of place after resizing, let us know which browser and GUI scale you're using", "playLinks": [{"label": "Play on Game Jolt", "url": "https://gamejolt.com/games/Jonnil-Online/1069371"}]}
+syndication:
+  {}
+syndicationStatus:
+  bluesky: "requested"
+syndicationRequestedAt:
+  bluesky: "2026-11-25T11:26:06.396Z"
+syndicationCheckedAt:
+  bluesky: "2026-11-25T11:26:06.396Z"
 ---
 
 ## Added
