@@ -27,7 +27,10 @@ discordDelivery:
   webhookId: "1477849784357486612"
   chunks:
     -
-      state: "sending"
+      state: "confirmed"
+      messageId: "1575110376717291605"
+      channelId: "540333462301835264"
+      guildId: "255675758381498369"
   lease:
     id: "f018d9f5-f29a-42a8-912a-995245f2309e"
     expiresAt: "2026-11-25T11:41:06.396Z"
